@@ -350,6 +350,31 @@ root : x : 0 : 0 : root : /root : /bin/bash
 	- L : 사용자 패스워드 LOCK (로그인 불가)
 	- U : 패스워드  LOCK을 푼다.
 ```
+
+#### 1.2.2. Fire Wall
+#### 1.2.2.1. firewalld
+- Linux 커널 2.2 까지는 ipchains 이라는 패킷 필터링/방화벽 프레임워크가 구현되어 있었고 2.4부터는 더 유연하고 다양한 기능을 가진 netfilter 로 프레임워크가 교체 되었습니다.  
+- iptables 은 netfilter 프레임워크의 최상단에 위치하는 사용자 레벨의 프로그램으로 시스템 관리자는 iptables 명령어로 리눅스 서버로 들어오고 나가는 패킷을 필터링하거나 포트 포워딩을 설정할 수 있으며 방화벽으로도 사용할 수 있습니다.  
+- iptables 는 숙련된 관리자가 아니면 사용이 어려운 단점이 있었는데 이런 문제를 해결하고자 RHEL/CentOS 7 부터는 방화벽을 firewalld 라는 데몬으로 교체하였고 이에 따라 사용자 레벨의 프로그램은 iptables 명령어 대신 명령행에서는 firewall-cmd , GUI 환경에서는 firewall-config 를 사용하게 되었습니다.  
+
+![Firewalld Architecture](./../img/Architecture_firewalld.png) 
+
+#### 1.2.2.2. command
+```console
+# 
+[root@localhost ~]#
+결과line]결과col1 결과col2 결과col3
+-------------------------------------------
+- Result
+	결과line]결과col1 결과col2 결과col3
+	-------------------------------------------
+	         1        2       3
+	-------------------------------------------
+	1. comments
+	2. comments
+	3. comments
+```
+
 ---
 
 
