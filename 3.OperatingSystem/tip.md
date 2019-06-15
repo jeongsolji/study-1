@@ -351,30 +351,110 @@ root : x : 0 : 0 : root : /root : /bin/bash
 	- U : 패스워드  LOCK을 푼다.
 ```
 
-#### 1.2.2. Fire Wall
-#### 1.2.2.1. firewalld
+#### 1.2.3. Fire Wall
+#### 1.2.3.1. firewalld
 - Linux 커널 2.2 까지는 ipchains 이라는 패킷 필터링/방화벽 프레임워크가 구현되어 있었고 2.4부터는 더 유연하고 다양한 기능을 가진 netfilter 로 프레임워크가 교체 되었습니다.  
 - iptables 은 netfilter 프레임워크의 최상단에 위치하는 사용자 레벨의 프로그램으로 시스템 관리자는 iptables 명령어로 리눅스 서버로 들어오고 나가는 패킷을 필터링하거나 포트 포워딩을 설정할 수 있으며 방화벽으로도 사용할 수 있습니다.  
 - iptables 는 숙련된 관리자가 아니면 사용이 어려운 단점이 있었는데 이런 문제를 해결하고자 RHEL/CentOS 7 부터는 방화벽을 firewalld 라는 데몬으로 교체하였고 이에 따라 사용자 레벨의 프로그램은 iptables 명령어 대신 명령행에서는 firewall-cmd , GUI 환경에서는 firewall-config 를 사용하게 되었습니다.  
+- firewalld-cmd는 iptables를 쓰기 쉽게 하는 wrapper이고 복잡한 규칙을 사용할 경우 --direct옵션으로 iptables내부에 접근가능합니다.
 
 ![Firewalld Architecture](./../img/Architecture_firewalld.png) 
 
-#### 1.2.2.2. command
+#### 1.2.3.1.1. 
+- zone: 서버의 용도에 맞게 사전에 정의된 네트워크의 신뢰 레벨을 의미
+
+##### 1.2.3.2. Configuration
 ```console
-# 
-[root@localhost ~]#
-결과line]결과col1 결과col2 결과col3
+# 기본설정
+[root@localhost ~]#cat /usr/lib/firewalld/
+helpers  icmptypes  ipsets  services  xmlschema  zones
 -------------------------------------------
 - Result
-	결과line]결과col1 결과col2 결과col3
+	helpers  icmptypes  ipsets  services  xmlschema  zones
 	-------------------------------------------
-	         1        2       3
+	1        2          3       4         5          6
 	-------------------------------------------
-	1. comments
-	2. comments
-	3. comments
+	1. 
+	2. 
+	3. 
+	4. 
+	5. 
+	6. 
+
+# 시스템 개발 설정
+[root@localhost ~]#cat /etc/firewalld/
+firewalld.conf  helpers  icmptypes  ipsets  lockdown-whitelist.xml  services  zones
+-------------------------------------------
+- Result
+	firewalld.conf  helpers  icmptypes  ipsets  lockdown-whitelist.xml  services  zones
+	-------------------------------------------
+	1               2        3          4       5                        6         7
+	-------------------------------------------
+	1. default zone 등 firewall 의 동작을 지정
+	2. 
+	3. 
+	4. 
+	5. 
+	6. 
+	7. 커스터마이징된 zone의 설정
 ```
 
+##### 1.2.3.3. command
+```console
+# System
+## 설치
+[root@localhost ~]# yum install firewalld
+
+## 재기동
+[root@localhost ~]# firewalld-cmd --reload
+
+# ZONE
+## 전체 zone 목록을 상세 출력
+[root@localhost ~]# firewall-cmd --list-all-zones
+
+## 사전 정의된 zone 목록 출력
+[root@localhost ~]# firewall-cmd --get-zones
+
+## 기본 zone 설정을 출력
+[root@localhost ~]# firewall-cmd --get-default-zone
+
+## 활성화된 zone 출력
+[root@localhost ~]# firewall-cmd --get-active-zone
+
+## 새로운 zone 추가
+[root@localhost ~]# firewall-cmd --new-zone=ZONENAME --permanent
+-------------------------------------------
+- Option
+	- permanent: firewalld 재기동 시, 영구적으로 설정을 지정하기 위한 Option
+
+## zone 삭제
+[root@localhost ~]# firewall-cmd --delete-zone=ZONENAME --permanent
+
+# SERVICE
+## service 목록 확인
+[root@localhost ~]# firewall-cmd --get-services
+
+## service 목록 확인_permanent로 등록된 service 중
+[root@localhost ~]# firewall-cmd --permanent --list-all --zone=ZONENAME
+
+## service 추가
+[root@localhost ~]# firewall-cmd --zone=ZONENAME --add-service=SERVICENAME --permanent
+
+## service 삭제
+[root@localhost ~]# firewall-cmd --zone=ZONENAME --remove=SERVICENAME --permanent
+
+# PORT
+## port 추가
+[root@localhost ~]# firewall-cmd --zone=ZONENAME --add-port=PROTNUMBER_STRAT-PORTNUMBER_END/PROTOCAL[ex: tcp] --permanent
+
+## port 삭제
+[root@localhost ~]# firewall-cmd --zone=ZONENAME --remove=PROTNUMBER/PROTOCAL --permanent
+
+# SOURCE
+## SOURCE(접근 IP) 허용
+[root@localhost ~]# firewall-cmd --zone=ZONENAME --add-source=192.168.1.0/24 --add-port=22/tcp --permanent 
+
+```
 ---
 
 
