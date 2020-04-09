@@ -40,6 +40,100 @@
 ##### 2. Spring Security
 
 ##### 3. JPA
+#### 1. JPA란
+  - Object-Relational Mapping (객체 관계 매핑)
+    - 객체지향(Java)과 관계형(RDBMS)과의 패러다임 불일치를 해결(매핑)하는 기술로, 본 문서는 Hibernate를 기준으로 작성.
+    
+  - JPA의 동작과정
+    - [ [ Java Application ]  <-JPA->  [ JDBC API ] ]  <->  [ Database ]
+    - Application과 JDBC 사이에 위치하여, 객체지향형과 관계형에 대한 불일치 패러다임을 해소.
+    
+#### 2. Tech
+##### 1. Tech
+###### 1. 복합키
+  - @EmbededId
+    ~~~
+    ~~~
+    
+  - @IdClass
+    ~~~
+    @Entity
+    @Table( name = "TB_USER_ROLE" )
+    @IdClass( UserRoleCompositeKey.class )
+    public class UserRole{
+      @Id
+      private User user;
+      
+      @Id
+      private Role role;
+    }
+    
+    public class UserRoleCompositeKey implements Serializable{
+      public UserRoleCompositeKey(){
+      }
+      
+      public UserRoleCompositeKey( Long userNo, String roleCd ){
+        this.user = userNo;
+        this.role = roleCd;
+      }
+      
+      private Long user;    // UserRole Class에 정의된 User ReferenceVariable과 동일한 이름을 사용.
+                            // @IdClass는 ReferenceVariable Name으로 UserRole Class에 정의된 ReferenceVariable를 Serche한다.
+      private String role;  // UserRole Class에 정의된 Role ReferenceVariable과 동일한 이름을 사용.
+                            // @IdClass는 ReferenceVariable Name으로 UserRole Class에 정의된 ReferenceVariable를 Serche한다.
+    }
+    ~~~
+###### 2. 단방향/양방향 Mapping
+  - 단방향 Mapping
+    ~~~
+    ~~~
+    
+  - 양방향 Mapping
+    ~~~
+    @Entity
+    @Table( name = "TB_COM_USER" )
+    public class User{
+      @Id
+      @Column( name = "USER_NO" )
+      private Long userNo;
+    }
+    
+    @Entity
+    @Table( name = "TB_COM_ROLE" )
+    public class Role{
+      @Id
+      @Column( name = "ROLE_CD" )
+      private String roleCd;
+    }
+    
+    @Entity
+    @Table( name = "TB_USER_ROLE" )
+    @IdClass( UserRoleCompositeKey.class )
+    public class UserRole{
+      @Id
+      @ManyToOne
+      @JoinColumn( name = "USER_NO", referencedColumnName = "USER_NO" )
+      private User user;
+      
+      @Id
+      @ManyToOne
+      @JoinColumn( name = "ROLE_CD", referencedColumnName = "ROLE_CD" )
+      private Role role;
+    }
+    
+    public class UserRoleCompositeKey implements Serializable{
+      public UserRoleCompositeKey(){
+      }
+      
+      public UserRoleCompositeKey( Long userNo, String roleCd ){
+        this.user = userNo;
+        this.role = roleCd;
+      }
+      
+      private Long user;
+      private String role;
+    }
+    ~~~
 
 
 ##### 4. React interlocking
