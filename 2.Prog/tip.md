@@ -112,12 +112,14 @@
     public class UserRole{
       @Id
       @ManyToOne
-      @JoinColumn( name = "USER_NO", referencedColumnName = "USER_NO" )
+      @JoinColumn( name = "USER_NO", referencedColumnName = "USER_NO" )  // UserRole Table에 'USER_NO" 컬럼생성(name 속성)
+                                                                         // User Table(referenceVariable의 Class Type 참조)의 'USER_NO' 컬럼참조(referencedColumnName 속성)
       private User user;
       
       @Id
       @ManyToOne
-      @JoinColumn( name = "ROLE_CD", referencedColumnName = "ROLE_CD" )
+      @JoinColumn( name = "ROLE_CD", referencedColumnName = "ROLE_CD" )  // UserRole Table에 'ROLE_CD" 컬럼생성(name 속성)
+                                                                         // Role Table(referenceVariable의 Class Type 참조)의 'ROLE_CD' 컬럼참조(referencedColumnName 속성)
       private Role role;
     }
     
@@ -133,6 +135,17 @@
       private Long user;
       private String role;
     }
+    
+    - JoinColumn
+      - name : 외래키로 정의 할, 자신의 테이블의 컬럼명(Column Name) 설정
+      - referencedColumnName : 외래키로 참조할, 대상 테이블의 컬럼명 설정
+      - foreignKey(DDL): 외래 키 제약조건명 설정(테이블을 생성조건에만 사용가능)
+      - unique : @Column의 속성과 동일
+      - nullable : @Column의 속성과 동일
+      - insertable : @Column의 속성과 동일
+      - updatable : @Column의 속성과 동일
+      - columnDefinition : @Column의 속성과 동일
+      - table : @Column의 속성과 동일
     ~~~
 
 
