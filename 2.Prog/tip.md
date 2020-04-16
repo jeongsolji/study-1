@@ -236,6 +236,11 @@
       ~~~
       npm install --save-dev uglifyjs-webpack-plugin
       ~~~
+    - helmet: meta information 설정
+      ~~~
+      npm install --save react-helmet @types/react-helmet
+      ~~~
+      
       
 ### 3. UI
 #### 1. Meterial-UI
