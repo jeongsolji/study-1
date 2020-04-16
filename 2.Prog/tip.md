@@ -187,15 +187,37 @@
     - root directory에 'webpack.config.js' file 생성
     - webpack.config.js 작성(파일 참조)
      ~~~
-     Source 경로: module.exports = {context: path.resolve(__dirname, 'Source 경로') ... }
-     Build SRC: module.exports = { ... entry: {Build SRC entry: '경로'} ... }
-     Build DST: module.exports = { ... output: {path: __dirname, filename: '경로'} ... }
+     Source 경로
+       - module.exports = {context: path.resolve(__dirname, 'Source 경로') ... }
+     Build SRC
+       - module.exports = { ... entry: {Build SRC entry: '경로'} ... }
+     Build DST
+       - module.exports = { ... output: {path: __dirname, filename: '경로'} ... }
      ~~~
       - context: root directory 를 지정한다.
         - entry는 해당 path를 시작으로 진행되나, output은 해당 path를 시작으로 빌드 되지 않는다.(path.resolve(__dirname, 'need path')를 이용) 왜지 ?!
+        - ex>
+           path.resolve(__dirname, 'src/main/frontend'),
+      - resolve: contrext의 대상선정?!
+        - ex>
+          resolve: {
+            extendsion: ['.js', '.jsx']
+          }
       - entry: root file로써, entry를 시작으로 필요한 모듈들을 다 불러온 후, 한 파일로 합쳐 bundle.js에 저장.
                 추가적으로는 모듈을 통하여 ES6 문법으로 작성된 코드를 ES5 형태로 변환.
+        - ex>
+          entry: {
+            main: './src/App.js'
+          }
       - output: 산출물
+        - ex>
+          const _publicPath = '/public/dist';
+          ...
+          output: {
+            path: path.resolve(__dirname, 'src/main/resources/public/dist'),
+            publicPath: _publicPath,
+            filename: 'app.bundle.js'
+          }
                 
   - webpack plug-in
     - clean-webpack-plugin: output으로 지정한 디렉토리를 build할 때마다 삭제하여 주는 plug-in
