@@ -219,10 +219,15 @@
 #### 1. Meterial-UI
     - Install
       ~~~
-      npm install @material-ui/core
+      npm install --save @material-ui/core
       ~~~
-
-
+      
+### 4. Transfer
+#### 1. Axios
+    - Install
+      ~~~
+      npm install --save axios
+      ~~~
 
 
 ## 별첨1. terms
