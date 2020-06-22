@@ -445,5 +445,55 @@
 
   - Swarm Mode Service
   ```console
-  // K8S로 바로 넘어가며, 다르지 않음.
+  // K8S로 바로 넘어가며, 다루지 않음.
+  ```
+
+
+## 3. Docker Compose
+  - 각기 다른 Application의 Docker Container를 하나의 Project처럼 다룰 수 있도록 묶을 수 있는 환경을 제공하는 것.
+    ex> Web Server용 Docker Container와 DB Server용 Docker Container를 묶어서 기동시키고 down시킨다.
+    
+  - Docker Container의 설정이 정의도니 YAML 파일을 읽어 Docker Engine을 통해 Docker Container를 생성한다.
+  
+### 1. Command Line Interface
+  - Origin CLI
+  ```console
+  [root@localhost ~]# docker run -d --name msql \
+                      zlagusdbs/composetest:mysql \
+                      mysqld
+
+  [root@localhost ~]# docker run -d -p 80:80 \
+                      --link mysql:db --name web \
+                      zlagusdbs/composetest:web \
+                      apachectl -DFOREGROUND
+  ```
+
+  - Docker Compose - docker-compose.yml
+  ```console
+  version: '3.0'
+  services:
+    web:
+      image: zlagusdbs/composetest:web
+      ports:
+        - "80:80"
+      links:
+        - mysql:db
+      command: apachectl -DFOREGROUND
+    mysql:
+      image: zlagusdbs/composetest:mysql
+      command: mysqld
+  ```
+
+  - Docker Compose CLI
+  ```console
+  [root@localhost ~]# docker-compose up -d
+  --------------------------------------
+  - Command
+      - docker-compose up
+  - Options
+      -d: 
+  - Description
+      - first-worker-node Manager Node를 Worker Node로 변경
+
+  // K8S로 바로 넘어가며, 자세한 사항은 다루지 않음.
   ```
