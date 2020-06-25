@@ -501,4 +501,26 @@
   // K8S로 바로 넘어가며, 자세한 사항은 다루지 않음.
   ```
 
-## 2. Kebernetis
+## 3. Kebernetis
+### 1. Tools
+  - Minikube
+    - Local에서 VM 또는 Docker Engine을 통해 K8S를 사용할 수 있는 환경을 제공 하는 도구
+  - kubeadm
+    - Server Cluster 환경에서 K8S를 쉽게 설치할 수 있는 관리 도구
+  - kops
+  - GJE
+  
+### 2. Command Line Interface
+  - 
+  ```console
+  [root@localhost ~]# 
+  --------------------------------------
+  - Command
+      - 
+  - Options
+      -
+  - Description
+      - 
+
+  // K8S로 바로 넘어가며, 자세한 사항은 다루지 않음.
+  ```
