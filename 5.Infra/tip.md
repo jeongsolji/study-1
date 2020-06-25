@@ -2,7 +2,7 @@
 ---
 
 
-# CI CD
+# Infra
 ## 1. Docker
 ### 1. Docker 란
   - Hypervisor
@@ -57,6 +57,9 @@
       - Docker 자체적으로 관리하는 Volume을 사용
       
 #### 6. Docker Network
+  - Docker Network Architecture
+    - ![Database Server Setting](./../img/Docker-Network.png)
+
   - Docker Network Driver
     - Bridge
     - Host
@@ -497,3 +500,5 @@
 
   // K8S로 바로 넘어가며, 자세한 사항은 다루지 않음.
   ```
+
+## 2. Kebernetis
