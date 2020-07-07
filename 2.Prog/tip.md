@@ -252,7 +252,16 @@
 
 ## 5. Javascript
 ### 1. function
-#### 1. literal
+#### 1. literal(=코드상에 데이터를 표현하는 방식)
+  - 익명함수
+    ~~~
+    // 함수를 정의하고 변수에 저장
+    var v = function(x,y) { return x+y; };
+    
+    // 함수를 정의하고 바로 호출한다.
+    var added = (function(x,y) {return x+y;})(1,2);
+    ~~~
+    
   - 함수선언식(Function Declaration)
     ~~~
     say();  //hoisting 가능
