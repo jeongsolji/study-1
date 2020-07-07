@@ -464,6 +464,14 @@ firewalld.conf  helpers  icmptypes  ipsets  lockdown-whitelist.xml  services  zo
 [root@localhost ~]# firewall-cmd --zone=ZONENAME --add-source=192.168.1.0/24 --add-port=22/tcp --permanent 
 
 ```
+
+
+## 1.3. Manager
+### 1.3.1. Package Manager
+  - linux에서 소프트웨어 패키지 설치를 간편하게 할 수 있도록 도와주는 CLI.
+    - RedHat, CentOS 계열: Yum(Yellow dog Updater Modified)
+    - Ubuntu, Debian 계열: APT(Advanced Packaging Tool)
+
 ---
 
 

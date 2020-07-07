@@ -250,7 +250,46 @@
 ---
 
 
-## 5. React
+## 5. Javascript
+### 1. function
+#### 1. literal
+  - 함수선언식(Function Declaration)
+    ~~~
+    say();  //hoisting 가능
+    function say(){
+        console.log("hello world!");
+    }
+    ~~~
+    
+  - 함수표현식(Function Expression)
+    ~~~
+    fncSay();   //hoisting 불가능
+    const fncSay = function(){
+        console.log("hello world!");
+    }
+    ~~~
+#### 2. lexical scoping
+  - 외부 -> 내부변수 접근 불가
+  - 내부 -> 외부변수 접근 가능
+    ~~~
+    function outerFunction () {
+      const outer = 'outer function!'
+        
+      function innerFunction() {
+         const inner = 'inner function!'
+         console.log(outer) // I’m the outer function!
+      }
+        
+      console.log(inner) // Error, inner is not defined
+    }
+    ~~~
+
+### n. prototype
+#### 1. 
+---
+
+
+## 6. React
 ### 1. React interlocking in Spring Boot
   - React 앱을 생성
      ~~~
@@ -353,11 +392,14 @@
       npm install --save axios
       ~~~
 
-
 ## 별첨1. terms
 ---
 
 
+## 7. Vue
+
+
+---
 ## 99. Server Setting
 ### 99.1. Database Server
 - Architecture  
