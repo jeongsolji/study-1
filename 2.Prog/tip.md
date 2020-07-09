@@ -251,7 +251,19 @@
 
 
 ## 5. Javascript
-### 1. function
+### 1. Execution Context(실행 컨텍스트)
+  - Javascript의 this, function, hoisting, closure, Scope 등의 동작원리를 담고 있는 핵심원리
+  - 실행 가능한 코드를 형상화하고 구분하는 추상적인 개념 -> 실행 가능한 코드가 실행되기 위해 필요한 환경(≒JRE)
+    - 실행 가능한 코드란?
+      - 전역코드: 전역제 존재하는 코드
+      - Eval코드: eval 함수로 실행되는 코드
+      - 함수코드: 함수 내에 존재하는 코드
+      
+  - 
+  
+### 2. prototype
+
+### 3. function
 #### 1. literal(=코드상에 데이터를 표현하는 방식)
   - 익명함수
     ~~~
@@ -277,7 +289,8 @@
         console.log("hello world!");
     }
     ~~~
-#### 2. lexical scoping
+
+### 4. Lexical Scoping(렉시컬 스코프)
   - 외부 -> 내부변수 접근 불가
   - 내부 -> 외부변수 접근 가능
     ~~~
@@ -292,9 +305,6 @@
       console.log(inner) // Error, inner is not defined
     }
     ~~~
-
-### n. prototype
-#### 1. 
 ---
 
 
