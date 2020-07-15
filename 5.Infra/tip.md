@@ -15,20 +15,20 @@
 
 #### 1. Dokcer
   - Docker 위치 확인
-  ~~~
+  ```console
   # which docker
-  ~~~
+  ```
 
   - Docker 실행위치 확인
-  ~~~
+  ```console
   # ps aux | grep docker
-  ~~~
+  ```
 
   - Docker Version 확인
-  ~~~
+  ```console
   # docker -v
   Dokcer version xx, build xxx
-  ~~~
+  ```
 
 #### 2. Docker Image [ {저장소이름}/이미지이름:이미지버전 ]
   - Docker Container를 만들기 위한 정보로써, OS 및 Application의 정보를 하나의 정보로 묶어서 관리되는 파일을 뜻한다.
@@ -497,30 +497,142 @@
       -d: 
   - Description
       - first-worker-node Manager Node를 Worker Node로 변경
-
-  // K8S로 바로 넘어가며, 자세한 사항은 다루지 않음.
   ```
 
-## 3. Kebernetis
-### 1. Tools
-  - Minikube
-    - Local에서 VM 또는 Docker Engine을 통해 K8S를 사용할 수 있는 환경을 제공 하는 도구
-  - kubeadm
-    - Server Cluster 환경에서 K8S를 쉽게 설치할 수 있는 관리 도구
-  - kops
-  - GJE
+  // K8S로 바로 넘어가며, 자세한 사항은 다루지 않음.
+
+## 3. Kebernetes
+  - Kebernetes는 모든 Resource를 Object로 관리
+  - Object [ 상위 4개가 꼭 알아야 할 Object]
+    - pod: container의 집합
+    - replica set: pods을 관리하는 controller
+    - service
+    - deployment
+    - service account
+    - node
   
-### 2. Command Line Interface
-  - 
+### 1. Tools
+  - Install
+    - minikube
+    - K8S in Docker for MAC/Windows
+    - kubespray
+    - kubeadm(권장)
+    - kops
+    - EKS, GKE 등의 Managed Service
+  - command
+    - kubeadm: kubernetes를 설치하거나, master에 worker를 조인할 때 사용.
+    - kubectl: master에서 worker로 일괄명령을 내릴 때
+    - kubernetes-cni: Kubernetes의 Container간 통신을 위해, 네트워크를 연결해주는 명령어
+    - kubelet: container의 생성, 삭제, master와 worker간의 통신 역할을 담당하는 Agent
+    
+#### 1. Install
+  - install with kubeadm
+    - 1. Kubernetes 저장소 추가
+    ```console
+    [root@localhost ~]# curl -s https://packages.cloud.google.com/apt/doc/apt-doc-apt-key.gpg | apt-key add -
+                        cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
+                        def http://apt.kubernetes.io/ kubernetes-xenial main
+                        EOF
+    --------------------------------------
+    - Command
+        - 
+    ```
+    
+    - 2. kubeadm 설치
+      - 2-1. Docker 설치
+      ```console
+      [root@localhost ~]# wget -q0- get.docker.com | sh
+      --------------------------------------
+      - Command
+          - 
+      ```
+      
+      - 2-2. Kubernetes 설치(최신버전)
+      ```console
+      [root@localhost ~]# apt-get install -y kubelet kubeadm kebectl kubernetes-cni
+      --------------------------------------
+      - Command
+          - 
+      ```
+      
+      // 2-3. Kubernetes 설치(특정버전)
+      ```console
+      [root@localhost ~]# apt-get install -y kubelet=1.13.5-00 kubeadm kubectl kubernetes-cni
+      --------------------------------------
+      - Command
+          - 
+      ```
+      
+    - 3. Kubernetes Cluster Initialization
+    ```console
+    [root@kubernetes-master ~]# kubeadm init --kubernetes-version 1.13.5
+                                --apiserver-advertise-address 172.31.0.100 \
+                                --pod-network-cidr=192.168.0.0/16
+      --------------------------------------
+      - Command
+          - 
+      - Options
+          --kubernetes-version : kubernetes의 특정버전을 설치(kubelet을 특정버전으로 설치 후, version을 맞출 때 사용)
+          --apiserver-advertise-address : 다른 노드가 마스터에 접근할 수 있는 IP주소를 기재
+                                        : 예> 다른 노드가 kube-master호스트에 접근할 수 있는 IP주소가 172.31.0.100
+          --pod-network-cidr : kubernetes에서 사용할 컨테이너의 네트워크 대역
+                             : 192.168.0.0/16은 calico.yaml의 기본 IP대역이다.(변경 시, 차후 calico.yaml내 대역을 변경해야 한다.)
+      - Description
+          - 
+    ```
+    
+    - 4. kubernetes-master와 kubernetes-worker 들간의 결합
+    ```console
+    [root@kubernetes-worker1 ~]# kubeadm join 172.31.0.100:6443 --token aaa.bbb.ccc~~~
+    
+    [root@kubernetes-worker2 ~]# kubeadm join 172.31.0.100:6443 --token aaa.bbb.ccc~~~
+    
+    [root@kubernetes-worker3 ~]# kubeadm join 172.31.0.100:6443 --token aaa.bbb.ccc~~~
+      --------------------------------------
+      - Command
+          - kubernetes-workerN 각각에 대해서, 위의 명령어를 실행하여 붙여준다.
+    ```
+#### 2. Network Addon(≒Network Plug-In)
+  - Addon : 특정 프로그램의 기능을 보강하기 위해 추가된 프로그램
+  - Network Addon : 네트워크연결을 보안하기 위한 프로그램
+  - Kubernetes tools의 특장점만을 정리해 놓은 site
+    - https://kubedex.com/kubernetes-network-plugins/
+  - 종류
+    - flannel
+    - weaveNet
+    - calico
+    
+  - install with calico
   ```console
-  [root@localhost ~]# 
+  [root@kubernetes-master ~]# kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml
   --------------------------------------
   - Command
       - 
-  - Options
-      -
-  - Description
-      - 
+  ```
 
-  // K8S로 바로 넘어가며, 자세한 사항은 다루지 않음.
+  - install check
+  ```console
+  [root@kubernetes-master ~]# kubectl get pods --namespace kube-system
+  --------------------------------------
+  - Command
+      - Kubernetes 핵심 컴포넌트들의 실행 목록을 확인
+
+  [root@kubernetes-master ~]# kubectl get nodes
+  --------------------------------------
+  - Command
+      - Kubernetes에 등록된 모든 node를 확인
+  ```
+  
+### 2. Command Line Interface
+  - Object 확인
+  ```console
+  [root@kubernetes-master ~]# kubectl api-resources
+  --------------------------------------
+  - Command
+      - Object들의 종류를 검색
+
+  [root@kubernetes-master ~]# kubectl explain pod
+  --------------------------------------
+  - Command
+      - 특정 object의 설명을 검색
   ```
