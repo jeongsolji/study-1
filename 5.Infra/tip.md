@@ -8,12 +8,15 @@
   - Hypervisor
     - 기존의 가상화 기술로써 가상머신으로 구분하여 운영체제를 관리하기 때문에, Kernel, OS lv의 lib 등 불필요한 기능을 많이 내포하기 때문에 성능에 이슈가 존재한다.
   - Docker
-    - Linux 자체기능인 chroot, cgroup, namespace 등을 사용하여, 기존 Hypervisor의 성능이슈를 배제시킨다.
+    - Hypervisor의 성능이슈 해결(새로운 OS에 대한 lib, env등을 생략할 수 있음)
+    - Linux 자체기능인 chroot, cgroup, namespace 등을 사용하여, 표면적으로 독립된 가상화된 공간을 만들어 관리 할 수 있게 하는 기술(Client, Server(≒Engine))
       - chroot: root directory인 '/'를 변경하는 명령어
       - cgroup: Linux Kernel에서 CPU, Memory, DISK, Network 등의 자원을 할당하는 가상화 공간을 제공하는 명령어
       - namespace: Process tree, 사용자계정, file system, ipc 등을 묶어 HOST와 완벽하게 격리시킨 공간
+  - Container
+    - 표면적으로는 OS자체를 가상화하였으나, 내부적으로는 OS자체를 가상화하지 않은형태(Linux자체 기능인 chroot, namespace, cgroup을 사용하여 프로세스 단위의 격리 환경을 만들어 놓은 곳)이기 때문에 Container라 지칭
 
-#### 1. Dokcer
+#### 1. Dokcer [ 관리단위 : Container ]
   - Docker 위치 확인
   ```console
   # which docker
@@ -37,12 +40,12 @@
   - Docker Image의 원격저장소(≒ Git HUB)
   
 #### 4. Docker Container
-  - chroot으로 격리된 공간사용 -> LXC(LinuX Container) 도입 -> Docker 도입
+  - 변천사: chroot으로 격리된 공간사용 -> LXC(LinuX Container) 도입 -> Docker 도입
     - chroot: directory만 구분하여 격리된 공간사용.
               설정이 매우 복잡.
     - LXC: group, namespace등을 활용하여, 일종의 Container(OS자체를 가상화하지 않기 때문에 Container라고 명명)
            실제 서비스를 운영하기에는 기능이 부족하였고, 추가하기도 까다로움
-    - Docer: good...
+    - Docker: LXC를 보안하여 만든 것.
     
   - 하나의 Docker Container에는 하나의 Process만 구동시키는 것을 권장
     - ex> 'Docker Container for Web-Server' , 'Docker Container for database' 이렇게 2개의 Docker Container를 구동
@@ -306,7 +309,7 @@
 
 
 ## 2. Docker Swarm
-### 1. Dokcer Swarm
+### 1. Dokcer Swarm [ 관리단위 : Service ]
   - 여러 대의 도커 서버를 하나의 클러스터로 만들어 Docker Container를 생성하는 여러 기능을 제공.
   - Swarm Class과 Swarm Mode로 나뉨
     - Swarm Class(Legacy)
@@ -622,8 +625,84 @@
   - Command
       - Kubernetes에 등록된 모든 node를 확인
   ```
+
+### 2. Object
+#### 1. POD
+
+#### 2. Replicat Set
+
+#### 3. Deployment
+
+#### 4. Service
+  - 여러개의 Deployment를 하나의 완벽한 애플리케이션으로 연동할 수 있는 방법을 가능토록 한 Object
+  - 즉, Deployment를 발견하고 Deployment들의 내부에 있는 POD들에 내부적으로 접근할 수 있도록 하는 Object
   
-### 2. Command Line Interface
+##### 1. 종류
+  - ClusterIP
+    - Kubernetes 내부에서만 POD들에 접근할 때 사용
+    
+  - NodePort
+    - 외부에서 사용가능하지만, 모든 node의 특정 Port를 개방해 서비스에 접근하는 방식
+    - Docker Swarm Mode에서 Container를 외부에 노출하는 방식과 같다고 보면된다.(운영에 적합하지 않음.)
+    
+  - LoadBalencer
+    - LoadBalencer를 동적으로 생성하는 기능을 제공하는 환경(AWS, GCP 등 Cloud환경)에서만 사용가능.
+
+#### 5. Ingress
+  - 사전적: 외부에서 내부로 향하는 것을 지칭
+  - K8S: 외부 요청을 어떻게 처리할 것인지 네트워크 7계층 레벨에서 정의하는 오브젝트
+  
+##### 1. 기능
+  - 외부 요청의 라우팅: 특정 경로로 들어온 요청을 어떠한 서비스로 전달할지 정의하는 라우팅 규칙을 설정할 수 있음
+  - 가상 호스트 기반의 요청 처리: 같은 IP에 대해 다른 도메인 이름으로 요청이 도착했을 때, 어떻게 처리할 것인지 정의
+  - SSL/TLS 보안 연결 처리: 여러 개의 서비스로 요청을 라우팅할 때, 보안 연결을 위한 인증서를 적용
+  - Ingress를 사용하지 않는 경우, Service를 통한 방법이 있는데, Service를 Deployment 수만큼 생성해야 한다. 이 자체는 Igress를 써도 동일하지만
+    Service 각각에 설정을 하는 것을 Ingress를 통하여 통합적으로 관리할 수 있다.
+    
+##### 2. 구조
+  - Ingress: 요청을 처리하는 규칙을 정의하는 선언적 오브젝트
+  ```console
+  [root@kubernetes-master ~]# kubectl get ingress
+  --------------------------------------
+  - Command
+      - Kubernetes에 등록된 모든 Ingress를 확인
+
+  [root@kubernetes-master ~]# kubectl apply -f ingress-example.yaml
+  --------------------------------------
+  - Command
+      - 사전에 'ingress-example.yaml'을 생성 후 명령어 실행 시, 해당 정책을 반영한 ingress가 생성된다.
+  ```
+    
+  - Ingress Controller Server: 실제 외부 요청을 받아들이며, Ingress 규칙을 로드해 사용.
+    - NGinX, Kong 등 존재.
+  ```console
+  [root@kubernetes-master ~]# kubectl apply -f \
+  https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+  --------------------------------------
+  - Command
+      - Ingres Controller를 설치
+  - Options
+      -f : NginX Ingress Controller는 Kubernetes에서 공식적으로 개발되고 있기 때문에, 설치를 위한 YAML 파일을 공식 깃허브 저장소에 직접 내려받을 수 있다.
+  ```
+
+#### 6. Persistent Volume / Persistent Volume Claim
+  - Local Volume
+    - hostPath: Host와 Volume을 공유
+    - emptyDir: POD의 Container들 간에 Volume을 공유
+    
+  - Network Volume
+    - On-Premise: NFS, iSCSI, GlusterFS, Ceph 와 같은 볼륨들이 존재
+    - Cloud: EBS(Elastic Block Store), GCP(GcePersistentDisk) 와 같은 볼륨들이 존재
+  
+  - PV / PVC
+    - POD가 Volume의 세부적인 사항을 몰라도 볼륨을 사용할 수 있도록 추상화해주는 역활을 담당.
+    - 즉, POD를 생성하는 YAML입장에서 네트워크 볼륨이 NFS인지, AWS의 EBS인지 상관없이 볼륨을 사용할 수 있도록 하는 것이 핵심 아이디어.
+      -> Volume의 YAML을 다른 곳에 배포할 때, Network Volume의 특정 볼륨을 선정해서 썻다면, 해당 YAML은 Network Volume의 특정 볼륨만 사용가능하다.
+
+#### 7. Persistent Volume Claim
+
+
+### 3. Command Line Interface
   - Object 확인
   ```console
   [root@kubernetes-master ~]# kubectl api-resources
