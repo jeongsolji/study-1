@@ -627,6 +627,8 @@
   ```
 
 ### 2. Object
+  - ![kubernetes Architecture](./../img/Kubernetes Architecture.pdf.png)
+  
 #### 1. POD
 
 #### 2. Replicat Set
