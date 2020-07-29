@@ -627,7 +627,7 @@
   ```
 
 ### 2. Object
-  ![kubernetes Architecture](./../img/Kubernetes Architecture.pdf.png)
+  ![kubernetes Architecture](./../img/Kubernetes Architecture.pdf)
   
 #### 1. POD
 
