@@ -342,10 +342,10 @@
       
 #### 3. Swarm Mode Service
   - Architecture
-  ![Database Server Setting](./../img/Docker-Swarm.png)
+  ![Swarm Mode Architecture](./../img/Docker-Swarm.png)
   
   - Tasks and scheduling
-  ![Database Server Setting](./../img/Docker-Swarm_TaskAndScheduling.png)
+  ![Swarm Mode Tasks and scheduling](./../img/Docker-Swarm_TaskAndScheduling.png)
   
   - Service
     - Swarm Mode에서의 제어 단위
@@ -627,7 +627,7 @@
   ```
 
 ### 2. Object
-  - ![kubernetes Architecture](./../img/Kubernetes Architecture.pdf.png)
+  ![kubernetes Architecture](./../img/Kubernetes Architecture.pdf.png)
   
 #### 1. POD
 
