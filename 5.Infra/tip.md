@@ -595,6 +595,47 @@
       - Command
           - kubernetes-workerN 각각에 대해서, 위의 명령어를 실행하여 붙여준다.
     ```
+    
+#### 2. Cluster
+##### 1. Container
+
+
+##### 2. Workloads
+###### 1. POD
+###### 2. Controller
+####### 1. ReplicaSet
+####### 1. ReplicaSet
+####### 2. Replication Controller
+####### 3. Deployment
+####### 4. Statefulset
+####### 5. Daemonset
+####### 6. Garbage Collection
+
+
+##### 3. NetWorking
+###### 1. Service
+###### 2. Service Topology
+###### 3. End-Point Slice
+###### 4. Service 및 POD의 DNS
+###### 5. Ingress Controller
+###### 6. Ingress
+
+
+##### 4. Storage
+
+
+##### 5. Configuration
+
+
+##### 6. Security
+
+
+##### 7. Scheduling / Eviction
+
+
+
+
+
 #### 2. Network Addon(≒Network Plug-In)
   - Addon : 특정 프로그램의 기능을 보강하기 위해 추가된 프로그램
   - Network Addon : 네트워크연결을 보안하기 위한 프로그램
@@ -630,12 +671,55 @@
   ![kubernetes Architecture](./../img/Kubernetes Architecture.pdf)
   
 #### 1. POD
+  - Kubernetes의 가장 작은 관리단위
+  - Container Group으로 포현되지만, 1:1의 관계를 권장한다.
+    - Container는 단일 Process를 실행하는 것을 목적으로 한다. 단, Process가 Child-Process를 실행 할 수 있기 때문에 여러 Process를 묶는 단위로 표현된다.
+  
+##### 1. Describe
+  ```console
+  Metadata: 이름, 네임스페이스, 레이블 및 파드에 관한 기타 정보를 포함
+  Spec: 파드 컨테이너, 볼륨 기타 데이터 등 파드 자체에 관한 실제 명세를 가진다.
+  Status: 파드 상태, 각 컨테이너 설명과 상태, 파드 내부 IP, 기타 기본 정보 등 현재 실행 중인 파드에 관한 현재 정보를 포함.
+  ```
 
-#### 2. Replicat Set
+##### 2. Label
+  - Label
+    - POD뿐만 아니라, 다른 쿠버네티스 리소스를 조직화(Grouping)할 수 있다.
+    - Key-Value Pair로 관리한다.
+  - Label Selector
+    - 적용된 Label을 검색하여 선택할 수 있게 하는 모듈로써, 사용자는 kubectl의 명령어의 옵션을 이용하여 찾거나 어떠한 명령(작업)을 이행할 수 있다.
+    ```console
+    [root@kubernetes-master ~]# kebectl get pods -l sampleLabel=backend
+    --------------------------------------
+    - Command
+        - Kubernetes에 등록된 모든 POD들을 검색하되, label이 sampleLabel=backend인 POD만 검색
+    ```
 
-#### 3. Deployment
+##### 3. Annotations
+  - Label과 같이 key-value pair로 관리되지만, 식별 정보를 갖지 않으며(Object들을 묶지 못한다는 뜻), Selector도 없다.(검색은 된다. 단, Object가 선택되어 어떠한 작업을 이행 할 수 없는 상태라는 것이다.)
+  - 반면, Label과 차이점은 훨씬 더 많은 정보를 보유할 수 있다. 주로 프로그래밍에 주석처럼 많이 사용한다.
+  - 사용예시: Object를 만들 때, 만든사람의 이름, 작업내용 등을 기재
+  
+##### 4. Probe
+###### 1. liveness probe
+  - Container의 생명을 확인 할 수 있는 옵션.
+  ```console
+  ...
+  spec:
+    containers:
+      livenessProbe:
+      httpGet:
+        path: /
+        port: 8080
+  ...
+  ```
+  
+###### 2. readiness probe
 
-#### 4. Service
+#### 2. Controller
+  - 
+
+#### 3. Service
   - 여러개의 Deployment를 하나의 완벽한 애플리케이션으로 연동할 수 있는 방법을 가능토록 한 Object
   - 즉, Deployment를 발견하고 Deployment들의 내부에 있는 POD들에 내부적으로 접근할 수 있도록 하는 Object
   
@@ -650,7 +734,7 @@
   - LoadBalencer
     - LoadBalencer를 동적으로 생성하는 기능을 제공하는 환경(AWS, GCP 등 Cloud환경)에서만 사용가능.
 
-#### 5. Ingress
+#### 4. Ingress
   - 사전적: 외부에서 내부로 향하는 것을 지칭
   - K8S: 외부 요청을 어떻게 처리할 것인지 네트워크 7계층 레벨에서 정의하는 오브젝트
   
@@ -687,7 +771,7 @@
       -f : NginX Ingress Controller는 Kubernetes에서 공식적으로 개발되고 있기 때문에, 설치를 위한 YAML 파일을 공식 깃허브 저장소에 직접 내려받을 수 있다.
   ```
 
-#### 6. Persistent Volume / Persistent Volume Claim
+#### 5. Persistent Volume / Persistent Volume Claim
   - Local Volume
     - hostPath: Host와 Volume을 공유
     - emptyDir: POD의 Container들 간에 Volume을 공유
@@ -700,8 +784,6 @@
     - POD가 Volume의 세부적인 사항을 몰라도 볼륨을 사용할 수 있도록 추상화해주는 역활을 담당.
     - 즉, POD를 생성하는 YAML입장에서 네트워크 볼륨이 NFS인지, AWS의 EBS인지 상관없이 볼륨을 사용할 수 있도록 하는 것이 핵심 아이디어.
       -> Volume의 YAML을 다른 곳에 배포할 때, Network Volume의 특정 볼륨을 선정해서 썻다면, 해당 YAML은 Network Volume의 특정 볼륨만 사용가능하다.
-
-#### 7. Persistent Volume Claim
 
 
 ### 3. Command Line Interface
