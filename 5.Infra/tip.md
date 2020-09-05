@@ -503,33 +503,28 @@
   ```
 
   // K8S로 바로 넘어가며, 자세한 사항은 다루지 않음.
+---
+
 
 ## 3. Kebernetes
   - Kebernetes는 모든 Resource를 Object로 관리
-  - Object [ 상위 4개가 꼭 알아야 할 Object]
-    - pod: container의 집합
-    - replica set: pods을 관리하는 controller
-    - service
-    - deployment
-    - service account
-    - node
   
 ### 1. Tools
-  - Install
+  - Installer
     - minikube
     - K8S in Docker for MAC/Windows
     - kubespray
     - kubeadm(권장)
     - kops
     - EKS, GKE 등의 Managed Service
-  - command
+  - Command
     - kubeadm: kubernetes를 설치하거나, master에 worker를 조인할 때 사용.
     - kubectl: master에서 worker로 일괄명령을 내릴 때
     - kubernetes-cni: Kubernetes의 Container간 통신을 위해, 네트워크를 연결해주는 명령어
     - kubelet: container의 생성, 삭제, master와 worker간의 통신 역할을 담당하는 Agent
     
 #### 1. Install
-  - install with kubeadm
+  - Install with kubeadm
     - 1. Kubernetes 저장소 추가
     ```console
     [root@localhost ~]# curl -s https://packages.cloud.google.com/apt/doc/apt-doc-apt-key.gpg | apt-key add -
@@ -596,41 +591,151 @@
           - kubernetes-workerN 각각에 대해서, 위의 명령어를 실행하여 붙여준다.
     ```
     
-#### 2. Cluster
-##### 1. Container
+    
+### 2. Cluster
+  ![kubernetes Architecture](./../img/Kubernetes Architecture.pdf)
+  
+  
+### 3. Object
+#### 1. Namespace
+
+#### 2. Label / Label Selector
+  - Label
+    - POD뿐만 아니라, 다른 쿠버네티스 리소스를 조직화(Grouping)할 수 있다.
+    - Key-Value Pair로 관리한다.
+  - Label Selector
+    - 적용된 Label을 검색하여 선택할 수 있게 하는 모듈로써, 사용자는 kubectl의 명령어의 옵션을 이용하여 찾거나 어떠한 명령(작업)을 이행할 수 있다.
+    ```console
+    [root@kubernetes-master ~]# kebectl get pods -l sampleLabel=backend
+    --------------------------------------
+    - Command
+        - Kubernetes에 등록된 모든 POD들을 검색하되, label이 sampleLabel=backend인 POD만 검색
+    ```
+    
+#### 3. Annotation
+  - Label과 같이 key-value pair로 관리되지만, 식별 정보를 갖지 않으며(Object들을 묶지 못한다는 뜻), Selector도 없다.(검색은 된다. 단, Object가 선택되어 어떠한 작업을 이행 할 수 없는 상태라는 것이다.)
+  - 반면, Label과 차이점은 훨씬 더 많은 정보를 보유할 수 있다. 주로 프로그래밍에 주석처럼 많이 사용한다.
+  - 사용예시: Object를 만들 때, 만든사람의 이름, 작업내용 등을 기재
+  
+### 4. Container
+#### 1. Image
+#### 2. Runtime Class
+#### 3. Environment Variable
+
+### 5. Workloads
+#### 1. POD
+  - Kubernetes의 관리단위
+  - POD는 Container들을 묶은 Resource로 포현되지만, 1:1의 관계를 권장한다.
+    - Container는 단일 Process를 실행하는 것을 목적으로 한다. 단, Process가 Child-Process를 실행 할 수 있기 때문에 여러 Process를 묶는 단위로 표현된다.
+    
+  - tip> 동일한 POD = 복제된 POD = Replica
+
+##### 1. Describe
+  ```console
+  ...
+  spec:
+    template:
+      # 여기서부터 파드 템플릿이다
+      spec:
+        containers:
+        - name: hello
+          image: busybox
+          command: ['sh', '-c', 'echo "Hello, Kubernetes!" && sleep 3600']
+        restartPolicy: OnFailure
+      # 여기까지 파드 템플릿이다
+  ```
+  
+##### 2. Probe
+###### 1. liveness probe
+  - Container의 동작 여부를 확인.
+  - Probe가 패한 경우에 Container가 재시작 되길 원하는 경우 사용.
+  ```console
+  ...
+  spec:
+    containers:
+      livenessProbe:
+      httpGet:
+        path: /
+        port: 8080
+  ...
+  ```
+
+###### 2. readiness probe
+  - Container가 요청을 처리할 준비가 되어는지 여부를 확인.
+  - Probe가 성공한 경우에만 POD에 트래픽 전송을 원하는 경우 사용.
+  
+###### 3. startup probe
+  - Container의 Process 시작 여부를 확인.
+
+#### 2. Controller
+##### 1. Replication Controller
+  - POD가 항상 실행되도록 보장해주는 Resource.
+  - 조정 Loop
+    1. 시작
+    2. Label Selector와 매치되는 파드를 찾음
+    3. 매치되는 POD수와 의도하는 파드 수 비교
+    4. POD의 추가 또는 삭제 이행
+    5. (1)로 이동
+  
+  * tip> replica(=복제본)
+  
+##### 2. ReplicaSet
+  - 차세대 Replication Controller
+  - 일반적으로는 직접 ReplicaSet을 구성하지 않으며, Deployment Resource를 생성할 때, 자동으로 생성되게 한다.
+  - Replication Controller와 차이점은 POD Selector를 지니고 있다는 점.
+    - Label이 없거나, Label Value 아닌 Label Key를 갖는 POD들을 매칭시킬 수 있다는 뜻.
+  
+##### 3. Deployment
+##### 4. StatefulSet
+##### 5. DaemonSet
+  - 모든 노드 또는 특정 노드들에 대해 정확히 하나의 복제된POD(Replica)만 존재할 수 있도록 관리하는 Object
+  - 노드의 수만큼 POD를 만들고 각 노드에 배포
+  - ex> 시스템 수준의 작업을 수행하는 인프라 관련 POD들의 경우가 있다.
+  
+  ```console
+  apiVersion: apps/v1beta2
+  ...
+  kind: DaemonSet
+  spec:
+    selector:
+      matchLabels:
+        app: 
+    template:
+      metadata:
+        labels:
+      spec:
+        nodeSelector:
+          라벨명: 라벨값
+        containers:
+        - name: main
+        image: 
+  ...
+  ```
+
+##### 6. Job
+
+##### 6. Garbage Collection
 
 
-##### 2. Workloads
-###### 1. POD
-###### 2. Controller
-####### 1. ReplicaSet
-####### 1. ReplicaSet
-####### 2. Replication Controller
-####### 3. Deployment
-####### 4. Statefulset
-####### 5. Daemonset
-####### 6. Garbage Collection
+### 6. NetWorking
+#### 1. Service
+#### 2. Service Topology
+#### 3. End-Point Slice
+#### 4. Service 및 POD의 DNS
+#### 5. Ingress Controller
+#### 6. Ingress
 
 
-##### 3. NetWorking
-###### 1. Service
-###### 2. Service Topology
-###### 3. End-Point Slice
-###### 4. Service 및 POD의 DNS
-###### 5. Ingress Controller
-###### 6. Ingress
+### 7. Storage
 
 
-##### 4. Storage
+### 8. Configuration
 
 
-##### 5. Configuration
+### 9. Security
 
 
-##### 6. Security
-
-
-##### 7. Scheduling / Eviction
+### 10. Scheduling / Eviction
 
 
 
@@ -666,62 +771,12 @@
   - Command
       - Kubernetes에 등록된 모든 node를 확인
   ```
-
-### 2. Object
-  ![kubernetes Architecture](./../img/Kubernetes Architecture.pdf)
   
-#### 1. POD
-  - Kubernetes의 가장 작은 관리단위
-  - Container Group으로 포현되지만, 1:1의 관계를 권장한다.
-    - Container는 단일 Process를 실행하는 것을 목적으로 한다. 단, Process가 Child-Process를 실행 할 수 있기 때문에 여러 Process를 묶는 단위로 표현된다.
+
   
-##### 1. Describe
-  ```console
-  Metadata: 이름, 네임스페이스, 레이블 및 파드에 관한 기타 정보를 포함
-  Spec: 파드 컨테이너, 볼륨 기타 데이터 등 파드 자체에 관한 실제 명세를 가진다.
-  Status: 파드 상태, 각 컨테이너 설명과 상태, 파드 내부 IP, 기타 기본 정보 등 현재 실행 중인 파드에 관한 현재 정보를 포함.
-  ```
-
-##### 2. Label
-  - Label
-    - POD뿐만 아니라, 다른 쿠버네티스 리소스를 조직화(Grouping)할 수 있다.
-    - Key-Value Pair로 관리한다.
-  - Label Selector
-    - 적용된 Label을 검색하여 선택할 수 있게 하는 모듈로써, 사용자는 kubectl의 명령어의 옵션을 이용하여 찾거나 어떠한 명령(작업)을 이행할 수 있다.
-    ```console
-    [root@kubernetes-master ~]# kebectl get pods -l sampleLabel=backend
-    --------------------------------------
-    - Command
-        - Kubernetes에 등록된 모든 POD들을 검색하되, label이 sampleLabel=backend인 POD만 검색
-    ```
-
-##### 3. Annotations
-  - Label과 같이 key-value pair로 관리되지만, 식별 정보를 갖지 않으며(Object들을 묶지 못한다는 뜻), Selector도 없다.(검색은 된다. 단, Object가 선택되어 어떠한 작업을 이행 할 수 없는 상태라는 것이다.)
-  - 반면, Label과 차이점은 훨씬 더 많은 정보를 보유할 수 있다. 주로 프로그래밍에 주석처럼 많이 사용한다.
-  - 사용예시: Object를 만들 때, 만든사람의 이름, 작업내용 등을 기재
-  
-##### 4. Probe
-###### 1. liveness probe
-  - Container의 생명을 확인 할 수 있는 옵션.
-  ```console
-  ...
-  spec:
-    containers:
-      livenessProbe:
-      httpGet:
-        path: /
-        port: 8080
-  ...
-  ```
-  
-###### 2. readiness probe
-
-#### 2. Controller
-  - 
-
 #### 3. Service
-  - 여러개의 Deployment를 하나의 완벽한 애플리케이션으로 연동할 수 있는 방법을 가능토록 한 Object
-  - 즉, Deployment를 발견하고 Deployment들의 내부에 있는 POD들에 내부적으로 접근할 수 있도록 하는 Object
+  - 여러개의 Deployment를 하나의 완벽한 애플리케이션으로 연동할 수 있는 방법을 가능토록 한 Resource
+  - 즉, Deployment를 발견하고 Deployment들의 내부에 있는 POD들에 내부적으로 접근할 수 있도록 하는 Resource
   
 ##### 1. 종류
   - ClusterIP
