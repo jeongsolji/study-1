@@ -16,7 +16,10 @@
 
 ### 3. BFG Repo-Cleaner
   - 기존에 100MB 보다 큰 파일의 로그를 강제로 삭제
-  - https://rtyley.github.io/bfg-repo-cleaner/
+  - jar download
+    -https://rtyley.github.io/bfg-repo-cleaner/
+    
+  - download 된 jar file을 이용하여 아래 명령어 수행
   ```console
   [root@repository ~]# java -jar bfg-x.x.x.jar --strip-blobs-bigger-than 100M
 
