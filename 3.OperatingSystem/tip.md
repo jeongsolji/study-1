@@ -472,6 +472,21 @@ firewalld.conf  helpers  icmptypes  ipsets  lockdown-whitelist.xml  services  zo
     - RedHat, CentOS 계열: Yum(Yellow dog Updater Modified)
     - Ubuntu, Debian 계열: APT(Advanced Packaging Tool)
 
+## 3. 유용한 Command
+  - xargs: 출력된 결과를 인자값으로 이용하여 다른 Command에서 활용할 수 있도록 한다.
+  ```console
+  [root@localhost ~]# ls | xargs -P10 -I{} git -C {} checkout develop
+  --------------------------------------
+  - Command
+      - xargs
+  - Option
+      -P10 : '-P + 숫자'의 형태로, Command를 처리하는데 필요한 Process를 지정
+      -I{} : '-I + {}'의 형태로, 출력결과 문자열 그대로를 사용한다는 뜻이며, '{}'는 각 라인의 전체라인 출력결과를 뜻함
+           : xargs는 기본적으로 앞에서 넘어온 값을 넘겨줄 때 xargs 뒤에 나오는 명령어의 제일 끝에 값을 붙여 줍니다. 이 글의 가장 처음 본 명령어에서 -I{}를 빼고 실행하는 경우는 아래와 같이 동작
+             : git -C checkout develop common-api  (잘못된 명령어)
+             : git -C common-api checkout develop  (올바른 명령어)
+  ```
+
 ---
 
 
