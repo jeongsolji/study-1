@@ -110,9 +110,9 @@
 ---
 
 
-### 3. FrameWork
-#### 1. Spring Boot
-##### 1. Spring Project creating
+## 3. FrameWork
+### 1. Spring Boot
+#### 1. Spring Project creating
   - Spring Initializr 사용방법(2가지)
      ~~~
        1. Spring 공식 홈페이지(spring.io)에서 제공하는 기능을 사용합니다.
@@ -134,9 +134,9 @@
        - Dependencies
          - 프로젝트의 의존성을 추가합니다. (간단히 소프트웨어의 플러그인 정도로 생각하면 됩니다.) 
 
-##### 2. Spring Security
+### 2. Spring Security
 
-##### 3. JPA
+### 3. JPA
 #### 1. JPA란
   - Object-Relational Mapping (객체 관계 매핑)
     - 객체지향(Java)과 관계형(RDBMS)과의 패러다임 불일치를 해결(매핑)하는 기술로, 본 문서는 Hibernate를 기준으로 작성.
@@ -247,6 +247,7 @@
 
 
 ##### 4. React interlocking
+
 ---
 
 
@@ -417,6 +418,40 @@
 
 ## 7. Vue
 
+---
+## 8. Shell
+- Shell 이란
+  - User와 Kernel간의 인터페이스 역할을 하는 모듈(ex> 명령어 해석 기능 등)
+- Shell의 종류
+  - Bourne Shell
+    - 유닉스의 표준 쉘
+  - Bash Shell
+    - Linux 표준 쉘
+  - C Shell
+  - Korn Shell
+- Shell의 확인
+  ```console
+  [root@localhost ~]# echo $SHELL
+  
+  또는
+  
+  [root@localhost ~]# evn | grep SHELL
+  oracle:x:1021:1020:Oracle user:/data/network/oracle:/bin/bash
+  1      2 3    4    5           6                    7
+  --------------------------------------------
+- Result
+    1 | Username: It is used when user logs in. It should be between 1 and 32 characters in length.
+    2 | Password: An x character indicates that encrypted password is stored in /etc/shadow file. Please note that you need to use the passwd command to computes the hash of a password typed at the CLI or to store/update the hash of the password in /etc/shadow file.
+    3 | User ID (UID): Each user must be assigned a user ID (UID). UID 0 (zero) is reserved for root and UIDs 1-99 are reserved for other predefined accounts. Further UID 100-999 are reserved by system for administrative and system accounts/groups.
+    4 | Group ID (GID): The primary group ID (stored in /etc/group file)
+    5 | User ID Info: The comment field. It allow you to add extra information about the users such as user’s full name, phone number etc. This field use by finger command.
+    6 | Home directory: The absolute path to the directory the user will be in when they log in. If this directory does not exists then users directory becomes /
+    7 | Command/shell: The absolute path of a command or shell (/bin/bash). Typically, this is a shell. Please note that it does not have to be a shell.
+  - Description
+      - Shell 확인
+  ```
+### 1. Tech
+  
 
 ---
 ## 99. Server Setting
