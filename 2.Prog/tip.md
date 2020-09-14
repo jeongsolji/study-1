@@ -114,25 +114,69 @@
 ### 1. Spring Boot
 #### 1. Spring Project creating
   - Spring Initializr 사용방법(2가지)
-     ~~~
-       1. Spring 공식 홈페이지(spring.io)에서 제공하는 기능을 사용합니다.
-         1-1. spring.io 접속
-         1-2. projects(상단메뉴) > spring boot(조회된 메뉴) > Quick start(상세 탭) > Spring Initializr 이용
-         
-       2. IDE(Intelli-J, STS 등)에서 제공하는 기능을 사용합니다.
-         2-1. 각 tools마다 사용법 상이.
-      ~~~
+    ~~~
+    1. Spring 공식 홈페이지(spring.io)에서 제공하는 기능을 사용합니다.
+      1-1. spring.io 접속
+      1-2. projects(상단메뉴) > spring boot(조회된 메뉴) > Quick start(상세 탭) > Spring Initializr 이용
+       
+      2. IDE(Intelli-J, STS 등)에서 제공하는 기능을 사용합니다.
+        2-1. 각 tools마다 사용법 상이.
+    ~~~
       
   - Spring Initializr Description
-      ~~~
-       - Project: Maven Project 또는 Gradle Project
-          - 빌드, 베포 툴인 Maven과 Gradle 중 택
-       - Language: Java, Kotlin, Groovy
-       - Spring Boot: Spring Boot의 version
-       - Project Metadata: group, artifact 등을 지정합니다.
-         - 일반적으로 group은 project의 도메인 및 Default package 경로를 뜻하며, artifact는 프로젝트 명을 암시합니다.
-       - Dependencies
-         - 프로젝트의 의존성을 추가합니다. (간단히 소프트웨어의 플러그인 정도로 생각하면 됩니다.) 
+    ~~~
+    - Project: Maven Project 또는 Gradle Project
+      - 빌드, 베포 툴인 Maven과 Gradle 중 택
+    - Language: Java, Kotlin, Groovy
+    - Spring Boot: Spring Boot의 version
+    - Project Metadata: group, artifact 등을 지정합니다.
+      - 일반적으로 group은 project의 도메인 및 Default package 경로를 뜻하며, artifact는 프로젝트 명을 암시합니다.
+    - Dependencies
+      - 프로젝트의 의존성을 추가합니다. (간단히 소프트웨어의 플러그인 정도로 생각하면 됩니다.)
+    
+  - Spring Boot Config
+    - 개념
+      - .properties
+      - yaml
+        - 파일명 또는 경로변경/추가
+        ```console
+        [user@localhost ~]# java -jar myproject.jar --spring.config.name=myproject.yaml
+        --------------------------------------
+          - Describe
+            - 파일명 변경
+        
+        
+        [user@localhost ~]# java -jar myproject.jar --spring.config.location=classpath:/myproject/{또는 파일명 변경 시, classpath:/myproject/myproject.yaml}
+        --------------------------------------
+          - Describe
+            - 파일경로 변경
+        
+        
+        [user@localhost ~]# java -jar myproject.jar --spring.config.additional-location=classpath:/custom-config/,file:./custom-config/
+        --------------------------------------
+          - Describe
+            - 파일경로 추가
+          - Result
+            - file:./custom-config/
+              classpath:custom-config/
+              file:./config/
+              file:./
+              classpath:/config/
+              classpath:/
+        ```
+      - 환경변수
+      - command line args
+      
+    - 사용방법
+    ```console
+    [user@localhost ~]# java -jar -Dspring.profiles.active=dev board-0.0.1-SNAPSHOT.jar
+    
+    또는
+    
+    [user@localhost ~]# java -jar -Dspring-boot.run.profiles=dev board-0.0.1-SNAPSHOT.jar
+    ```
+      
+  - 참고사이트: [https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/](https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/)
 
 ### 2. Spring Security
 
