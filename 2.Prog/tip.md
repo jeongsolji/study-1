@@ -383,42 +383,80 @@
      
 ### 2. WebPack
   - webpack setting
-    * webpack-cli: 터미널에서 webpack 커맨드를 실행할 수 있게 해주는 커맨드 라인 도구.
-    - root directory에 'webpack.config.js' file 생성
-    - webpack.config.js 작성(파일 참조)
-     ~~~
-     Source 경로
-       - module.exports = {context: path.resolve(__dirname, 'Source 경로') ... }
-     Build SRC
-       - module.exports = { ... entry: {Build SRC entry: '경로'} ... }
-     Build DST
-       - module.exports = { ... output: {path: __dirname, filename: '경로'} ... }
-     ~~~
-      - context: root directory 를 지정한다.
-        - entry는 해당 path를 시작으로 진행되나, output은 해당 path를 시작으로 빌드 되지 않는다.(path.resolve(__dirname, 'need path')를 이용) 왜지 ?!
-        - ex>
-           path.resolve(__dirname, 'src/main/frontend'),
-      - resolve: contrext의 대상선정?!
-        - ex>
-          resolve: {
-            extendsion: ['.js', '.jsx']
-          }
-      - entry: root file로써, entry를 시작으로 필요한 모듈들을 다 불러온 후, 한 파일로 합쳐 bundle.js에 저장.
-                추가적으로는 모듈을 통하여 ES6 문법으로 작성된 코드를 ES5 형태로 변환.
-        - ex>
+  - web.config.js
+      - root directory에 'webpack.config.js' file 생성
+      - 주요 항목
+          - context: root directory 를 지정한다.
+              - entry는 해당 path를 시작으로 진행되나, output은 해당 path를 시작으로 빌드 되지 않는다.(path.resolve(__dirname, 'need path')를 이용) 왜지 ?!
+              - ex>
+                  path.resolve(__dirname, 'src/main/frontend'),
+          - resolve: contrext의 대상선정?!
+              - ex>
+                  resolve: {
+                    extendsion: ['.js', '.jsx']
+                  }
+          - entry: root file로써, entry를 시작으로 필요한 모듈들을 다 불러온 후, 한 파일로 합쳐 bundle.js에 저장.
+                   추가적으로는 모듈을 통하여 ES6 문법으로 작성된 코드를 ES5 형태로 변환.
+              - ex>
+                  entry: {
+                    main: './src/App.js'
+                  }
+          - output: 산출물
+              - ex>
+                  const _publicPath = '/public/dist';
+                  ...
+                  output: {
+                    path: path.resolve(__dirname, 'src/main/resources/public/dist'),
+                    publicPath: _publicPath,
+                    filename: 'app.bundle.js'
+                  }
+          - module
+            - rules: JavaScript File들을 어떻게 처리할 것인지 정하는 config
+          - plugins
+          
+      ```console
+      Source 경로
+        - module.exports = {context: path.resolve(__dirname, 'Source 경로') ... }
+      Build SRC
+        - module.exports = { ... entry: {Build SRC entry: '경로'} ... }
+      Build DST
+        - module.exports = { ... output: {path: __dirname, filename: '경로'} ... }
+      ```
+        
+      ```console
+      var path = require('path');
+      
+      module.exports = {
+          context: path.resolve(__dirname, 'src/main/frontend'),
           entry: {
-            main: './src/App.js'
-          }
-      - output: 산출물
-        - ex>
-          const _publicPath = '/public/dist';
-          ...
+              main: './MainPage.jsx'
+          },
           output: {
-            path: path.resolve(__dirname, 'src/main/resources/public/dist'),
-            publicPath: _publicPath,
-            filename: 'app.bundle.js'
-          }
-                
+              path: __dirname,
+              filename: './src/main/webapp/js/react/[name].bundle.js'
+          },
+          module: {
+              rules: [ {
+                  test: /\.jsx?$/,
+                  exclude: /(node_modules)/,
+                  use: {
+                      loader: 'babel-loader',
+                      options: {
+                          presets: [ '@babel/preset-env', '@babel/preset-react' ]
+                      }
+                  }
+              }, {
+                  test: /\.css$/,
+                  use: [ 'style-loader', 'css-loader' ]
+              } ]
+          },
+          //plugins: [],
+          mode: 'none',
+          devtool: 'sourcemaps',
+          cache: true,
+      };
+      ```
+    
   - webpack plug-in
     - clean-webpack-plugin: output으로 지정한 디렉토리를 build할 때마다 삭제하여 주는 plug-in
       ~~~
@@ -440,41 +478,6 @@
       ~~~
       npm install --save react-helmet @types/react-helmet
       ~~~
-      
-#### 1. Example
-    ```console
-    var path = require('path');
-    
-    module.exports = {
-        context: path.resolve(__dirname, 'src/main/frontend'),
-        entry: {
-            main: './MainPage.jsx'
-        },
-        devtool: 'sourcemaps',
-        cache: true,
-        output: {
-            path: __dirname,
-            filename: './src/main/webapp/js/react/[name].bundle.js'
-        },
-        mode: 'none',
-        module: {
-            rules: [ {
-                test: /\.jsx?$/,
-                exclude: /(node_modules)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [ '@babel/preset-env', '@babel/preset-react' ]
-                    }
-                }
-            }, {
-                test: /\.css$/,
-                use: [ 'style-loader', 'css-loader' ]
-            } ]
-        }
-    };
-    ```
-      
       
 ### 3. UI
 #### 1. Meterial-UI
