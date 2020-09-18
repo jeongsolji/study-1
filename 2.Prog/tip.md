@@ -550,7 +550,53 @@
   - Description
       - Shell 확인
   ```
+  
 ### 1. Tech
+#### 1. 큰따옴표와 작은따옴표
+    - 셸 스크립트에서 모든 변수값을 문자열이라 기본으로 인식하기 때문에 큰 따옴표가 딱히 필요가 없습니다.
+    - 그룹핑에 목적으로 많이씀
+    - 큰따옴표는 특수문자를 보존시켜주는데 ""보다 ''가 더 강력하게 보호해줍니다. 예를 들어 '$'라는 문자가 들어간 글자를 출력하려면 큰따옴표가 아닌 작은 따옴표로 묶어줘야한다. 요런 약간의 차이가 있지만 일반적으로는 동일하게 인식합니다.
+    ```console
+    [root@localhost ~]# name=kim
+    [root@localhost ~]# $name
+    kim
+    
+    [root@localhost ~]# name=\kim
+    [root@localhost ~]# $name
+    kim     //역슬래쉬가 빠짐
+    
+    [root@localhost ~]# name=\kim
+    [root@localhost ~]# "$name"
+    \kim     //역슬래쉬가 빠지지 않음
+    
+    
+    [root@localhost ~]# name=\kim
+    [root@localhost ~]# "$name"
+    \kim
+    [root@localhost ~]# name=\kim
+    [root@localhost ~]# '$name'
+    $name
+    ``` 
+
+#### 2. 변수
+    - 타입을 설정하지 않음
+    - 대입연산자 좌우로 공백이 존재할 수 없음
+    - 영문,숫자,언더바('_') 만 사용가능
+    ```console
+    variable_one=KimHyunYun    //correct
+    variable_one =KimHyunYun    //incorrect
+    variable_one= KimHyunYun    //incorrect
+    ```
+    
+    - 사용
+    ```console
+    ${변수명}
+    
+    또는
+    
+    $변수명
+    ```
+    
 ---
 
 

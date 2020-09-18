@@ -29,6 +29,16 @@
   [root@repository ~]# java -jar bfg-x.x.x.jar --strip-blobs-bigger-than 100M
   ```
 
+## 2. Git Branch OverRide
+  ```console
+  [root@repository ~]# git checkout develop
+  [root@repository ~]# git pull
+  [root@repository ~]# git checkout master
+  [root@repository ~]# git merge --strategy=ours develop
+  [root@repository ~]# git checkout develop
+  [root@repository ~]# git merge --no-ff master
+  ```
+
 ---
 
 
