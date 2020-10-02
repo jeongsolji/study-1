@@ -54,3 +54,5 @@
 	  - [] : 소괄호안에 소괄호가 들어가는 경우, 가장 밖의 소괄호를 대체 / 제목, 강조의 의미 / 생략가능 항목
 ---
 
+## 2. RedMine
+  - 참고사이트: [https://redmine.org/projects/redmine/wiki/KoreanWikiFormatting](https://redmine.org/projects/redmine/wiki/KoreanWikiFormatting)
