@@ -197,31 +197,147 @@
     ~~~
     
   - @IdClass
+    - Identifying Relationship
+      - 참고사이트: [https://woowabros.github.io/experience/2019/01/04/composit-key-jpa.html](https://woowabros.github.io/experience/2019/01/04/composit-key-jpa.html)
+      
+    - None Identifying Relationship
     ~~~
     @Entity
-    @Table( name = "TB_USER_ROLE" )
-    @IdClass( UserRoleCompositeKey.class )
-    public class UserRole{
-      @Id
-      private User user;
-      
-      @Id
-      private Role role;
+    @Table(name = "tb_mem_user")
+    public class User extends BaseEntity {
+        @Id
+        @GeneratedValue(
+                strategy = GenerationType.AUTO
+        )
+        @Column(name = "user_id", nullable = false)
+        private Long userId;
+    
+    
+        public Long getUserId() {
+            return userId;
+        }
+    
+        public User setUserId(Long userId) {
+            this.userId = userId;
+            return this;
+        }
     }
     
-    public class UserRoleCompositeKey implements Serializable{
-      public UserRoleCompositeKey(){
-      }
-      
-      public UserRoleCompositeKey( Long userNo, String roleCd ){
-        this.user = userNo;
-        this.role = roleCd;
-      }
-      
-      private Long user;    // UserRole Class에 정의된 User ReferenceVariable과 동일한 이름을 사용.
-                            // @IdClass는 ReferenceVariable Name으로 UserRole Class에 정의된 ReferenceVariable를 Serche한다.
-      private String role;  // UserRole Class에 정의된 Role ReferenceVariable과 동일한 이름을 사용.
-                            // @IdClass는 ReferenceVariable Name으로 UserRole Class에 정의된 ReferenceVariable를 Serche한다.
+    
+    @Entity
+    @Table(name = "tb_rom_room")
+    public class Room extends BaseEntity {
+        @Id
+        @Column(name = "room_id", nullable = false)
+        private String roomId;
+    
+    
+        public String getRoomId() {
+            return roomId;
+        }
+    
+        public Room setRoomId(String roomId) {
+            this.roomId = roomId;
+            return this;
+        }
+    }
+    
+    
+    public class UserRoomComposite implements Serializable {
+        public UserRoomComposite(){
+        }
+    
+        public UserRoomComposite(Long userId, String roomId){
+            this.user = userId;
+            this.room = roomId;
+        }
+    
+    
+          private Long user;    // UserRole Class에 정의된 User ReferenceVariable과 동일한 이름을 사용.
+                                // @IdClass는 ReferenceVariable Name으로 UserRole Class에 정의된 ReferenceVariable를 Serche한다.
+          private String room;  // UserRole Class에 정의된 Role ReferenceVariable과 동일한 이름을 사용.
+                                // @IdClass는 ReferenceVariable Name으로 UserRole Class에 정의된 ReferenceVariable를 Serche한다.
+    
+    
+        public Long getUser() {
+            return user;
+        }
+    
+        public UserRoomComposite setUser(Long user) {
+            this.user = user;
+            return this;
+        }
+    
+        public String getRoom() {
+            return room;
+        }
+    
+        public UserRoomComposite setRoom(String room) {
+            this.room = room;
+            return this;
+        }
+    
+    
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            UserRoomComposite userRoomComposite = (UserRoomComposite) o;
+            return Objects.equals(this.user, userRoomComposite.getUser()) &&
+                    Objects.equals(this.room, userRoomComposite.getRoom());
+        }
+    
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.user, this.room);
+        }
+    
+    
+        @Override
+        public String toString() {
+            return "UserRoomComposite{" +
+                    "user=" + user +
+                    ", room='" + room + '\'' +
+                    '}';
+        }
+    }
+    
+    
+    @Entity
+    @Table(name = "tm_mem_user_room")
+    @IdClass(value = UserRoomComposite.class)
+    public class UserRoom extends BaseEntity {
+        @Id
+        @ManyToOne
+        @JoinColumn(name = "user_id")
+        private User user;
+    
+        @Id
+        @ManyToOne
+        @JoinColumn(name = "room_id")
+        private Room room;
+    
+    //    @OneToMany(mappedBy = "userRoom")
+    //    private List<SprinklingToken> sprinklingTokenList = new ArrayList<>();
+    
+    
+        public User getUser() {
+            return user;
+        }
+    
+        public UserRoom setUser(User user) {
+            this.user = user;
+            return this;
+        }
+    
+        public Room getRoom() {
+            return room;
+        }
+    
+        public UserRoom setRoom(Room room) {
+            this.room = room;
+            return this;
+        }
     }
     ~~~
 ###### 2. 단방향/양방향 Mapping
