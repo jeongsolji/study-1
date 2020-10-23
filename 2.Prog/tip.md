@@ -150,6 +150,14 @@
         --------------------------------------
           - Describe
             - 파일경로 변경
+          - Result: 기존 4개 경로에서, Customizing된 경로 1개로 변경된다.
+            - 기존 경로(4개)
+              file:./config/
+              file:./
+              classpath:/config/
+              classpath:/
+            - Customizing되어 변경된 경로(1개)
+              classpath:/myproject/
         
         
         [user@localhost ~]# java -jar myproject.jar --spring.config.additional-location=classpath:/custom-config/,file:./custom-config/
