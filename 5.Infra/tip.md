@@ -741,6 +741,11 @@
 
 
 
+
+
+
+
+
 #### 2. Network Addon(≒Network Plug-In)
   - Addon : 특정 프로그램의 기능을 보강하기 위해 추가된 프로그램
   - Network Addon : 네트워크연결을 보안하기 위한 프로그램
@@ -849,8 +854,24 @@
   - Command
       - Object들의 종류를 검색
 
+
   [root@kubernetes-master ~]# kubectl explain pod
   --------------------------------------
   - Command
       - 특정 object의 설명을 검색
+
+
+  [root@kubernetes-master ~]# kubectl get pods -A -n josunhotel
+  --------------------------------------
+  - Command
+      - POD_NAME들을 조회
+  - Option
+      -A : 전체
+      -n : NAMESPACE 지정
+
+
+  [root@kubernetes-master ~]# k logs -f POD_NAME -n NAMESPACE_NAME
+  --------------------------------------
+  - Command
+      - 
   ```
