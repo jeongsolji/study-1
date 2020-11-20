@@ -169,6 +169,15 @@
 #### 8. Amazon SQS
   - 1개 메시지당 256kb밖에 전달 할 수 없다. 이때는 S3에 데이터를 올려 두고, S3의 링크를 전달 해 주는 방법으로 해결할 수 있다.
 
+#### 9. 자격증
+  - https://aws.amazon.com/ko/certification
+  
+  - http://bit.ly/aws-study-resource
+  - http://bit.ly/sacertguide
+  - https://www.examtopics.com/exams/amazon
+    - https://www.examtopics.com/exams/amazon/aws-certified-solutions-architect-associate-saa-c02/
+    - 위의 문제만 잘 이해해도 자격증은 취득할 수 있다.
+
 --- 
 
 
