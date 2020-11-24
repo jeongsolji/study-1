@@ -158,7 +158,7 @@
     - OS, Application에 대한 엑세스 제어를 하지 못함
     - 거부 > 허용 순으로 확인된다.
   - 역할
-    - 자격증명을 발급해주는데, 유효기간이 있는 자격증명을 발급해줄 때 사용.
+    - 자격증명을 발급해주는데, 유strategy효기간이 있는 자격증명을 발급해줄 때 사용.
     - 자격증명과 정책을 연결하여서 사용자에게 부여한다.
   
   - 추천: 아무런 권한이 없는 계정을 하나 만들고, 역활전환을 한 후에 cli연동을 진행한다.
@@ -205,6 +205,15 @@
   - 4가지 방법: docker, linux, macOS, windows
   
   * 참고사이트: [https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/install-cliv2.html](https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/install-cliv2.html)
+
+
+cloudwatch -> container monitoring
+https://docs.aws.amazon.com/ko_kr/AmazonCloudWatch/latest/monitoring/Container-Insights-metrics-EKS.html
+
+2일차 : 실습
+  - https://distribute99.s3.ap-northeast-2.amazonaws.com/code_dist/index.html
+  - zlagusdbs@shinsegae.com / aws2020
+  - http://do-not-delete-security-builders-201-lab-contents.s3-website.ap-northeast-2.amazonaws.com/lab/
 
 
 ---
