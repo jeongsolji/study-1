@@ -163,7 +163,7 @@
   
   - 추천: 아무런 권한이 없는 계정을 하나 만들고, 역활전환을 한 후에 cli연동을 진행한다.
 
-### 7. System Manager
+#### 7. System Manager
   - Ansible에 상응하는 서비스
   
 #### 8. Amazon SQS
@@ -188,6 +188,66 @@
   - 예약인스턴스
     - 이빨만 잘 털면 최대 75% 할인이 가능하다.
 
+---
+
+
+### 3. 3일차
+#### 1. 머신 러닝 소개 및 컨셉
+  - Input -function(x)-> Output
+    - Input : feature(s)
+    - function(x) : 알고리즘
+    - function(x)의 값을 구하는 과정 : 학습
+    - function(x)의 값(즉 수식) : 모듈
+    - Output : prediction
+    
+  - AI : 명시적 프로그래밍 없이도 실제 세계를 감지, 학습, 추론, 행동, 적응
+    - ex> 로봇
+  - ML : 학습 알고리즘을 사용해 데이터로부터 모델을 만드는 계산 방법
+    - ex> 지도, 비지도, 준지도, 강화 학습
+  - DL : 연속적으로 복잡한 정보를 학습하는 여러 층의 뉴론으로 구성된 뉴럴 네트워크 알고리즘
+    - ex> 알파고
+
+##### 1. AI
+  - VISION
+  - SPEECH
+  - Textract
+    - 아직 한글이 지원되지 않는다.(2020. 11. 26. 기준)
+  - Comprehend
+    - 텍스트에서 통찰력 확보 및 관계 파악(자연언어 처리기)
+  - SEARCH
+  - CHATBOTS
+  - PERSONALIZATION
+    - 개인화 및 추천서비스
+    - 세션 기반 실시간 추천을 제공
+      - 사용자의 Action을 실시간으로 수집하여 추천을 제공할 수 있다.
+    - 개인화 알림 제공
+    - Re-Ranking 제공
+  - FORECASTING
+    - 세계 최대 전자상거래를 지원하는 기술
+    - 시계열 예측
+      - 시간에 따라 값들을 예측하는 것
+    - 필요한 데이터만 정의하는게 제일 어렵다.
+  - FRAUD
+  - DEVELOPMENT
+  - CONTA- NT CENTERS
+  - Amazon Rekognition
+    - 이미지 및 비디오를 통해 정보를 추출하기 위해 머신러닝 적용
+
+##### 2. ML
+  - Amazon SageMaker
+  
+  - 머신 러닝 프로세스 리뷰
+  ```console
+  1. Business Problem을 ML Problem으로 전환한다.
+  ```
+
+  - Auto ML
+    - AutoGluon
+    - AutoPilot
+
+#### 99. Terms
+  cf> tabular (테이블)행/열로 구성된 Data형태
+  cf> Regression : 수치
 
 ---
 
