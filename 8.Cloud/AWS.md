@@ -1,66 +1,169 @@
-# TIP
----
+# 1. Compute
 
 
-# AWS
-## 1. Education
-### 1. 1일차
-#### 1. Storage
-##### 1. Amazon S3
+# 2. Networking
+
+
+# 3. Storage
+  - 종류
+    - AWS S3
+    - AWS Glacier
+    - AWS EBS(Elastic Block Store) [=SAN]
+    - AWS EFS(Elastic File System)/AWS FSx [=NAS]
+    - AWS Storage Gateway
+    - AWS Import/Export
+    - AWS CloudFront
+  
+## 1. AWS S3(Simple Shared Storage)
   - 인터넷용 스토리지
   - 온라인, HTTP Method 기반 Access
-
-###### 1. 기본 정보
-  - Bucket : 물리적 저장단위(S3는 Service Name 자체를 뜻한다.)
+  - 종류
+    - Amazon S3 standard
+    - Amazon S3 standard - Infrequent Access
+    - Amazon S3 One Zone-Infrequent Access
+    ```
+    (요청이 많은 경우 유리)(가용성 ↑)
+    - Amazon S3 standard
+    - Amazon S3 standard - Infrequent Access
+    - Amazon S3 One Zone-Infrequent Access
+    (요청이 적을 경우 유리)(가용성 ↓)
+    ```
+  - 물리적 저장단위
+    - Bucket
   - 비용
     - 데이터 량
     - 요청에 대한 비용(HTTP Method)
     - 데이터 전송비용
-    
-###### 2. 보안
+  - Versioning
+    - 성능 저하 없이 실수로 덮어쓰거나 삭제하는 것을 방지
+    - 모든 업로드에 대해 새 버전을 생성합니다.
+    - 요금: 버전관리를 위한 요금은 측정되지 않으나, 버전관리로 인한 객체(주로 파일)들이 쌓이면서 요금이 과금될 수 있다.
 
-###### 3. 버전관리
-  - 성능 저하 없이 실수로 덮어쓰거나 삭제하는 것을 방지
-  - 모든 업로드에 대해 새 버전을 생성합니다.
-  - 요금
-    - 버전관리를 위한 요금은 측정되지 않으나, 버전관리로 인한 객체(주로 파일)들이 쌓이면서 요금이 과금될 수 있다.
-
-###### 4. 수명주기
-
-###### 5. Storage Class
-  (요청이 많은 경우 유리)
-  - Amazon S3 standard
-  - Amazon S3 standard - Infrequent Access
-  - Amazon S3 One Zone-Infrequent Access
-  (요청이 적을 경우 유리)
+## 2. AWS Glacier
+  - 저비용, 장기 저장 백업 서비스
+  - 장기 아카이빙 저장 서비스로써, 오랜 기간 자주 엑세스 하지 않는 서비스에 적합하다.
+  - 데이터 사용 시 복원이 비싸다.
   
-  - Amazon S3 Glacier
-    - 장기 아카이빙 저장 서비스로써, 오랜 기간 자주 엑세스 하지 않는 서비스에 적합하다.
-    - 데이터 사용 시 복원이 비싸다.
-  
-  - 가용성에 차이가 있다. 하향일 수록 가용성이 떨어진다.
-    
-##### 2. Amazon EBS ( = SAN )
+## 3. AWS EBS(Elastic Block Store))
   - 내가 만든 인스턴스 한대의 전용으로 사용하는 Storage
-  - 데이터 저장공간(Volume)에 대한 요금을 측정하지, 실제로 저장된 데이터의 양으로 요금이 산정되지 않는다.
+  - 데이터 저장공간(Volume)에 대한 요금을 측정하고, 실제로 저장된 데이터의 양으로 요금이 산정되지 않는다.
   - 주로 장기간 사용하지 않을 경우 back-up본을 만들어 저장을 시켜놓는다.
   - 인스턴스 하나당 EBS volume 하나를 두는걸 권고한다.
-    
-###### 1. 기본 정보
-  - 비용
-    - EBS는 인스턴스를 만드는 순간부터 비용이 측정된다.
-      
-##### 3. Amazon Ec2 Instance Storage [ 002 - : 03: 48]
 
-##### 4. Amazon EFS/FSx ( = NAS ) [ 2일차 002 - 00: 41: 00] 
+## 4. AWS EFS(Elastic File System) 
   - EFS : Linux 전용(NTFS File System)
   - FSx : Windows 전용
+  
+  - EC2 인스턴스를 위한 파일 시스템 인터페이스 및 파일 시스템 시맨틱 환경 제공
+  - 주요속성
+    - 완전관리형
+    - 파일 시스템 엑세스 시맨틱
+      - 일반적인 파일 시스템과 동일하며, 읽기 후 쓰기 일관성, 파일 잠금, 계층적 디렉터리 구조, 파일 조작 명령, 세분화된 파일 명칭 부여, 파일 중간의 특정 블록에 쓰기 등 가능
+    - 파일 시스템 인터페이스
+      - 표준 OS API와 호환성이 유지되는 파일 시스템 인터페이스 제공.
+      - 표준 OS API를 사용하는 Application이라면 EFS를 통해 기존의 파일 작업을 문제없이 처리 가능
+    - 공유 파일 시스템
+    - 민첩성 및 확장성
+    - 고성능
+    - 고가용성 및 고신뢰성
+  
+## 7. AWS CloudFront
+  - AWS의 Global CDN(Content Delivery Networrk) Service
+  - SSL 지원, 접속지역 제한, Private Contents 설정 등 다양한 Service 제공
 
-###### 3. IAM
-  - 역할 : 유효기간이 있는 자격증명
-    
-##### 5. 탄력성(Auto Scaling) [ 00: 46: 00 ]
-  - Infra가 자체적으로 줄이고 늘리는 작업을 뜻 한다.
+
+# 4. DataBase
+
+
+# 5. Analytic
+  - Amazon Athena
+  - Amazon EMR
+  - Amazon Elasticsearch
+  - Amazon CloudSearch
+  - Amazon Data Pipeline
+  - Amazon Kinesis
+    - Amazon Kinesis Data Streams
+    - Amazon Kinesis Data FireHose
+    - Amazon Kinesis Data Analytics
+  - Amazon QuickSight
+
+## 7. Amazon Kinesis
+  - 스트리밍 데이터를 실시간으로 수집, 분석, 처리하기 위한 완전 관리형 서비스
+  
+## 8. Amazon QuickSight
+  - 비즈니스 분석 서비스로 데이터 시각화, 애드 훅 분석 기능을 제공하고 인사이트를 추출 할 수 있도록 하는 완전 관리형 서비스
+
+
+# 6. Application Service
+
+
+# 7. Develop Tools
+
+
+# 8. Messaging
+  - Amazon SNS(Simple Notification Service)
+  - Amazon SES(Simple Email Service)
+  - Amazon SQS(Simple Queue Service)
+    - 1개 메시지당 256KB 밖에 전달 할 수 없다. 이때는 S3에 데이터를 올려 두고, S3의 링크를 전달 해 주는 방법으로 해결할 수 있다.
+
+
+# 9. Migration
+  - 종류
+    - AWS Discovery Service
+    - AWS Database Migration Service
+    - AWS Snowball
+    - AWS Server Migration Service
+
+## 1. AWS Discovery Service
+  - On-premise Data Center에서 실행되는 Application을 자동으로 파악하고 관련 Dependency 요소, 성능 프로필을 맵핑하기 위한 서비스
+
+## 2.
+
+
+# 10. AI
+  - VISION
+  - SPEECH
+  - Textract
+    - 아직 한글이 지원되지 않는다.(2020. 11. 26. 기준)
+  - Comprehend
+    - 텍스트에서 통찰력 확보 및 관계 파악(자연언어 처리기)
+  - SEARCH
+  - CHATBOTS
+  - PERSONALIZATION
+    - 개인화 및 추천서비스
+    - 세션 기반 실시간 추천을 제공
+      - 사용자의 Action을 실시간으로 수집하여 추천을 제공할 수 있다.
+    - 개인화 알림 제공
+    - Re-Ranking 제공
+  - FORECASTING
+    - 세계 최대 전자상거래를 지원하는 기술
+    - 시계열 예측
+      - 시간에 따라 값들을 예측하는 것
+    - 필요한 데이터만 정의하는게 제일 어렵다.
+  - FRAUD
+  - DEVELOPMENT
+  - CONTA- NT CENTERS
+  - Amazon Rekognition
+    - 이미지 및 비디오를 통해 정보를 추출하기 위해 머신러닝 적용
+
+# 11. ML
+  - Amazon SageMaker
+  - 머신 러닝 프로세스 리뷰
+  ```console
+  1. Business Problem을 ML Problem으로 전환한다.
+  ```
+  - Auto ML
+    - AutoGluon
+    - AutoPilot
+
+# 12. IOT
+
+
+---
+
+#### 4. EC2
+  - 사용자 데이터
+    - 인스턴스기 만들어지면서 딱 한번 호출하는 데이터
     
 ###### 1. 구성요소
   - ELB(Elastic Load Balancing) [ 00: 51: 00]
@@ -75,15 +178,6 @@
     - 시작탬플릿 : Auto Scaling 또는 그 외 사용가능한 탬플릿, 시작구성에 비해 versioning이 가능함.
   - Amazon CloudWatch
     - Cloud 환경에 Resource를 Monitoring, Triggering 할 수 있다.
-
-#### 2. EC2 (Elastic Compute Cloud)
-##### 1. 기본정보
-  - 사용자 데이터
-    - 인스턴스기 만들어지면서 딱 한번 호출하는 데이터
-  - 메타 데이터
-    - 
-  - key pari
-    - 
 
 #### 3. Database
   - 관계형 데이터베이스
@@ -166,9 +260,6 @@
 #### 7. System Manager
   - Ansible에 상응하는 서비스
   
-#### 8. Amazon SQS
-  - 1개 메시지당 256kb밖에 전달 할 수 없다. 이때는 S3에 데이터를 올려 두고, S3의 링크를 전달 해 주는 방법으로 해결할 수 있다.
-
 #### 9. 자격증
   - https://aws.amazon.com/ko/certification
   
@@ -206,44 +297,6 @@
     - ex> 지도, 비지도, 준지도, 강화 학습
   - DL : 연속적으로 복잡한 정보를 학습하는 여러 층의 뉴론으로 구성된 뉴럴 네트워크 알고리즘
     - ex> 알파고
-
-##### 1. AI
-  - VISION
-  - SPEECH
-  - Textract
-    - 아직 한글이 지원되지 않는다.(2020. 11. 26. 기준)
-  - Comprehend
-    - 텍스트에서 통찰력 확보 및 관계 파악(자연언어 처리기)
-  - SEARCH
-  - CHATBOTS
-  - PERSONALIZATION
-    - 개인화 및 추천서비스
-    - 세션 기반 실시간 추천을 제공
-      - 사용자의 Action을 실시간으로 수집하여 추천을 제공할 수 있다.
-    - 개인화 알림 제공
-    - Re-Ranking 제공
-  - FORECASTING
-    - 세계 최대 전자상거래를 지원하는 기술
-    - 시계열 예측
-      - 시간에 따라 값들을 예측하는 것
-    - 필요한 데이터만 정의하는게 제일 어렵다.
-  - FRAUD
-  - DEVELOPMENT
-  - CONTA- NT CENTERS
-  - Amazon Rekognition
-    - 이미지 및 비디오를 통해 정보를 추출하기 위해 머신러닝 적용
-
-##### 2. ML
-  - Amazon SageMaker
-  
-  - 머신 러닝 프로세스 리뷰
-  ```console
-  1. Business Problem을 ML Problem으로 전환한다.
-  ```
-
-  - Auto ML
-    - AutoGluon
-    - AutoPilot
 
 #### 99. Terms
   cf> tabular (테이블)행/열로 구성된 Data형태
