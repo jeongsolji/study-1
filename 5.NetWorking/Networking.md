@@ -1,5 +1,7 @@
-# TIP
+# NetWork
+
 ---
+
 
 # NetWork
 ## 1. OSI 7 Layer / TCP/IP
@@ -10,6 +12,7 @@
     - OSI 7 Layer의 4Layer(전송계층)를 TCP로 사용하고, 3Layer(네트워크계층)를 IP로 고정시킨 뒤, 복잡한 7계층을 4계층으로 함축시켜 놓은 모델
 
   -> 그림1. OSI7Layer-TCPIP
+  
 ---
 
 

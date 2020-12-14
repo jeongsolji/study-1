@@ -1,9 +1,10 @@
-# TIP
+# WEB
+
 ---
 
 
-# WEB
-## Requests
+# 1. WEB
+## 1. Requests
   - Simple Request
     - request의 'origin'과, response의 'Access-Control-Allow-Origin' 항목으로 구성 
   - PreFlight Request
@@ -24,7 +25,7 @@
 |PreFlight Request   |!Simple Request Mtth Method    |!Simple Request Agent    |
 |Credential Request  |                               |                         |
 
-### Simple Request
+### 1. Simple Request
   - a.kim.com 에서 b.kim.com 도메인의 컨텐츠를 호출하길 원할 경우
   - Request의 Http Method와 Agent 가 '## Requests'에 기재된 내역으로 Send될 경우
     - 요청
@@ -53,7 +54,7 @@
     […XML Data…]
     ```
 
-### PreFlight Request
+### 2. PreFlight Request
   - d
     - PreFlight 요청
     ```console
@@ -119,10 +120,10 @@
     [Some GZIP'd payload]
     ```
 
-### Credential Request
+### 3. Credential Request
 
 
-## Security
+## 2. Security
   - XSS
     - xss는 주입식 공격이다. 공격자가 악의적인 스크립트를 신뢰할 수 있는 웹사이트에 삽입하는 방법의 공격이며 총 3가지 유형이 있다.
       -Stored XSS: 보호되지 않고 검수되지 않은 사용자 입력으로 인한 취약점(데이터 베이스에 직접 저장되어 다른 사용자에게 표시됨)
@@ -137,14 +138,14 @@
     - CSRF는 악의적인 웹사이트, 전자 메일, 블로그, 인스턴트 메시지 또는 프로그램으로 인해 사용자의 웹 브라우저가 사용자가 인증 된 다른 신뢰할 수 있는 사이트에서 원치 않는 작업을 수행 할 때 발생하는 공격 유형이다.
       이 취약점은 브라우저가 세션 쿠키, IP주소 또는 각 요청과 유사한 인증 리소스를 자동으로 보내는 경우에 발생 할 수 있다.
   
-### XSS(Cross Site Scripting)
+### 1. XSS(Cross Site Scripting)
   - 공격방법: form data 등에 Source Code가 들어가서 Server에서 eval되는 경우
   - 방어방법: XSS Filter(Lucy Filter by Naver)를 적용하여 방어
   
-### CORS(Cross-Origin Resource Sharing)
+### 2. CORS(Cross-Origin Resource Sharing)
   - 공격방법: a.kim.com 도메인에서 b.kim.com 도메인으로 Resource등을 막 빼넨다.
   - 방어방법: PreFlight Request를 사용하며, Response Header에 'Access-Control-Allow-Origin'에 허용할 내용을 기재한다.
 
-### CSRF(Cross Site Request Forgery)
+### 3. CSRF(Cross Site Request Forgery)
   - 공격방법: 공격자가 페이스북 로그인창 처럼 만들어서, 로그인 페이지를 고객에게 제공한뒤, 페이스북 Server로 요청을 날려서 해킹을 시도하는 경우
   - 방어방법: 페이스북은 로그인 페이지에 SecurityKey를 심어서, request할 때 심어둔 SecurityKey를 수신한다. 그 뒤 수신된 SecurityKey에 문제가 없는지 확인 후 이하 작업을 진행한다.
