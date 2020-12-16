@@ -82,7 +82,84 @@
       
   - 참고사이트: [https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/](https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/)
 
-## 2. Spring Security
+## 2. Conditional Bean Registration(조건부 빈 등록)
+### 1. Java
+  - 참고사이트: [https://sodocumentation.net/ko/spring/topic/4732/spring%EC%9D%98-%EC%A1%B0%EA%B1%B4%EB%B6%80-%EB%B9%88-%EB%93%B1%EB%A1%9D](https://sodocumentation.net/ko/spring/topic/4732/spring%EC%9D%98-%EC%A1%B0%EA%B1%B4%EB%B6%80-%EB%B9%88-%EB%93%B1%EB%A1%9D)
+  ```console
+  public class PropertyCondition implements Condition {
+      @Override
+      public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+          return context.getEnvironment().getProperty("propertyName") != null;
+          // optionally check the property value
+      }
+  }
+
+  @Configuration
+  public class MyAppConfig {
+      @Bean
+      @Conditional(PropertyCondition.class)
+      public MyBean myBean() {
+        return new MyBean();
+      }
+  }
+
+  @Configuration
+  public class MyAppConfig {
+      @Bean
+      @Conditional({PropertyCondition.class, SomeOtherCondition.class})
+      public MyBean myBean() {
+        return new MyBean();
+      }
+  }
+  ```
+
+### 2. Annotation
+#### 1. Class Conditional
+  - @ConditionalOnClass
+  - @ConditionalOnMissingClass
+  ```console
+  @Bean
+  @ConditionalOnWebApplication
+  @ConditionalOnClass(OObjectDatabaseTx.class)
+  @ConditionalOnMissingBean(OrientWebConfigurer.class)
+  public OrientWebConfigurer orientWebConfigurer() {
+      return new OrientWebConfigurer();
+  }
+  ```
+  
+#### 2. Bean Conditional
+  - @ConditionalOnBean
+  - @ConditionalOnMissingBean
+  
+#### 3. Property Conditional
+  - @ConditionalOnProperty
+  ```console
+  @ConditionalOnProperty(value='somebean.enabled', matchIfMissing = true, havingValue="yes")
+  @Bean 
+  public SomeBean someBean(){
+  }
+  ```
+  
+#### 4. Resource Conditional
+  - @ConditionalOnResource
+  ```console
+  @ConditionalOnResource(resources = "classpath:init-db.sql") 
+  ```
+  
+#### 5. WebApplication Conditional
+  - @@ConditionalOnWebApplication
+  - @ConditionalOnNotWebApplication
+  ```console
+  @Configuration
+  @ConditionalOnWebApplication
+  public class MyWebMvcAutoConfiguration {...}
+  ```
+  
+#### 6. Expression Conditional
+  - @ConditionalOnExpression
+  ```console
+  @ConditionalOnExpression("${rest.security.enabled}==false")
+  ```
 
 ## 3. Transactional
 ### 1. Prior knowledge
@@ -96,7 +173,9 @@
   
 ### 2. Transactional Annotation
 
-## 4. JPA
+## 4. Spring Security
+
+## 99. JPA
   - Object-Relational Mapping (객체 관계 매핑)
     - 객체지향(Java)과 관계형(RDBMS)과의 패러다임 불일치를 해결(매핑)하는 기술로, 본 문서는 Hibernate를 기준으로 작성.
     

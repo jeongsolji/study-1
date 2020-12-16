@@ -73,6 +73,7 @@
 
 #### 3. Amazon ELB(Elastic Load Balancing)
   - TLS(SSL) 가속기 역활까지 한다.
+  - 상태확인이 가능하다.
   - 종류
     - ALB : 7계층 Load Balancer
       - 외부에서 내부로 트래픽 분산을 하는 용도로 사용
@@ -309,3 +310,9 @@
   * AWS Calc 참고사이트: [calculator.aws](calculator.aws)
 
   * IP Calc 참고사이트: [http://jodies.de/ipcalc](http://jodies.de/ipcalc)
+
+---
+
+
+# AWS 고급 아키텍처 교육
+
