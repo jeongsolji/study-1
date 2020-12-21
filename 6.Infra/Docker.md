@@ -84,6 +84,10 @@
     - [기본 OS Docker Image 다운] -> [Docker Container화] -> [Application 설치 및 셋팅] -> [Docker Container를 Docker Image로 변경]
   - 위의 절차를 하나의 파일로 기재하여, 자동으로 Docker Image를 만드는 행위를 Docker Build라고 하며, 이때 사용하는 File을 Dockerfile이라 한다.
 
+#### 1. ENTRYPOINT, CMD
+  - ENTRYPOINT: 지정한 명령을 수행하도록 지정
+  - CMD: Container를 실행할 때 인자값을 주게 되면 Dockerfile에 지정된 CMD값을 대신하여 지정한 인자값으로 변경하여 실행
+
 ## 2. Command Line Interface
   - Docker Engine
   ```console
