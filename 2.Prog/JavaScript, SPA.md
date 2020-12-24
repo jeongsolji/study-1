@@ -1,4 +1,4 @@
-# SPA(Single Page Application)
+# JavaScript, SPA(Single Page Application)
   - JavaScript
   - React
   - VueJS
