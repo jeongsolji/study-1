@@ -64,7 +64,7 @@
       
 ### 6. Docker Network
   - Docker Network Architecture
-    - ![Database Server Setting](./../img/Docker-Network.png)
+    - ![Database Server Setting](../resource/Docker-Network.png)
 
   - Docker Network Driver
     - Bridge
@@ -345,10 +345,10 @@
       
 ## 3. Swarm Mode Service
   - Architecture
-  ![Swarm Mode Architecture](./../img/Docker-Swarm.png)
+  ![Swarm Mode Architecture](../resource/Docker-Swarm.png)
   
   - Tasks and scheduling
-  ![Swarm Mode Tasks and scheduling](./../img/Docker-Swarm_TaskAndScheduling.png)
+  ![Swarm Mode Tasks and scheduling](../resource/Docker-Swarm_TaskAndScheduling.png)
   
   - Service
     - Swarm Mode에서의 제어 단위

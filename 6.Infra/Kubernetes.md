@@ -89,7 +89,7 @@
     ```
     
 ## 3. Cluster
-  ![kubernetes Architecture](./../img/Kubernetes Architecture.pdf)
+  ![kubernetes Architecture](../resource/Kubernetes Architecture.pdf)
   
 ## 4. Object
 ### 1. Namespace
