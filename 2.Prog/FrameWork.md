@@ -1,6 +1,6 @@
 # FrameWork
   - Spring MVC
-  - Spring Boot
+  - Spring Boot(Core, Security, JPA)
   
 ---
 
@@ -87,8 +87,19 @@
       
   - 참고사이트: [https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/](https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/)
 
-## 3. Conditional Bean Registration(조건부 빈 등록)
-### 1. Java
+## 3. Bean
+### 1. Bean Hocker
+#### 1. BeanDefinitionRegistryPostProcessor
+  - Bean 등록 목적
+#### 2. BeanFactoryPostProcessor
+  - Bean 정의를 재정의 또는 속성추가 목적
+#### 3. BeanPostProcessor
+  - Bean 인스턴스를 재정의 목적
+  
+  - 참고사이트: [https://thecodinglog.github.io/spring/2019/01/29/dynamic-spring-bean-registration.html](https://thecodinglog.github.io/spring/2019/01/29/dynamic-spring-bean-registration.html)
+
+### 2. Conditional Bean Registration(조건부 빈 등록)
+#### 1. Java
   - 참고사이트: [https://sodocumentation.net/ko/spring/topic/4732/spring%EC%9D%98-%EC%A1%B0%EA%B1%B4%EB%B6%80-%EB%B9%88-%EB%93%B1%EB%A1%9D](https://sodocumentation.net/ko/spring/topic/4732/spring%EC%9D%98-%EC%A1%B0%EA%B1%B4%EB%B6%80-%EB%B9%88-%EB%93%B1%EB%A1%9D)
   ```console
   public class PropertyCondition implements Condition {
@@ -118,8 +129,8 @@
   }
   ```
 
-### 2. Annotation
-#### 1. Class Conditional
+#### 2. Annotation
+##### 1. Class Conditional
   - @ConditionalOnClass
   - @ConditionalOnMissingClass
   ```console
@@ -132,11 +143,11 @@
   }
   ```
   
-#### 2. Bean Conditional
+##### 2. Bean Conditional
   - @ConditionalOnBean
   - @ConditionalOnMissingBean
   
-#### 3. Property Conditional
+##### 3. Property Conditional
   - @ConditionalOnProperty
   ```console
   @ConditionalOnProperty(value='somebean.enabled', matchIfMissing = true, havingValue="yes")
@@ -145,13 +156,13 @@
   }
   ```
   
-#### 4. Resource Conditional
+##### 4. Resource Conditional
   - @ConditionalOnResource
   ```console
   @ConditionalOnResource(resources = "classpath:init-db.sql") 
   ```
   
-#### 5. WebApplication Conditional
+##### 5. WebApplication Conditional
   - @@ConditionalOnWebApplication
   - @ConditionalOnNotWebApplication
   ```console
@@ -160,13 +171,13 @@
   public class MyWebMvcAutoConfiguration {...}
   ```
   
-#### 6. Expression Conditional
+##### 6. Expression Conditional
   - @ConditionalOnExpression
   ```console
   @ConditionalOnExpression("${rest.security.enabled}==false")
   ```
 
-## 3. Transactional
+## 4. Transactional
 ### 1. Prior knowledge
   - ACID(원자성, 일관성, 고립성, 지속성): transaction이 안전하게 수행된다는 것을 보장하기 위한 성질
     - Atomicity(원자성): 트랜잭션과 관련된 작업들이 부분적으로 실행되다가 중단되지 않는 것을 보장하는 능력이다. 예를 들어, 자금 이체는 성공할 수도 실패할 수도 있지만 보내는 쪽에서 돈을 빼 오는 작업만 성공하고 받는 쪽에 돈을 넣는 작업을 실패해서는 안된다. 원자성은 이와 같이 중간 단계까지 실행되고 실패하는 일이 없도록 하는 것이다.
@@ -178,7 +189,7 @@
   
 ### 2. Transactional Annotation
 
-## 4. Spring Security
+## 5. Spring Security
 
 ## 99. JPA
   - Object-Relational Mapping (객체 관계 매핑)
