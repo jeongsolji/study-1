@@ -15,7 +15,7 @@
       - Eval코드: eval 함수로 실행되는 코드
       - 함수코드: 함수 내에 존재하는 코드
       
-  ![Execute Context](../resource/Execute Context.pdf)
+  ![Execute Context](../resource/Prog,%20JavaScript,%20SPA,%20execution%20context.pdf)
       
 ## 2. prototype
 

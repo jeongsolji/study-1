@@ -368,7 +368,7 @@ root : x : 0 : 0 : root : /root : /bin/bash
 - iptables 는 숙련된 관리자가 아니면 사용이 어려운 단점이 있었는데 이런 문제를 해결하고자 RHEL/CentOS 7 부터는 방화벽을 firewalld 라는 데몬으로 교체하였고 이에 따라 사용자 레벨의 프로그램은 iptables 명령어 대신 명령행에서는 firewall-cmd , GUI 환경에서는 firewall-config 를 사용하게 되었습니다.  
 - firewalld-cmd는 iptables를 쓰기 쉽게 하는 wrapper이고 복잡한 규칙을 사용할 경우 --direct옵션으로 iptables내부에 접근가능합니다.
 
-![Firewalld Architecture](../resource/Architecture_firewalld.png) 
+![Firewalld Architecture](../resource/OperatingSystem,%20CentOS,%20firewalld%20architecture.png) 
 
 #### 1.2.3.1.1. 
 - zone: 서버의 용도에 맞게 사전에 정의된 네트워크의 신뢰 레벨을 의미
