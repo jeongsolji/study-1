@@ -8,7 +8,12 @@
 # 1. Spring MVC
 
 # 2. Spring Boot
-## 1. Spring Project creating
+
+## 1. core
+  - 참고사이트: [https://blog.woniper.net/336](https://blog.woniper.net/336)
+  
+  
+## 2. Spring Project creating
   - Spring Initializr 사용방법(2가지)
     ~~~
     1. Spring 공식 홈페이지(spring.io)에서 제공하는 기능을 사용합니다.
@@ -82,7 +87,7 @@
       
   - 참고사이트: [https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/](https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/)
 
-## 2. Conditional Bean Registration(조건부 빈 등록)
+## 3. Conditional Bean Registration(조건부 빈 등록)
 ### 1. Java
   - 참고사이트: [https://sodocumentation.net/ko/spring/topic/4732/spring%EC%9D%98-%EC%A1%B0%EA%B1%B4%EB%B6%80-%EB%B9%88-%EB%93%B1%EB%A1%9D](https://sodocumentation.net/ko/spring/topic/4732/spring%EC%9D%98-%EC%A1%B0%EA%B1%B4%EB%B6%80-%EB%B9%88-%EB%93%B1%EB%A1%9D)
   ```console
