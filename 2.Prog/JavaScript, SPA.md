@@ -1,12 +1,29 @@
 # JavaScript, SPA(Single Page Application)
+  - Browser
   - JavaScript
   - React
   - VueJS
 
 ---
 
+# 1. Browser
+## 1. Rendering
+  - phase1. HTML을 파싱하여 DOM요소와 스타일을 포함하여 RenderTree을 계산
+  - phase2. 계산된 RenderTree를 화면에 노출
+    - phase2-1. Reflow: Render Tree에 대한 유효성 확인 작업과 Node의 크기/위치를 계산하는 작업
+    - phase2-2. RePaint: Reflow가 발생하였을 때 화면에 다시 그리는 작업
 
-# 1. Javascript
+### 1. Reflow, Repaint 최소화
+  - 동일한 행태의 소스코드를 Group화하여 작업
+  - dispaly속성을 none으로 사용한 뒤, block으로 해제하고, 이 중간 코드에 style의 변경 코드를 넣어 대량으로 'reflow'가 발생하는 현상을 방지
+  - 가상노드 사용
+    - SPA(React, VueJS등)의 가상DOM처럼, 가상 node를 만들어 교체하는 작업으로 최소화
+    - parentNode.replaceChild(cloneNode, originNode);
+
+
+---
+
+# 2. Javascript
 ## 1. Execution Context(실행 컨텍스트)
   - Javascript의 this, function, hoisting, closure, Scope 등의 동작원리를 담고 있는 핵심원리
   - 실행 가능한 코드를 형상화하고 구분하는 추상적인 개념 -> 실행 가능한 코드가 실행되기 위해 필요한 환경(≒JRE)
@@ -65,7 +82,7 @@
 ---
 
 
-# 2. React
+# 3. React
 ## 1. React interlocking in Spring Boot
   - React 앱을 생성
      ~~~
@@ -213,6 +230,6 @@
 ---
 
 
-# 3. VueJS
+# 4. VueJS
   - 참고사이트: [https://cli.vuejs.org/guide/webpack.html](https://cli.vuejs.org/guide/webpack.html)
   - 참고사이트: [https://cli.vuejs.org/config/](https://cli.vuejs.org/config/)
