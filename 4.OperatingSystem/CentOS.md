@@ -293,6 +293,12 @@ root : x : 0 : 0 : root : /root : /bin/bash
 #### 1.2.2.2. Command/Description
 ```console
 # 사용자 그룹
+## 사용자 그룹 확인
+[root@localhost ~]#cat /etc/group
+--------------------------------------------
+- Result
+    그룹명    :    x    :    1001    :
+    
 ## 사용자 그룹 추가
 [root@localhost ~]#groupadd [Option] 그룹이름
 --------------------------------------------
