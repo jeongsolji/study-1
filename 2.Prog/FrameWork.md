@@ -89,21 +89,21 @@
   
 ## 3. profiles with maven3
   - You can provide commandline argument like this:
-        ```console
-        mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=dev"
-	```
+  ```console
+  mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=dev"
+  ```
   - You can provide JVM argument like this:
-        ```console
-        mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dspring.profiles.active=dev"
-	```
+  ```console
+  mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dspring.profiles.active=dev"
+  ```
   - java -jar
-        ```console
-        java -Dspring.profiles.active=dev -jar app.jar (Note order)
-	
-	or
-	
-        java -jar app.jar --spring.profiles.active=dev (Note order)
-	```
+  ```console
+  java -Dspring.profiles.active=dev -jar app.jar (Note order)
+  
+  or
+  
+  java -jar app.jar --spring.profiles.active=dev (Note order)
+  ```
 
 ## 4. Bean
 ### 1. Bean Hocker
