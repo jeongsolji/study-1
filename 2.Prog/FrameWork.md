@@ -86,8 +86,26 @@
     ```
       
   - 참고사이트: [https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/](https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/)
+  
+## 3. profiles with maven3
+  - You can provide commandline argument like this:
+        ```console
+        mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=dev"
+	```
+  - You can provide JVM argument like this:
+        ```console
+        mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dspring.profiles.active=dev"
+	```
+  - java -jar
+        ```console
+        java -Dspring.profiles.active=dev -jar app.jar (Note order)
+	
+	or
+	
+        java -jar app.jar --spring.profiles.active=dev (Note order)
+	```
 
-## 3. Bean
+## 4. Bean
 ### 1. Bean Hocker
 #### 1. BeanDefinitionRegistryPostProcessor
   - Bean 등록 목적
@@ -177,7 +195,7 @@
   @ConditionalOnExpression("${rest.security.enabled}==false")
   ```
 
-## 4. Transactional
+## 5. Transactional
 ### 1. Prior knowledge
   - ACID(원자성, 일관성, 고립성, 지속성): transaction이 안전하게 수행된다는 것을 보장하기 위한 성질
     - Atomicity(원자성): 트랜잭션은 하나의 원자처럼 취급되어야 한다.
@@ -215,7 +233,7 @@
   
 ### 2. Transactional Annotation
 
-## 5. Spring Security
+## 6. Spring Security
 
 ## 99. JPA
   - Object-Relational Mapping (객체 관계 매핑)
