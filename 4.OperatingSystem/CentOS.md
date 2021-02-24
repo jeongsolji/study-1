@@ -494,3 +494,53 @@ firewalld.conf  helpers  icmptypes  ipsets  lockdown-whitelist.xml  services  zo
              : git -C checkout develop common-api  (잘못된 명령어)
              : git -C common-api checkout develop  (올바른 명령어)
   ```
+
+
+  - tar: tar 또는 gz을 만들거나 분해?!할 때 사용한다.
+  ```console
+  [root@localhost ~]# tar -cvf tarFolder.tar ./originFolder
+  --------------------------------------
+  - Command
+      - tar
+  - Option
+      -c : 
+      -v : 
+      -f : 
+  - Description
+      - tarFolder.tar를 만들고, 만들려는 대상은 originFolder로 한다.
+
+  [root@localhost ~]# tar -xvf tarFolder.tar
+  --------------------------------------
+  - Command
+      - tar
+  - Option
+      -x : 
+      -v : 
+      -f : 
+  - Description
+      - tarFolder.tar를 분해?!한다.
+
+  [root@localhost ~]# tar -zcvf gzFolder.tar.gz ./originFolder
+  --------------------------------------
+  - Command
+      - tar
+  - Option
+      -z : 
+      -c : 
+      -v : 
+      -f : 
+  - Description
+      - gzFolder.tar.gz를 만들고, 만들려는 대상은 originFolder로 한다.
+
+  [root@localhost ~]# tar -zxvf gzFolder.tar.gz
+  --------------------------------------
+  - Command
+      - tar
+  - Option
+      -z : 
+      -c : 
+      -v : 
+      -f : 
+  - Description
+      - gzFolder.tar.gz을 분해?!한다.
+  ```
