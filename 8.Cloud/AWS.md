@@ -166,7 +166,7 @@
         - DB자체를 관리자가 직접 컨트롤 하는게 아니기 때문에, IAM으로 서비스의 접근을 제한한다.
     - Amazon ElastiCache : 관계형 데이터베이스 앞단에 성능을 높히기 위하여 사용(샤딩 등)
     - Amazon Neptune : 그래프 데이터를 저장하는데 최적화
-    
+
 ### 5. Analytic
   - Amazon Athena
   - Amazon EMR
@@ -211,7 +211,9 @@
 #### 1. AWS Discovery Service
   - On-premise Data Center에서 실행되는 Application을 자동으로 파악하고 관련 Dependency 요소, 성능 프로필을 맵핑하기 위한 서비스
 
-#### 2.
+
+#### 2. DataSync
+  - AWS DataSync는 온프레미스 스토리지 시스템과 AWS 스토리지 서비스 간, 또한 AWS 스토리지 서비스 간 데이터 이동을 간소화, 자동화 및 가속화하는 온라인 데이터 전송 서비스
 
 ### 10. AI
   - VISION
@@ -282,6 +284,9 @@
     - 자격증명과 정책을 연결하여서 사용자에게 부여한다.
   
   - 추천: 아무런 권한이 없는 계정을 하나 만들고, 역활전환을 한 후에 cli연동을 진행한다.
+
+#### 1. AWS CloudTrail
+  - AWS CloudTrail은 계정의 거버넌스, 규정 준수, 운영 및 위험 감사를 활성화하도록 도와주는 서비스입니다. 사용자, 역할 또는 AWS 서비스가 수행하는 작업들은 CloudTrail에 이벤트로 기록됩니다. 이벤트에는 AWS Management 콘솔, AWS Command Line Interface, AWS 및 SDKs에서 수행된 작업이 포함됩니다.
 
 ## 2. AWS-CLI
   - 참고사이트: [https://docs.aws.amazon.com/cli/index.html](https://docs.aws.amazon.com/cli/index.html)
