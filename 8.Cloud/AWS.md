@@ -49,6 +49,16 @@
   - Amazon ELB(Elastic Load Balancing)
   - Amazon DC(Direct Connect)
 
+### Edge Location
+  - 단순하게 어플리케이션에 접근해서 컨텐츠를 받을 때는 사내망, 통신사망, 여러 인터넷(라우트, 게이트웨이)을 통해 resource에 접근한다.
+  - Edge Location은 AWS 자체 네트워크만 routing하여 여러개의 네트워크 홉을 거치는 일이 없게 함으로 굉장히 빠르게 컨텐츠를 요청/응답할 수 있다.
+  - Edge Location을 사용하는 AWS는 아래와 같다.
+    - WAF
+    - Route53
+    - Shield
+    - Global Accelerator
+    - CloudFront
+
 ### Amazon VPC(Virtual Private Cloud)
   - organization: 계정이 여러개라도 통합계정처럼 사용가능
   - VPC를 만들면 default 라우팅이 함께 만들어진다.
