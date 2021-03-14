@@ -169,7 +169,6 @@
     - Amazon RDS : 관리형 데이터베이스 서비스
       - 모니터링을 통해서 Instance Type의 변경이 필요한 정도를 제외하곤 거진 AWS에서 관리를 해준다.
       - 최근에는 Storage가 부족하면 Auto Scaling까지도 가능하다.
-    - Amazon Redshift : 
     - Amazon Aurora : Amazon에서 개발한 Database(MySQL과 PostgreSQL과 호환이 가능하며, 어떤DB와 호환용으로 만들지 선택해야한다.)
       - 선택된 리전에 서로 다른 3곳의 가용영역에 2개씩 총 6개가 만들어진다.
         - 읽기전용, 장애대응용 DB가 있다.
@@ -180,6 +179,7 @@
       - 읽기, 쓰기 용량을 신경써야한다.(100ms 단위로 처리되지만, 초당 몇번 처리하게 할 것인지 제한을 걸 수 있다.)
       - 접근제어
         - DB자체를 관리자가 직접 컨트롤 하는게 아니기 때문에, IAM으로 서비스의 접근을 제한한다.
+    - Amazon Redshift : 
     - Amazon ElastiCache : 관계형 데이터베이스 앞단에 성능을 높히기 위하여 사용(샤딩 등)
     - Amazon Neptune : 그래프 데이터를 저장하는데 최적화
 
