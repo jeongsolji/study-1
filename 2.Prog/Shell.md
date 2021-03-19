@@ -77,3 +77,143 @@
     
     $변수명
     ```
+
+## Example
+### auto create tag on git
+```
+#!/bin/bash
+
+
+. ./createAutoTag_setting.sh
+
+
+####################################################################################################
+# Description
+####################################################################################################
+# Creator: HyunHyun Kim
+# Date: 2021. 03. 19.
+# Description:
+#   git remote에서 master branch를 가져와 tag를 생성한 뒤 push까지 진행.
+#   이후 jenkins의 빌드/배포를 실행한다.
+#   단, 아직 exception, error처리에 대한 부분이 미흡함으로 실무에서 사용하기 부적합하다.
+# Parameter
+#   $1=고객사:-default $CUSTOMER(in ./createAutoTag_setting.sh)
+#     형태: 고객사,고객사,고객사(구분자 ',')
+#     예제: josunhotel,emoney,spharos
+
+
+
+####################################################################################################
+# Constant Define
+####################################################################################################
+CONSTANT_TRUE=0
+CONSTANT_FALSE=1
+
+
+####################################################################################################
+# Variable Define
+####################################################################################################
+GIT_REPOSITORY_URL="https://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos"
+GIT_LOG_COUNT=1
+GIT_DATE_PREFIX="Date:"
+
+WORKSPACE_PATH=./cicd
+NOW_DATE=$(date +%Y%m%d)
+DATE_FORMAT="%Y%m%d"
+
+LOG_PATH=$WORKSPACE_PATH/logs
+LOG_EXTENSION=log
+LOG_BACKUP_DATE=$(date +%Y%m%d)
+
+
+####################################################################################################
+# Function Define
+####################################################################################################
+function main() {
+  $(init)
+
+  local repositories=$(aws codecommit list-repositories | jq '.repositories | .[]')
+  for repositoryName in $(echo "$repositories" | jq -r '.repositoryName'); do
+    local resultForInitRepo=$(gitInitRepo "$repositoryName")
+
+    [[ $(isProcessing "$repositoryName") != $CONSTANT_TRUE ]] && continue
+
+    echo "$(gitTagging "$repositoryName" "$1")"
+  done
+}
+
+function init() {
+  # create a directory named logs
+  if [ ! -d "$LOG_PATH" ]; then
+    mkdir -p $LOG_PATH
+  fi
+}
+
+function gitInitRepo() {
+  local repositoryName="$1"
+  local repositoryPath="$WORKSPACE_PATH/$1"
+
+  if [[ ! -d $WORKSPACE_PATH/$repositoryName ]]; then
+    git clone $GIT_REPOSITORY_URL/"$repositoryName" "$repositoryPath"
+  fi
+
+  git -C "$repositoryPath" checkout master
+  git -C "$repositoryPath" pull
+}
+
+function isProcessing() {
+  # create meta-data as log file
+  local repositoryName=$1
+  local repositoryPath=$WORKSPACE_PATH/$1
+  local repositoryTagInfo=$(git -C "$repositoryPath" log -$GIT_LOG_COUNT --date=format:"$DATE_FORMAT")
+
+  local logFile=$LOG_PATH/$repositoryName.$LOG_EXTENSION
+  local logBackUpFile=$LOG_PATH/$(makeFileNameBySeq "$repositoryName.$LOG_EXTENSION")
+
+  if [[ -f $logFile ]]; then
+    cp -f "$logFile" "$logBackUpFile"
+  else
+    touch "$logBackUpFile"
+  fi
+  echo "$repositoryTagInfo" > "$logFile"
+
+  # check logging file
+  local crntDate=$(grep "$GIT_DATE_PREFIX" "$logFile")
+  local pastDate=$(grep "$GIT_DATE_PREFIX" "$logBackUpFile")
+
+  if [[ "$pastDate" == "" || "$crntDate" > "$pastDate" ]]; then
+    echo $CONSTANT_TRUE
+  else
+    echo $CONSTANT_FALSE
+  fi
+}
+
+function makeFileNameBySeq(){
+  local fileFullName=$1
+  local fileName=$(echo "$fileFullName" | sed 's/\(.*\)\..*/\1/')
+  local fileSeq=$(printf "%03d" $(($(printf "%d" "$(ls -r "$LOG_PATH" | grep "$fileName-$NOW_DATE" | head -n 1 | sed 's/.*-\(.*\)\..*/\1/')") + 1)))
+
+  echo "$fileName-$NOW_DATE-$fileSeq.$LOG_EXTENSION"
+}
+
+function gitTagging() {
+  local repositoryName="$1"
+  local repository=$WORKSPACE_PATH/$repositoryName
+  local customers="${2:-default $CUSTOMERS}"
+
+  for customer in $(echo "$customers" | tr ',' "\n"); do
+    local oriTagName=$(git -C "$repository" ls-remote --tags origin | grep -E "$customer" | head -n 1)
+    local newTagName=$NOW_DATE-"$customer"-$(printf "%03d" $(($(printf "%d" "${oriTagName##*-}") + 1)))
+
+    git -C "$repository" tag -a "$newTagName" -m "$newTagName"
+    git -C "$repository" push --tag
+  done
+}
+
+####################################################################################################
+# Main Process
+####################################################################################################
+echo "start[$(date)]"
+echo "$(main "$*")"
+echo "end[$(date)]"
+```
