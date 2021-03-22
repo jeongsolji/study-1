@@ -21,8 +21,10 @@
   - Grammar Architecture
     - Pipeline
     - Directives
-      - environment
       - options
+        - pipeline의 옵션을 선택적으로 포함
+      - environment
+        - key-value 형태로 파이프라인 내부에서 사용할 환경 변수로 선언
       - parameters
       - triggers
       - tools
@@ -34,7 +36,7 @@
         - pipeline 또는 stage 실행 시, 전·후로 실행 될 confition block을 정의
         - 사용가능 Parameters: always, changed, fixed, regression, aborted, failure, success, unstable, unsuccessful, cleanup 등
       - stages
-    
+        - pipeline block안에서 한번만 사용 가능하며, 여러개의 stage를 포함
     - 참고사이트: [https://www.jenkins.io/doc/book/pipeline/syntax](https://www.jenkins.io/doc/book/pipeline/syntax/)
   
 ### parallel
