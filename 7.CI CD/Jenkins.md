@@ -12,12 +12,14 @@
   - Directive
     |Directive       |Description      |
     |:--------------:|:----------------|
-    |node            |최상단 선언</br>Scripted pipeline을 실행하는 젠킨스 agent</br>Master/Slave구조에서는 Parameter로 Master/Slave 정의 가능|
+    |node            |최상단 선언</br>Scripted pipeline을 실행하는 젠킨스 agent</br>Master/Agent구조에서는 Parameter로 Master/Agent 정의 가능|
     |stage           |작업의 본문에 선언</br>pipeline의 각 단계를 얘기하며, 이 단계에서 어떤 작업을 실행할지 선언|
     |dir             |명령어를 수행할 디렉토리/폴더 정의|
     |def             |                 |
     |sh              |                 |
     |git             |                 |
+    
+  - 과거: Master/Slave | 현재: Master/Agent
     
 
 ## Jenkins Pipeline
