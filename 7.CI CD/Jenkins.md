@@ -3,12 +3,24 @@
 ---
 
 
-# 1. Jenkins
+# Jenkins
   - 소프트웨어 개발 시 지속적으로 통합 서비스를 제공하는 툴이다. CI(Continuous Integration) 툴 이라고 표현한다.
   
   - 참고사이트: [https://www.jenkins.io/doc/book/pipeline/](https://www.jenkins.io/doc/book/pipeline/)
 
-## 1. Jenkins Pipeline
+## Jenkins Grammar
+  - Directive
+    |Directive       |Description      |
+    |:--------------:|:----------------|
+    |node            |최상단 선언</br>Scripted pipeline을 실행하는 젠킨스 agent</br>Master/Slave구조에서는 Parameter로 Master/Slave 정의 가능|
+    |stage           |작업의 본문에 선언</br>pipeline의 각 단계를 얘기하며, 이 단계에서 어떤 작업을 실행할지 선언|
+    |dir             |명령어를 수행할 디렉토리/폴더 정의|
+    |def             |                 |
+    |sh              |                 |
+    |git             |                 |
+    
+
+## Jenkins Pipeline
   - Jenkins Pipeline 이란 스크립트를 통해 파이프라인의 흐름을 정의하는 기능
   - Architecture
     - Node
@@ -21,9 +33,9 @@
     
     - 참고사이트: [https://www.jenkins.io/doc/book/pipeline/syntax](https://www.jenkins.io/doc/book/pipeline/syntax/)
   
-### 1. parallel
+### parallel
   
-### 2. Declarative Pipeline
+### Declarative Pipeline
   - Grovy-syntax기반
   ```console
   pipeline {
@@ -46,7 +58,7 @@
   }
   ```
 
-### 3. Scripted Pipeline
+### Scripted Pipeline
   - Grovy 기반(Grovy 문법이 선행되어야 하며, 진입장벽이 높다.)
   - Declaractive보다 효과적으로 많은 기능을 포함하여 작성 가능
   ```console
@@ -66,7 +78,7 @@
 }
   ```
 
-### 4. Combine A and B
+### Combine A and B
   - Declaractive Pipeline과 Scripted Pipeline를 혼합하여 사용가능
   ```console
   node {
