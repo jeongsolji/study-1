@@ -8,20 +8,6 @@
   
   - 참고사이트: [https://www.jenkins.io/doc/book/pipeline/](https://www.jenkins.io/doc/book/pipeline/)
 
-## Jenkins Grammar
-  - Directive
-    |Directive       |Description      |
-    |:--------------:|:----------------|
-    |node            |최상단 선언</br>Scripted pipeline을 실행하는 젠킨스 agent</br>Master/Agent구조에서는 Parameter로 Master/Agent 정의 가능|
-    |stage           |작업의 본문에 선언</br>pipeline의 각 단계를 얘기하며, 이 단계에서 어떤 작업을 실행할지 선언|
-    |dir             |명령어를 수행할 디렉토리/폴더 정의|
-    |def             |                 |
-    |sh              |                 |
-    |git             |                 |
-    
-  - 과거: Master/Slave | 현재: Master/Agent
-    
-
 ## Jenkins Pipeline
   - Jenkins Pipeline 이란 스크립트를 통해 파이프라인의 흐름을 정의하는 기능
   - Architecture
@@ -32,6 +18,22 @@
     - Label: tag 비슷한 역활
     - Stage: DSL 명령어를 수행
     - Step: Stage안에 있는 DSL명령어들
+  - Grammar Architecture
+    - Pipeline
+    - Directives
+      - environment
+      - options
+      - parameters
+      - triggers
+      - tools
+      - input
+    - Section
+      - agent
+        - 사용가능 Parameters: any, none, label, node, docker, dockerfile, kubernetes
+      - post
+        - pipeline 또는 stage 실행 시, 전·후로 실행 될 confition block을 정의
+        - 사용가능 Parameters: always, changed, fixed, regression, aborted, failure, success, unstable, unsuccessful, cleanup 등
+      - stages
     
     - 참고사이트: [https://www.jenkins.io/doc/book/pipeline/syntax](https://www.jenkins.io/doc/book/pipeline/syntax/)
   
