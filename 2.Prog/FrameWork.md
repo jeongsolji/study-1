@@ -5,15 +5,15 @@
 ---
 
 
-# 1. Spring MVC
+# Spring MVC
 
-# 2. Spring Boot
+# Spring Boot
 
-## 1. core
+## core
   - 참고사이트: [https://blog.woniper.net/336](https://blog.woniper.net/336)
   
   
-## 2. Spring Project creating
+## Spring Project creating
   - Spring Initializr 사용방법(2가지)
     ~~~
     1. Spring 공식 홈페이지(spring.io)에서 제공하는 기능을 사용합니다.
@@ -87,7 +87,7 @@
       
   - 참고사이트: [https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/](https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/)
   
-## 3. profiles with maven3
+## profiles with maven3
   - You can provide commandline argument like this:
   ```console
   mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=dev"
@@ -105,19 +105,19 @@
   java -jar app.jar --spring.profiles.active=dev (Note order)
   ```
 
-## 4. Bean
-### 1. Bean Hocker
-#### 1. BeanDefinitionRegistryPostProcessor
+## Bean
+### Bean Hocker
+#### BeanDefinitionRegistryPostProcessor
   - Bean 등록 목적
-#### 2. BeanFactoryPostProcessor
+#### BeanFactoryPostProcessor
   - Bean 정의를 재정의 또는 속성추가 목적
-#### 3. BeanPostProcessor
+#### BeanPostProcessor
   - Bean 인스턴스를 재정의 목적
   
   - 참고사이트: [https://thecodinglog.github.io/spring/2019/01/29/dynamic-spring-bean-registration.html](https://thecodinglog.github.io/spring/2019/01/29/dynamic-spring-bean-registration.html)
 
-### 2. Conditional Bean Registration(조건부 빈 등록)
-#### 1. Java
+### Conditional Bean Registration(조건부 빈 등록)
+#### Java
   - 참고사이트: [https://sodocumentation.net/ko/spring/topic/4732/spring%EC%9D%98-%EC%A1%B0%EA%B1%B4%EB%B6%80-%EB%B9%88-%EB%93%B1%EB%A1%9D](https://sodocumentation.net/ko/spring/topic/4732/spring%EC%9D%98-%EC%A1%B0%EA%B1%B4%EB%B6%80-%EB%B9%88-%EB%93%B1%EB%A1%9D)
   ```console
   public class PropertyCondition implements Condition {
@@ -147,8 +147,8 @@
   }
   ```
 
-#### 2. Annotation
-##### 1. Class Conditional
+#### Annotation
+##### Class Conditional
   - @ConditionalOnClass
   - @ConditionalOnMissingClass
   ```console
@@ -161,11 +161,11 @@
   }
   ```
   
-##### 2. Bean Conditional
+##### Bean Conditional
   - @ConditionalOnBean
   - @ConditionalOnMissingBean
   
-##### 3. Property Conditional
+##### Property Conditional
   - @ConditionalOnProperty
   ```console
   @ConditionalOnProperty(value='somebean.enabled', matchIfMissing = true, havingValue="yes")
@@ -174,13 +174,13 @@
   }
   ```
   
-##### 4. Resource Conditional
+##### Resource Conditional
   - @ConditionalOnResource
   ```console
   @ConditionalOnResource(resources = "classpath:init-db.sql") 
   ```
   
-##### 5. WebApplication Conditional
+##### WebApplication Conditional
   - @@ConditionalOnWebApplication
   - @ConditionalOnNotWebApplication
   ```console
@@ -189,14 +189,14 @@
   public class MyWebMvcAutoConfiguration {...}
   ```
   
-##### 6. Expression Conditional
+##### Expression Conditional
   - @ConditionalOnExpression
   ```console
   @ConditionalOnExpression("${rest.security.enabled}==false")
   ```
 
-## 5. Transactional
-### 1. Prior knowledge
+## Transactional
+### Prior knowledge
   - ACID(원자성, 일관성, 고립성, 지속성): transaction이 안전하게 수행된다는 것을 보장하기 위한 성질
     - Atomicity(원자성): 트랜잭션은 하나의 원자처럼 취급되어야 한다.
 	                       즉 부분적으로 실행되어, 특정 부분만 반영되고 나머지는 반영되지 않으면 안된다는 뜻.
@@ -209,33 +209,36 @@
 	                             100 -> 200 -> 300 -> 400
 	                             만약 300원째 계산을 하고 있을 때, 다른 사람이 잔여금액을 확인한다고 해도, 트랜잭션은 독립적으로 움직이기 때문에 100원으로 보인다.
 
-      - Level
-	      - 0Lv, DEFAULT
-		    - 1Lv, READ_UNCOMMITED
-		    - 2Lv, READ_COMMITED
-		    - 3Lv, REPEATABLE_READ
-		    - 4Lv, SERIALIZABLE
-      
-        - 참고사이트: [https://nesoy.github.io/articles/2019-05/Database-Transaction-isolation](https://nesoy.github.io/articles/2019-05/Database-Transaction-isolation)
-
-      - Propagation
-  	    - REQUIRED : 부모 트랜잭션 내에서 실행하며 부모 트랜잭션이 없을 경우 새로운 트랜잭션을 생성
-  	    - REQUIRES_NEW : 부모 트랜잭션을 무시하고 무조건 새로운 트랜잭션이 생성
-  	    - SUPPORT : 부모 트랜잭션 내에서 실행하며 부모 트랜잭션이 없을 경우 nontransactionally로 실행
-  	    - MANDATORY : 부모 트랜잭션 내에서 실행되며 부모 트랜잭션이 없을 경우 예외가 발생
-  	    - NOT_SUPPORT : nontransactionally로 실행하며 부모 트랜잭션 내에서 실행될 경우 일시 정지
-  	    - NEVER : nontransactionally로 실행되며 부모 트랜잭션이 존재한다면 예외가 발생
-  	    - NESTED : 해당 메서드가 부모 트랜잭션에서 진행될 경우 별개로 커밋되거나 롤백될 수 있음. 둘러싼 트랜잭션이 없을 경우 REQUIRED와 동일하게 작동
-
     - Durability(지속성)  : 성공적으로 수행된 트랜잭션은 영원히 반영되어야 함을 의미하며, 시스템 문제, DB 일관성 체크 등을 하더라도 유지되어야 함을 의미한다.
 	  			                  전형적으로 모든 트랜잭션은 로그로 남고 시스템 장애 발생 전 상태로 되돌릴 수 있다.
 		  		                  트랜잭션은 로그에 모든 것이 저장된 후에만 commit 상태로 간주될 수 있다.
   
-### 2. Transactional Annotation
+### Transactional Annotation
+#### Level
+  - 0Lv, DEFAULT
+  - 1Lv, READ_UNCOMMITED
+  - 2Lv, READ_COMMITED
+  - 3Lv, REPEATABLE_READ
+  - 4Lv, SERIALIZABLE
 
-## 6. Spring Security
+  - 참고사이트: [https://nesoy.github.io/articles/2019-05/Database-Transaction-isolation](https://nesoy.github.io/articles/2019-05/Database-Transaction-isolation)
 
-## 99. JPA
+#### propagation
+  - Spring의 @Transactional의 propagation 속성으로 다음과 같은 설정
+  - Propagation
+    - REQUIRED : 부모 트랜잭션 내에서 실행하며 부모 트랜잭션이 없을 경우 새로운 트랜잭션을 생성
+    - REQUIRES_NEW : 부모 트랜잭션을 무시하고 무조건 새로운 트랜잭션이 생성
+    - SUPPORT : 부모 트랜잭션 내에서 실행하며 부모 트랜잭션이 없을 경우 nontransactionally로 실행
+    - MANDATORY : 부모 트랜잭션 내에서 실행되며 부모 트랜잭션이 없을 경우 예외가 발생
+    - NOT_SUPPORT : nontransactionally로 실행하며 부모 트랜잭션 내에서 실행될 경우 일시 정지
+    - NEVER : nontransactionally로 실행되며 부모 트랜잭션이 존재한다면 예외가 발생
+    - NESTED : 해당 메서드가 부모 트랜잭션에서 진행될 경우 별개로 커밋되거나 롤백될 수 있음. 둘러싼 트랜잭션이 없을 경우 REQUIRED와 동일하게 작동
+
+    - 참고사이트: [https://supawer0728.github.io/2018/03/22/spring-multi-transaction/](https://supawer0728.github.io/2018/03/22/spring-multi-transaction/)
+
+## Spring Security
+
+## JPA
   - Object-Relational Mapping (객체 관계 매핑)
     - 객체지향(Java)과 관계형(RDBMS)과의 패러다임 불일치를 해결(매핑)하는 기술로, 본 문서는 Hibernate를 기준으로 작성.
     
@@ -243,8 +246,8 @@
     - [ [ Java Application ]  <-JPA->  [ JDBC API ] ]  <->  [ Database ]
     - Application과 JDBC 사이에 위치하여, 객체지향형과 관계형에 대한 불일치 패러다임을 해소.
     
-### 1. Tech
-#### 1. 복합키
+### Tech
+#### 복합키
   - @EmbededId
     ~~~
     ~~~
@@ -393,7 +396,7 @@
         }
     }
     ~~~
-#### 2. 단방향/양방향 Mapping
+#### 단방향/양방향 Mapping
   - 단방향 Mapping
     ~~~
     ~~~
