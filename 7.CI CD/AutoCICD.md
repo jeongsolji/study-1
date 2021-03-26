@@ -94,7 +94,7 @@
 
   def build(customer, repositoryName, baseImage) {
       dir("$SHELL_PATH") {
-          def result = sh(returnStdout: true, script: "sh STGexecuteBuild.sh $customer $repositoryName $baseImage").trim()
+          def result = sh(returnStdout: true, script: "sh build.sh $customer $repositoryName $baseImage").trim()
           echo "$customer-$repositoryName BUILD result: ${result} ${CONSTANT_SUCCESS}"
 
           return "${result}" == "${CONSTANT_SUCCESS}" ? true : false
@@ -133,7 +133,7 @@
     [[ $# -lt $CONSTANT_MANDATORY_PARAMETERS_COUNT ]] && echo "$CONSTANT_ERR_INVALID_PARAMETER_COUNT" && return
 
     local repositoryName="$2"
-    local repositoryId="$(aws codecommit get-repository --repository-name api | jq '.repositoryMetadata .repositoryId')"
+    local repositoryId="$(aws codecommit get-repository --repository-name $repositoryName $AWS_CODECOMMIT | jq '.repositoryMetadata .repositoryId')"
     if [[ -z "$repositoryId" ]]; then
       echo "$CONSTANT_ERR_INVALID_PARAMETER"
 
@@ -241,7 +241,8 @@
     local fileFullName=$1
     local filePath="${fileFullName%/*}"
     local fileName=$(echo "$fileFullName" | sed 's/.*\/\(.*\)\..*/\1/')
-    local fileSeq=$(printf "%03d" $(($(printf "%d" "$(ls -r "$filePath" | grep "$fileName-$NOW_DATE" | head -n 1 | sed 's/.*-\(.*\)\..*/\1/')") + 1)))
+    local fileSeq=$(printf "%03d" $(($(printf "%d" "$(ls -r "$filePath" | grep "$fileName-$NOW_DATE" | head -n 1 | sed 's/.*_\(.*\)\..*/\1/')") + 1)))
+    echo printf "%d" "$(ls -r "$filePath" | grep "$fileName-$NOW_DATE" | head -n 1 | sed 's/.*_\(.*\)\..*/\1/')" >> log.log 
 
     echo "$fileName-$NOW_DATE-$fileSeq"
   }
@@ -259,7 +260,7 @@
     echo $isValid
   fi
   ```
-
+  
   - build.sh
   ```console
   #!/bin/bash
@@ -277,6 +278,11 @@
   #   STG 특정 고객사 - repository 빌드 배포
 
   ####################################################################################################
+  # Constant Define
+  ####################################################################################################
+  CONSTANT_MANDATORY_PARAMETERS_COUNT=3
+
+  ####################################################################################################
   # ARGUMENT DEFINE
   ####################################################################################################
 
@@ -291,7 +297,7 @@
   function isValid() {
     [[ $# -lt $CONSTANT_MANDATORY_PARAMETERS_COUNT ]] && echo "$CONSTANT_ERR_INVALID_PARAMETER_COUNT" && return
 
-    local repositoryId="$(aws codecommit get-repository --repository-name "$repositoryName" | jq '.repositoryMetadata .repositoryId')"
+    local repositoryId="$(aws codecommit get-repository --repository-name $repositoryName $AWS_CODECOMMIT | jq '.repositoryMetadata .repositoryId')"
     if [[ -z "$repositoryId" ]]; then
       echo "$CONSTANT_FALSE"
 
@@ -304,11 +310,13 @@
   }
 
   function printer() {
-    echo -e "------------------------------------------------------------"
-    echo -e "Error> Passing wrong parameters                             "
-    echo -e "------------------------------------------------------------"
-    echo -e "- 2st parameter: Repository Name of AWS CodeCommit          "
-    echo -e "------------------------------------------------------------"
+    echo -e "-------------------------------------------------------------"
+    echo -e "Error> Passing wrong parameters                              "
+    echo -e "-------------------------------------------------------------"
+    echo -e "- 1st parameter: Customer Name(ref: $CUSTOMERS ./settings.sh)"
+    echo -e "- 2st parameter: Repository Name of AWS CodeCommit           "
+    echo -e "- 3nd parameter: BaseImageName					            "
+    echo -e "-------------------------------------------------------------"
   }
 
   function main() {	
@@ -316,7 +324,7 @@
     echo "$(createLog)" >>$ACTIVEPROFILE-executeBuild.log
 
     # BUILD
-    curl -u $JENKINS_USER:$JENKINS_TOKEN -X post "http://$JENKINS_URL:$JENKINS_PORT/view/Module/job/$repositoryName/buildWithParameters?token=$JENKINS_TOKEN&activeProfile=$ACTIVEPROFILE&customerName=$customer&baseImage=$baseImage"
+    curl -u $JENKINS_USER:$JENKINS_TOKEN -X post "http://$JENKINS_URL:$JENKINS_PORT/view/Auto_Repository/job/$repositoryName/buildWithParameters?token=$JENKINS_TOKEN&activeProfile=$ACTIVEPROFILE&customerName=$customer&baseImage=$baseImage"
     wait
     # -- After build finished, start the next repository build
     waitBuildFinished
@@ -325,16 +333,15 @@
   }
 
   function waitBuildFinished() {
-
+    sleep 30 
     while true; do
-      sleep 60
       local status="$(curl -u $JENKINS_USER:$JENKINS_TOKEN -X get "http://$JENKINS_URL:$JENKINS_PORT/job/$repositoryName/lastStableBuild/api/json" | jq '.nextBuild' | jq '.number')"
       wait
       if [[ "$status" -eq null ]]; then
         break
       fi
       echo "$customer $repositoryName building..." >>$ACTIVEPROFILE-executeBuild.log
-      sleep 60
+      sleep 15
     done
   }
 
@@ -362,6 +369,12 @@
 
   - settings.sh
   ```console
+  ####################################################################################################
+  # AWS
+  ####################################################################################################
+  AWS_CODECOMMIT="--profile codecommit"
+
+
   ####################################################################################################
   # SYSTEM
   ####################################################################################################
@@ -392,7 +405,7 @@
   ####################################################################################################
   GIT_REPOSITORY_URL="https://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos"
   GIT_BRANCH="master"
-  ACTIVEPROFILE="dev"
+  ACTIVEPROFILE="stg"
   BASEIMAGE="base-dev:1.0"
 
   ####################################################################################################
@@ -426,10 +439,10 @@
   ####################################################################################################
   # JENKINS
   ####################################################################################################
-  JENKINS_URL="10.222.52.164"
+  JENKINS_URL="10.222.57.74"
   JENKINS_PORT="8080"
   JENKINS_USER="ssgadmin"
-  JENKINS_TOKEN="111efe0c6a2f3c0f2a48ea227368c1cd0e"
+  JENKINS_TOKEN="11ed1ef91e7f818b56dffb6251becb1b3d"
   ```
 
 ## Jenkins by git tag change log
