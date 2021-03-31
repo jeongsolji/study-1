@@ -6,7 +6,7 @@
 ---
 
 
-# 1. Docker
+# Docker
   - Hypervisor
     - 기존의 가상화 기술로써 가상머신으로 구분하여 운영체제를 관리하기 때문에, Kernel, OS lv의 lib 등 불필요한 기능을 많이 내포하기 때문에 성능에 이슈가 존재한다.
   - Docker
@@ -18,8 +18,10 @@
   - Container
     - 표면적으로는 OS자체를 가상화하였으나, 내부적으로는 OS자체를 가상화하지 않은형태(Linux자체 기능인 chroot, namespace, cgroup을 사용하여 프로세스 단위의 격리 환경을 만들어 놓은 곳)이기 때문에 Container라 지칭
 
-## 1. 개요
-### 1. Docker [ 관리단위 : Container ]
+  - 참고사이트: [https://docs.microsoft.com/ko-kr/dotnet/architecture/containerized-lifecycle/what-is-docker](https://docs.microsoft.com/ko-kr/dotnet/architecture/containerized-lifecycle/what-is-docker)
+
+## 개요
+### Docker [ 관리단위 : Container ]
   - Docker 위치 확인
   ```console
   # which docker
@@ -36,13 +38,13 @@
   Dokcer version xx, build xxx
   ```
 
-### 2. Docker Image [ {저장소이름}/이미지이름:이미지버전 ]
+### Docker Image [ {저장소이름}/이미지이름:이미지버전 ]
   - Docker Container를 만들기 위한 정보로써, OS 및 Application의 정보를 하나의 정보로 묶어서 관리되는 파일을 뜻한다.
 
-### 3. Docker HUB
+### Docker HUB
   - Docker Image의 원격저장소(≒ Git HUB)
   
-### 4. Docker Container
+### Docker Container
   - 변천사: chroot으로 격리된 공간사용 -> LXC(LinuX Container) 도입 -> Docker 도입
     - chroot: directory만 구분하여 격리된 공간사용.
               설정이 매우 복잡.
@@ -53,7 +55,7 @@
   - 하나의 Docker Container에는 하나의 Process만 구동시키는 것을 권장
     - ex> 'Docker Container for Web-Server' , 'Docker Container for database' 이렇게 2개의 Docker Container를 구동
     
-### 5. Docker Volume
+### Docker Volume
   - Docker Container의 데이터를 영속적(Persistent)데이터로 활용
   
   - Docker Volume은 3가지 방법을 지원한다.
@@ -62,7 +64,7 @@
     - Docker Volume [권장]
       - Docker 자체적으로 관리하는 Volume을 사용
       
-### 6. Docker Network
+### Docker Network
   - Docker Network Architecture
     - ![Database Server Setting](../resource/Infra,%20Docker,%20docker%20network.png)
 
@@ -77,18 +79,18 @@
     - flannel
     - openvswitch
 
-### 7. Dockerfile
+### Dockerfile
   - Docker의 Build를 실행 시, 설정정보를 기재하는 파일
   
   - 일반적인 Docker Image만드는 절차
     - [기본 OS Docker Image 다운] -> [Docker Container화] -> [Application 설치 및 셋팅] -> [Docker Container를 Docker Image로 변경]
   - 위의 절차를 하나의 파일로 기재하여, 자동으로 Docker Image를 만드는 행위를 Docker Build라고 하며, 이때 사용하는 File을 Dockerfile이라 한다.
 
-#### 1. ENTRYPOINT, CMD
+#### ENTRYPOINT, CMD
   - ENTRYPOINT: 지정한 명령을 수행하도록 지정
   - CMD: Container를 실행할 때 인자값을 주게 되면 Dockerfile에 지정된 CMD값을 대신하여 지정한 인자값으로 변경하여 실행
 
-## 2. Command Line Interface
+## Command Line Interface
   - Docker Engine
   ```console
   [root@localhost ~]# docker -v
@@ -315,7 +317,7 @@
   ```
 
 
-# 2. Docker Swarm
+# Docker Swarm
   - 여러 대의 도커 서버를 하나의 클러스터로 만들어 Docker Container를 생성하는 여러 기능을 제공.
   - Swarm Class과 Swarm Mode로 나뉨
     - Swarm Class(Legacy)
@@ -332,10 +334,10 @@
       - 또한, 클러스터에 영입할 새로운 서버의 발견(Service Discovery), 클러스터의 설정 저장, 동기화 등 을 위한 매니저를 뜻하기도 한다.
       - etcd, zookeeper, consul 등이 대표적이다.
   
-## 1. Swarm Classic
+## Swarm Classic
   - 생략(교재에서 생략되었다.)
   
-## 2. Swarm Mode
+## Swarm Mode
   - 구조
     - Manager Node
       - 기본적으로 Worker Node를 포함하며, Worker Node를 관리하기 위한 Docker Server
@@ -343,7 +345,7 @@
     - Worker[1...N] Node
       - 실제로 Docker Container가 생성되고 관리되는 Docker Server
       
-## 3. Swarm Mode Service
+## Swarm Mode Service
   - Architecture
   ![Swarm Mode Architecture](../resource/Infra,%20Docker,%20docker%20swarm.png)
   
@@ -369,7 +371,7 @@
     - Task들이 Manager Node 또는 Worker Node에 할당이 된 상태 
 
 
-## 4. Command Line Interface
+## Command Line Interface
   - Swarm Mode (명령어의 제어 단위는 Docker Container)
   ```console
   [root@localhost ~]# docker info | grep Swarm
@@ -458,13 +460,13 @@
   ```
 
 
-# 3. Docker Compose
+# Docker Compose
   - 각기 다른 Application의 Docker Container를 하나의 Project처럼 다룰 수 있도록 묶을 수 있는 환경을 제공하는 것.
     ex> Web Server용 Docker Container와 DB Server용 Docker Container를 묶어서 기동시키고 down시킨다.
     
   - Docker Container의 설정이 정의도니 YAML 파일을 읽어 Docker Engine을 통해 Docker Container를 생성한다.
   
-## 1. Command Line Interface
+## Command Line Interface
   - Origin CLI
   ```console
   [root@localhost ~]# docker run -d --name msql \
