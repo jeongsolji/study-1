@@ -72,5 +72,25 @@
       end loop;
   end $$;
   ```
+  
+  - example3: cursor 사용
+  ```
+  do $$
+  declare
+      cur_mber        cursor for select  pud.mber_no
+                                   from  (
+                                             select  pud.mber_no
+                                               from  point.point_use_dtls pud
+                                              group  by pud.mber_no
+                                         ) pud
+                                  where  pud.mber_no is not null;
+      r_mber          record;
+  begin
+      for r_mber in cur_mber
+      loop
+          raise notice 'mber_no: %s', r_mber.mber_no::text;
+      end loop;
+  end $$;
+  ```
 
   - 참고사이트: [https://postgresql.kr/docs/9.3/plpgsql.html](https://postgresql.kr/docs/9.3/plpgsql.html)
