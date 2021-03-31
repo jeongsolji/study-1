@@ -53,6 +53,37 @@
    order  by root_ordr asc, depth asc, ordr asc
   ;
   ```
+  
+  - example2: 전체테이블 및 컬럼명 조회
+  ```
+  select  swaf_columns.table_catalog
+             ,swaf_columns.table_schema
+             ,swaf_columns.table_name
+             ,swaf_tables.table_desc
+             ,swaf_columns.column_name
+             ,swaf_tables.objsub_id
+        from  -- Table 조회
+              (
+                  select  psat.relid       as  relid
+                         ,psat.schemaname  as  schema_name
+                         ,psat.relname     as  table_name
+                         ,pd.description   as  table_desc
+                         ,pd.objsubid      as  objsub_id
+                    from  pg_catalog.pg_statio_all_tables psat
+                          inner join  pg_catalog.pg_description pd
+                                  on  psat.relid = pd.objoid
+                 where  schemaname = 'us_swafcom'
+              )  swaf_tables
+              inner join  (
+                              select  *
+                                from  information_schema.columns
+                          )  swaf_columns
+                      on  swaf_tables.schema_name = swaf_columns.table_schema
+                     and  swaf_tables.table_name = swaf_columns.table_name
+                     and  swaf_tables.objsub_id = swaf_columns.ordinal_position
+   order  by table_catalog, table_schema, table_name, objsub_id asc
+  ;
+  ```
 
 ## PL/SQL
   - example1
