@@ -12,7 +12,7 @@
 
 # PostgreSQL
 ## PL/SQL
-  - example
+  - example1
   ```
   do $$
   declare
@@ -49,4 +49,28 @@
   end $$;
   ```
   
+  - example2: record 사용
+  ```
+  do $$
+  declare
+      mber_info    record;
+  begin
+      for mber_info in (
+                             select  paum.mber_no
+                               from  (
+                                         select  pud.mber_no
+                                           from  point.point_use_dtls pud
+                                          group  by pud.mber_no
+                                     ) paum
+                              where  paum.mber_no is not null
+                        )
+
+      loop
+          raise notice 'mber_no: %s', mber_info.mber_no::text;
+
+
+      end loop;
+  end $$;
+  ```
+
   - 참고사이트: [https://postgresql.kr/docs/9.3/plpgsql.html](https://postgresql.kr/docs/9.3/plpgsql.html)
