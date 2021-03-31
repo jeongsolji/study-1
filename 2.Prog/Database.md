@@ -11,6 +11,37 @@
 # MySQL
 
 # PostgreSQL
+## Query
+  - example1: 계층쿼리
+  ```
+  with  recursive  sm_upper_menu( lv, depth, menu_id, upper_menu_id, menu_dc, root_ordr, ordr )  as  (
+      select  1::numeric  as  lv
+             ,concat(menu_id, '-', '1')  as  depth
+             ,menu_id
+             ,upper_menu_id 
+             ,menu_dc
+             ,ordr  as  root_ordr
+             ,ordr
+        from  svcm.sm_menu  sm_upper_menu
+       where  sm_upper_menu.upper_menu_id is null or sm_upper_menu.upper_menu_id = ''
+       union  all
+      select  (lv+1)::numeric  as  lv
+             ,concat(sm_upper_menu.depth, '-', (lv+1)) as  depth
+             ,sm_menu.menu_id
+             ,sm_menu.upper_menu_id
+             ,sm_menu.menu_dc
+             ,sm_upper_menu.root_ordr
+             ,sm_menu.ordr
+        from  sm_upper_menu  sm_upper_menu
+              inner join  svcm.sm_menu  as  sm_menu
+                      on  sm_upper_menu.menu_id = sm_menu.upper_menu_id 
+  )
+  select  *
+    from  sm_upper_menu
+   order  by root_ordr asc, depth asc, ordr asc
+  ;
+  ```
+
 ## PL/SQL
   - example1
   ```
