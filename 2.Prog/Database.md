@@ -12,6 +12,17 @@
 
 # PostgreSQL
   - 참고사이트: [https://www.postgresql.org/docs/](https://www.postgresql.org/docs/)
+
+## System
+### INFORMATION_SCHEMA
+  - SQL 표준에 의해 정의.
+  - 꼭 postgreSQL이 아닌, 다른 DBMS에서도 사용가능할 확률이 높다.
+  - 단, postgreSQL에서 INFORMATION_SCHEMA의 영역을 벗어난 경우가 존재함으로 PG_CATALOG를 참조해야 하는 경우가 있다.
+
+### PG_CATALOG
+  - postgreSQL 표준에 의해 정의.
+  - 완전히 postgreSQL에 고유하며, 모든 시스템 테이블과 뷰를 제공한다.
+
 ## Query
   - example1: 계층쿼리
   ```
