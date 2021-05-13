@@ -79,7 +79,30 @@
     }
     ~~~
 
-## Reg
+## Regular Expression
+  - 정규표현식 
+    ~~~
+    var regExNUM         = /[0-9]/;                                                 // 숫자
+    var regExNUM_8       = /^[0-9]{8}$/;                                            // 숫자8자
+    var regExNUM_13      = /^[0-9]{13}$/;                                           // 숫자13자
+    var regExNotNUM      = /[^0-9]/;                                                // !숫자
+    var regExKOR         = /[가-힣ㄱ-ㅎㅏ-ㅣ]/g;                                        // 한글 정규식
+    var regExENG         = /[a-zA-Z]/;                                              // 영문(대·소문자)
+    var regExSYM         = /([\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"])/;     // 특수문자
+    var regEx_whiteSpace = /\s/;                                                    // 공백
+    var regEx_password   = /^(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9])(?=.*[0-9]).{8,16}$/;  // 비밀번호 검사(영문,숫자,특수문자를 포함한 8~16자)
+
+    var regExCnsc_3rdKOR   = /([가-힣ㄱ-ㅎㅏ-ㅣ\x20])\1\1/;                                // 같은 한글 연속 3번 정규식
+    var regExCnsc_3rdENG   = /(\w)\1\1/;                                               // 같은 영문자&숫자 연속 3번 정규식
+    var regExCnsc_3rdSYM   = /([\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"])\1\1/;  // 같은 특수문자 연속 3번 정규식
+    var regExAdjcnt_3rdNum = /(012)|(123)|(234)|(345)|(456)|(567)|(678)|(789)/;        // 연속된 숫자 정규식
+
+    var regExHp         = /^\d{3,4}-\d{3,4}-\d{3,4}$/;                                 // 휴대전화번호 정규식(hypen)
+    var regNomalExHp    = /^\d{9,12}$/;                                                // 휴대전화번호 정규식
+    var regBirthDt      = /^\d{4}-\d{2}-\d{2}$/;                                       // 생년월일 정규식(hypen)
+    var regNomalBirthDt = /^\d{8}$/;                                                   // 생년월일 정규식
+    var regExEmail      = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z]?)*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z]?)*\.[a-zA-Z]{2,3}$/i;	//Email 정규식
+    ~~~
 
 ---
 
