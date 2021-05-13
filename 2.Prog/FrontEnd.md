@@ -1,4 +1,4 @@
-# JavaScript, SPA(Single Page Application)
+# FrontEnd
   - Browser
   - JavaScript
   - React
@@ -6,14 +6,14 @@
 
 ---
 
-# 1. Browser
-## 1. Rendering
+# Browser
+## Rendering
   - phase1. HTML을 파싱하여 DOM요소와 스타일을 포함하여 RenderTree을 계산
   - phase2. 계산된 RenderTree를 화면에 노출
     - phase2-1. Reflow: Render Tree에 대한 유효성 확인 작업과 Node의 크기/위치를 계산하는 작업
     - phase2-2. RePaint: Reflow가 발생하였을 때 화면에 다시 그리는 작업
 
-### 1. Reflow, Repaint 최소화
+### Reflow, Repaint 최소화
   - 동일한 행태의 소스코드를 Group화하여 작업
   - dispaly속성을 none으로 사용한 뒤, block으로 해제하고, 이 중간 코드에 style의 변경 코드를 넣어 대량으로 'reflow'가 발생하는 현상을 방지
   - 가상노드 사용
@@ -23,8 +23,8 @@
 
 ---
 
-# 2. Javascript
-## 1. Execution Context(실행 컨텍스트)
+# Javascript
+## Execution Context(실행 컨텍스트)
   - Javascript의 this, function, hoisting, closure, Scope 등의 동작원리를 담고 있는 핵심원리
   - 실행 가능한 코드를 형상화하고 구분하는 추상적인 개념 -> 실행 가능한 코드가 실행되기 위해 필요한 환경(≒JRE)
     - 실행 가능한 코드란?
@@ -63,7 +63,7 @@
     }
     ~~~
 
-### 2. Lexical Scoping(렉시컬 스코프)
+### Lexical Scoping(렉시컬 스코프)
   - 외부 -> 내부변수 접근 불가
   - 내부 -> 외부변수 접근 가능
     ~~~
@@ -79,38 +79,12 @@
     }
     ~~~
 
+## Reg
+
 ---
 
 
-# 3. React
-## 1. React interlocking in Spring Boot
-  - React 앱을 생성
-     ~~~
-     npm install -i react react-dom
-     
-     또는
-     
-     npm install -g create-react-app
-     ~~~
-     
-  - 의존성 추가(Webpack, Babel, Loader)
-     ~~~
-     npm i webpack webpack-cli @babel/core @babel/preset-env @babel/preset-react babel-loader css-loader style-loader -D
-     ~~~
-     - babel-loader : 자바스크립트 모듈 번들링을 위한 로더이며, 보통 ES6 코드를 ES5로 변환하기 위해 사용한다.
-     - css-loader : 모듈 번들링은 자바스크립트 기반으로 이뤄지기 때문에 CSS 파일을 자바스크립트로 변환하기 위해 사용한다.
-     - style-loader : css-loader에 의해 모듈화 되고, 모듈화 된 스타일 코드를 HTML 문서의 STYLE 태그 안에 넣어주기 위해 사용된다.
-     - url-loader : 스타일에 설정된 이미지나 글꼴 파일을 문자열 형태의 데이터(Base64)로 변환하여 해당 CSS 파일 안에 포함시켜버리기 때문에 정적 파일을 관리하기 쉬워진다. 하지만 실제 파일들보다 용량이 커지고, CSS 파일이 무거워지므로 적당히 사용하는 것을 권장한다.
-     - file-loader : 정적 파일을 로드하는데 사용되며, 보통 프로젝트 환경에 맞게 특정 디렉토리에 파일을 복사하는 역할을 수행한다.
-     
-  - 의존성 추가(PropTypes, React Router)
-     ~~~
-     npm install --save prop-types react-router-dom
-     ~~~
-       - prop-types: React의 Prop를 validation할 때 사용.(React v15.5 부터 다른 패키지로 이동(즉, React.PropTypes사용 불가)하였으며, 현재는 prop-types lib를 사용하는 것을 권고.)
-       - react-router-dom: react-router를 의존하고 있기 때문에, 해당 component만 설치한다.
-     
-## 2. WebPack
+# WebPack
   - webpack setting
   - web.config.js
       - root directory에 'webpack.config.js' file 생성
@@ -211,17 +185,47 @@
       
   - 참고사이트: [https://webpack.js.org/concepts/](https://webpack.js.org/concepts/)
   - 참고사이트: [https://github.com/webpack/docs/wiki/configuration](https://github.com/webpack/docs/wiki/configuration)
-      
-      
-## 3. UI
-### 1. Meterial-UI
+
+---
+
+
+# React
+## React interlocking in Spring Boot
+  - React 앱을 생성
+     ~~~
+     npm install -i react react-dom
+     
+     또는
+     
+     npm install -g create-react-app
+     ~~~
+     
+  - 의존성 추가(Webpack, Babel, Loader)
+     ~~~
+     npm i webpack webpack-cli @babel/core @babel/preset-env @babel/preset-react babel-loader css-loader style-loader -D
+     ~~~
+     - babel-loader : 자바스크립트 모듈 번들링을 위한 로더이며, 보통 ES6 코드를 ES5로 변환하기 위해 사용한다.
+     - css-loader : 모듈 번들링은 자바스크립트 기반으로 이뤄지기 때문에 CSS 파일을 자바스크립트로 변환하기 위해 사용한다.
+     - style-loader : css-loader에 의해 모듈화 되고, 모듈화 된 스타일 코드를 HTML 문서의 STYLE 태그 안에 넣어주기 위해 사용된다.
+     - url-loader : 스타일에 설정된 이미지나 글꼴 파일을 문자열 형태의 데이터(Base64)로 변환하여 해당 CSS 파일 안에 포함시켜버리기 때문에 정적 파일을 관리하기 쉬워진다. 하지만 실제 파일들보다 용량이 커지고, CSS 파일이 무거워지므로 적당히 사용하는 것을 권장한다.
+     - file-loader : 정적 파일을 로드하는데 사용되며, 보통 프로젝트 환경에 맞게 특정 디렉토리에 파일을 복사하는 역할을 수행한다.
+     
+  - 의존성 추가(PropTypes, React Router)
+     ~~~
+     npm install --save prop-types react-router-dom
+     ~~~
+       - prop-types: React의 Prop를 validation할 때 사용.(React v15.5 부터 다른 패키지로 이동(즉, React.PropTypes사용 불가)하였으며, 현재는 prop-types lib를 사용하는 것을 권고.)
+       - react-router-dom: react-router를 의존하고 있기 때문에, 해당 component만 설치한다.
+
+## UI
+### Meterial-UI
     - Install
       ~~~
       npm install --save @material-ui/core
       ~~~
       
-## 4. Transfer
-### 1. Axios
+## Transfer
+### Axios
     - Install
       ~~~
       npm install --save axios
@@ -230,6 +234,6 @@
 ---
 
 
-# 4. VueJS
+# VueJS
   - 참고사이트: [https://cli.vuejs.org/guide/webpack.html](https://cli.vuejs.org/guide/webpack.html)
   - 참고사이트: [https://cli.vuejs.org/config/](https://cli.vuejs.org/config/)
