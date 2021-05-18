@@ -40,6 +40,7 @@
 |  No.3  |  Many To Many[중개모델(Intermediary Model)필요]  |      N     |        1 / 1        |     N    |  QuestionAndChoice를 하나 두고 QuestionAndChoice에서 Question과 Choice를 각각 Many To One으로 연결  |
 
 * JOIN 방법
+    - Foreign Key가 Not Null인 경우에는 INNER JOIN으로, Null인 경우에는 LEFT OUTER JOIN으로 쿼리를 생성
     - No.1
         - 첫번째: Question을 기준으로 Choice
             > Question.objects.select_related('choice')
