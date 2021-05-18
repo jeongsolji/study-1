@@ -49,7 +49,7 @@
             > Choice.objects.select_related('question')
         - 두번째: Question을 기준으로 Choice(One To One)
             > Question.objects.prefetch_related('choice')
-            > Question.objects.annotate(choice_id=F('choice__id'), choice_text=F('choice__choice_text'), votes=F('choice__votes')).annotate(Count('id))
+            > Question.objects.annotate(choice_id=F('choice__id'), choice_text=F('choice__choice_text'), votes=F('choice__votes')).annotate(Count('id'))
 
 * 쿼리표현식[Query Expressions]
     - create
