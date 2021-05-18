@@ -41,12 +41,12 @@
 
 * JOIN 방법
     - No.1
-        -첫번째: Question을 기준으로 Choice
+        - 첫번째: Question을 기준으로 Choice
             > Question.objects.select_related('choice')
     - No.2(3가지 방법으로 조인 가능)
-        -첫번째: Choice를 기준으로 Question(Many To One)
+        - 첫번째: Choice를 기준으로 Question(Many To One)
             > Choice.objects.select_related('question')
-        -두번째: Question을 기준으로 Choice(One To One)
+        - 두번째: Question을 기준으로 Choice(One To One)
             > Question.objects.prefetch_related('choice')
             > Question.objects.annotate(choice_id=F('choice__id'), choice_text=F('choice__choice_text'), votes=F('choice__votes')).annotate(Count('id))
 
@@ -56,15 +56,15 @@
     - filter
     - order by
     - annotate: .annotate()는 필드 하나를 만들고 거기에 '어떤 내용' 을 채우게 만드는 것
-        -참고: [https://velog.io/@magnoliarfsit/ReDjango-8.-QuerySet-Method-2](https://velog.io/@magnoliarfsit/ReDjango-8.-QuerySet-Method-2)
+        - 참고: [https://velog.io/@magnoliarfsit/ReDjango-8.-QuerySet-Method-2](https://velog.io/@magnoliarfsit/ReDjango-8.-QuerySet-Method-2)
     - aggregate: .aggregate()는 QuerySet에 대해 계산된 집계를 dict로 반환
-        -참고: [https://velog.io/@magnoliarfsit/ReDjango-8.-QuerySet-Method-2](https://velog.io/@magnoliarfsit/ReDjango-8.-QuerySet-Method-2)
+        - 참고: [https://velog.io/@magnoliarfsit/ReDjango-8.-QuerySet-Method-2](https://velog.io/@magnoliarfsit/ReDjango-8.-QuerySet-Method-2)
 
 * Q 객체 / F 객체
     - Q 객체: 복잡한 데이터베이스 쿼리를 작성할 때 사용
-        -참고: https://docs.djangoproject.com/en/2.0/ref/models/querysets/#django.db.models.Q
+        - 참고: https://docs.djangoproject.com/en/2.0/ref/models/querysets/#django.db.models.Q
     - F 객체: F() 객체는 모델의 필드 혹은 어노테이트된 열의 값을 나타낸다. 실제로 데이터베이스에서 Python 메모리로 가져오지 않고, 모델 필드 값을 참조하고 이를 데이터베이스에서 사용하여 작업
-        -경쟁조건[race condition] 문제를 해결할 수 있는 방법이다.(이건 Thread Safety하게 한다는거 같아.)
+        - 경쟁조건[race condition] 문제를 해결할 수 있는 방법이다.(이건 Thread Safety하게 한다는거 같아.)
         ```
         # 일반적인 Code
         question = Question.objects.get(question_text='hello')                // Python으로 quiestion.quiestion_text 값을 가져온다.(이때 가져오는지, 밑에 코드로 가져오는지.. lazy_loading에 따라 좀 다를수 있다. 단, DB에서 Python으로 데이터를 가지고 온 뒤 연산을 한다는데 의미가 있다.)
