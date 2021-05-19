@@ -87,6 +87,9 @@
     - 참고사이트: [https://docs.djangoproject.com/en/3.2/ref/models/querysets/#queryset-api](https://docs.djangoproject.com/en/3.2/ref/models/querysets/#queryset-api)
     - 참고사이트: [https://velog.io/@magnoliarfsit/ReDjango-8.-QuerySet-Method-2](https://velog.io/@magnoliarfsit/ReDjango-8.-QuerySet-Method-2)
 
+  - Field lookups
+    - 참고사이트: [https://docs.djangoproject.com/en/3.2/ref/models/querysets/#field-lookups](https://docs.djangoproject.com/en/3.2/ref/models/querysets/#field-lookups)
+
   - Q() objects
 
 #### Lookup expressions
