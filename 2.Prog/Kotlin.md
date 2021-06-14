@@ -61,5 +61,84 @@
 ### 코틀린 도구 사용
   * 난, Jetbrains Toolbox를 구매하여 사용 중 임으로 별도 글은 작성하지 않음.
 
-## 코틀린 기초
+## 2장, 코틀린 기초
+  - 뒷절에 상세히 설명이 나오고, 이미 OOP를 공부한 사람이라면 큰 영양가?!가 없는 내용임으로 기재하지 않음
   
+## 3장, 함수 정의와 호출
+  - Java는 다양한 정적 메소드들을 모아두는 역할만 담당할뿐, 클래스와 인스턴스로의 의미가 전혀 없는 클래스들이 존재한다.
+  - 이를 Kotlin에서는 의미 없는 클래스는 생략되도록 사용한다.
+  - Java는 다양한 편의를 제공하기 위해, 많은 수의 생성자를 오버로딩하여 제공할 수 있다.
+  - 이를 Kotlin에서는 디폴트값을 이용하여, 소스를 더욱 간결하게 표혀한다.
+  ₩₩₩
+  // Java
+  package strings
+  
+  public class JoinKt{
+      public static String joinToString(...){...}
+  
+      // Java의 오버라이딩 영역
+      public static String joinToString(Collection collection){...}
+      public static String joinToString(Collection collection, String separator){...}
+      public static String joinToString(Collection collection, String separator, String prefix){...}
+      public static String joinToString(Collection collection, String separator, String prefix, String postfix){...}
+  }
+  
+  // Kotlin
+  // Kotlin 파일(확장자포함)을 Join.kt로 기재하였을 경우 위 코드와 완전히 동일하다.
+  // 단, Kotlin 파일(확장자포함)명과 상이한 클래스 명으로 사용하고 싶을경우 "JvmName" Annotation을 package 구문 바로 앞에 사용한다.
+  
+  @file: JvmName("StringFunctions")
+  package strings
+  
+  fun joinToString(...): String {...}
+  
+  // Kotlin에서 생성자 오버라이딩을 금지하기 위한 영역
+  fun <T> joinToString(
+      collection: Collection<T>,
+      separator: String = ", ",
+      prefix: String = "",
+      postfix: String = ""
+  ): String
+  ₩₩₩
+  
+## Annotation
+  - @file: JvmName
+  ₩₩₩
+  // Java
+  package strings
+  
+  public class JoinKt{
+      public static String joinToString(...){...}
+  }
+  
+  // Kotlin
+  // Kotlin 파일(확장자포함)을 Join.kt로 기재하였을 경우 위 코드와 완전히 동일하다.
+  // 단, Kotlin 파일(확장자포함)명과 상이한 클래스 명으로 사용하고 싶을경우 "JvmName" Annotation을 package 구문 바로 앞에 사용한다.
+  
+  @file: JvmName("StringFunctions")
+  package strings
+  
+  fun joinToString(...): String {...}
+  ₩₩₩
+  
+  - @JvmOverloads
+  - Java에서는 디폴트 파라미터 값이라는 개념이 없어서 Kotlin 함수를 Java에서 호출하는 경우에는 그 Kotlin 함수가 디폴트 파라미터 값을 제공하더라도 모든 인자를 명시해야 한다.
+  - Java가 Kotlin 함수를 자주 호출해야 한다면 Java쪽에서 좀 더 편하게 Kotlin 함수를 호출하고 싶을 것이다.
+  - 그럴 때 @JvmOverloads Annotation을 함수에 추가할 수 있다.
+  - 해당 Annotation을 추가하면, Kotlin Compiler가 자동으로 맨 마지막 파라미터로부터 파라미터를 하나씩 생략한 오버로딩한 Java 메소드를 추가해준다.
+  ₩₩₩
+  // Kotlin
+  @JvmOverloads
+  fun<T> joinToString (
+      collection: Collection<T>,
+      separator: String = ", ",
+      prefix: String = "",
+      postfix: String = ""
+  ): String {...}
+
+  // Java
+  String joinToString(Collection<T> collection, String separator, String prefix, String postfix){...}
+  String joinToString(Collection<T> collection, String separator, String prefix){...}
+  String joinToString(Collection<T> collection, String separator){...}
+  String joinToString(Collection<T> collection){...}
+  ₩₩₩
