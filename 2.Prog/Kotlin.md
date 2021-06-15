@@ -84,6 +84,7 @@
       public static String joinToString(Collection collection, String separator, String prefix, String postfix){...}
   }
   
+  
   // Kotlin
   // Kotlin 파일(확장자포함)을 Join.kt로 기재하였을 경우 위 코드와 완전히 동일하다.
   // 단, Kotlin 파일(확장자포함)명과 상이한 클래스 명으로 사용하고 싶을경우 "JvmName" Annotation을 package 구문 바로 앞에 사용한다.
@@ -324,6 +325,89 @@
   ```
   - 단, SAM(Single Abstract Method)일 경우, 람다를 사용하는 것이 코드 관리 차원에서 더 유용하다.
 
+## 5장. 람다로 프로그래밍
+### 5.3 지연 연산(lazy) 컬렉션 연산
+  - 자바의 stream과 동일한 개념으로 코틀린에서는 sequence의 개념이 있다.
+  - example
+  ```
+  people.asSequence()
+      .map(Person::name)
+      .filter{it.startsWith("A")}
+      .toList()
+  ```
+
+### 5.3.1 시퀀스 연산 실행: 중간 연산과 최종연산
+  - 자바의 람다와 동일한 개념으로 특별히 기재하지 않는다. 다른 언어를 사용해도 개념은 같을 것이라 판단된다.
+  - 단, map, filter 를 혼용하여 사용할 경우 filter를 먼저 사용하여 연산횟수를 줄이는 것이 좋은 코드 습관이다.
+
+### 5.5 수신 객체 지정 람다: with와 apply
+#### with
+  - 어떤 객체의 이름을 반복하지 않고도 그 객체에 대해 다양한 연산을 수행하도록 하는 것
+  - 파라미터를 2개를 받으며, 첫번째는 수신객체를 보내고, 두번째는 람다를 보내기 때문에, 마지막 람다는 괄호 밖으로 빼내는 관례를 이용하여 전체 함수 호출이 언어가 제공하는 특별 구문으로 보일 수 있다.
+  ```
+  // define
+  fun alphabet(): String{
+      val result = StringBuilder()
+      for( letter in 'A'..'Z'){
+          result.append(letter)
+      }
+      result.append("\nNow I know the aplhabet!")
+      return result.toString()
+  }
+  
+  
+  // used
+  println(alphabet())
+  
+  
+  // result
+  ABCDEFGHIJKLMNOPQRSTUVWXYZ
+  Now I know the alphabet!
+  ```
+  
+  ```
+  // refacotring
+  fun alphabet(): String{
+      val stringBuilder = StringBuilder()
+      
+      return with(stringBuilder){                     // 메소드를 호출하려는 수신 객체를 지정한다.
+          for(letter in 'A'..'Z'){
+              this.append(letter)                     // this를 명시해서 앞에서 지정한 수신객체의 메소드를 호출한다.
+          }
+          append("\nNow I know the alhpabet!")        // this 를 생략하고 메소드를 호출 할 수도 있다.
+          this.toString()
+      }
+  }
+  ```
+
+  ```
+  // refacotring, with와 식을 본문으로 하는 함수를 활용
+  fun alphabet() = with(StringBuilder()){
+      for( letter in 'A'..'Z' ){
+          append(letter)
+      }
+      append("\nNow I know the alphabet!")
+      toStrig()
+  }
+  ```
+
+#### apply
+  - with와 거의 비슷하다.
+  - 유일한 차이점이란 항상 자신에게 전달된 객체)즉, 수신 객체)를 반환한다는 것 뿐이다.
+  - apply를 이용한 refactoring
+  ```
+  fun alphabet() = StringBuilder().apply{
+      for( letter in 'A'..'Z' ){
+          append(letter)
+      }
+      append("\nNow I know the alphabet!")
+  }.toString()
+  ```
+
+#### DSL(Domain Specific Language)[영역 특화 언어]
+  - with, apply의 예제를 DSL언어인 buildString을 사용하여 간소화 할 수 있다.
+  - 이는 차후 설명할 예정이다.
+
 ## Annotation
   - @file: JvmName
   ```
@@ -342,6 +426,7 @@
   package strings
   
   fun joinToString(...): String {...}
+  }
   ```
   
   - @JvmOverloads
