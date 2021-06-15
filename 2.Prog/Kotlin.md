@@ -102,9 +102,228 @@
   ): String
   ```
 
+### 3.3. 메소드를 다른 클래스에 추가: 확장 함수와 확장 프로퍼티
+  - 기존 코드와 코틀린 코드를 자연스럽게 통합하는 것은 코틀린 핵심 목표 중 하나.
+  - 즉, 코틀린을 기존 자바 프로젝트에 통합하는 경우 코틀린으로 직접 변환할 수 없거나 미처 변환하지 않은 기존 자바 코드를 처리할 수 있어야 함을 포함.
+  - 기존 자바 API를 재작성 하지 않고 코틀린이 제공하는 편리한 기능을 사용할 수 있도록 하는 역활을 확장 함수와 확장 프로퍼티가 해결 한다.
+
+#### 확장 함수
+  - define
+  ```
+  fun 수신객체타입.메소드명(): 반환형 = this.메소드명()      // 여기서 this는 수신객체를 뜻한다.
+  ```
+
+  - example
+  ```
+  // Strings.kt
+  package strings
+  
+  fun String.lastChar(): Char = get(length-1)
+  
+  
+  // Any.java
+  import strings.lastChar
+  
+  val = c = "Kotlin".lastChar()
+  
+  
+  // Another.java
+  char c = StringsKt.lastChar("Java")
+  ```
+
+#### 확장 프로퍼티
+  - Backing Field가 없음으로 게터를 반드시 정의해야 한다.  
+  -> 코틀린의 프로퍼티에는 그 프로퍼티 값을 저장하기 위한 필드가 있다. backing field라고 하는데, 원한다면 그 값을 그때그때 계산할 수도 있고, 커스텀 게터를 작성하면 그런 프러퍼티를 만들 수 있다.
+
+### 3.4. 컬렉션 처리: 가변 길이 인자, 중위 함수 호출, 라이브러리 지원
+  - 가변 길이 인자(vararg)
+  ```
+  fun 메소트명(vararg 변수명: 타입): 반환형{...}
+  ```
+
+  - 중위 호출
+  ```
+  // define
+  infix fun Any.to(other: Any) = Pair(this, other)
+  
+  // use
+  val map = mapOf(1 to "one", 7 to "seven", 53 to "fifty-three")
+  
+  
+  // 아래 두 코드는 동일
+  1.to("one")
+  1 to "one"
+  ```
+
+  - 구조 분해 선언(Destructuring declaration)
+  ```
+  var (number, name) = 1 to "one"
+  
+  // 결과: number 의 값은 1 이며, name의 값은 one 으로 초기화 된다.
+  ```
+
+### 3.5. 문자열과 정규식 다루기
+
+### 3.6. 코드 다듬기: 로컬 함수와 확장
+  - 로컬 함수
+    - 함수 안에 함수를 정의할 수 있으며, JavaScript의 closure와 같이 사용 가능하다.
+    - 이를 이용하여 코드를 깔끔하게 작성할 수 있다.
+    ```
+    // define 1
+    
+    // define 2
+    
+    // define 3
+    
+    // define 4
+    ```
+
 ## 4장. 클래스, 객체, 인터페이스
 ### 4.1.3. 가시성 변경자: 기본적으로 공개(=접근제어자)
+  - public
+    - 모든 곳
+  - internal
+    - 같은 모듈
+  - protected
+    - only super class
+  - private
+    - only same class
+
+  ```
+  internal open class TalkativeButton: Focusable{
+      private fun yell() = println("Hey!")
+      protected fun whisper() = println("Let's talk!")
+  }
   
+  
+  fun TalkativeButton.giveSpeech(){        // public 멤버가 자신의 internal 수신타입인 TalkativeButton을 노출하여 에러
+      yell()                               // yell에 접근할 수 없음, yell은 TalkativeButton의 private 멤버임으로
+      whisper()                            // whisper에 접근할 수 없음, TalkativeButton의 protected 멤버임으로
+  }
+  ```
+
+
+  * 모듈이란 ?
+    - 한 번에 한꺼번에 컴파일되는 코틀린 파일들을 의미
+    - 인텔리J나 이클립스, 메이븐, 그레이들 등 프로제트가 모듈이 될 수 있고, 하나의 프로젝트에 있더라도 앤트 테스크가 한 번 실행될 때 함께 컴파일 되는 파일의 집합만이 모듈이 될 수 있다.
+    ```
+    - ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+    - 사실 이렇게만 인지할 경우 단일 프로젝트일 경우 public과 internal의 구분이 모호해지는것 같다.
+    - 모듈에 개념이나 코틀린에서 public의 의미가 다르거나 뭔가 캥긴다..
+    - ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+    ```
+    
+## 4.4. object 키워드: 클래스 선언과 인스턴스 생성
+  - object 키워드를 다양한 경우에 사용하지만, 모든 경우 클래스를 정의 하면서 동시에 인스턴스(객체)를 생성한다는 공통점이 존재.
+  - 객체선언(object declaration)은 싱글턴을 저의하는 방법 중 하나.
+  - 동반 객체(companion object)는 인스턴스 메소드는 아니지만 어떤 클래스와 관련 있는 메소드와 팩토리 메소드를 담을 때 사용. 동반 객체 메소드에 접근할 때는 동반 객체가 포함된 클래스의 이름을 사용할 수 있다.
+  - 객체 식은 자바의 무명 내부 클래스(Anonymous inner class)대신 사용한다.
+
+### 4.4.1. 객체선언(object declaration)
+  - 자바에서 클래스의 생성자를 private로 제한하고 정적인 필드에 그 클래스의 유일한 객체를 저장하는 '싱글턴 패턴'을 통해 구현
+  - 코틀린의 객체 선언 기능을 통해 싱글턴을 언어에서 기본 지원한다.
+  - 객체 선언은 클래스 선언과 그 클래스에 속한 단일 인스턴스의 선언을 합친 선언이다.
+  - 단, 생성자(주 생성자, 부 생성자 모두) 객체 선언에 쓸 수 없다.
+  - example
+  ```
+  // object declaration
+  object Payroll{
+      val allEmployees = arrayListOf<Person>()
+      
+      fun calculateSalary(){
+          for( person in allEmployees) {
+              ...
+          }
+      }
+  }
+  
+  
+  // used
+  Payroll.allEmployees.add(Person(...))
+  Payroll.calculateSalary()
+  ```
+  - exmaple 2
+  ```
+  // object declaration
+  data class Person(val name: String){
+      object NameComparator: Comparator<Person>{
+          override fun compare(p1: Person, p2: Person): Int = p1.name.compareTo(p2.name)
+      }
+  }
+  
+  
+  // used
+  val persons = listOf(Person("Bob"), Person("Alice"))
+  println(persons.sortedWith(Person.NameComparator))
+  
+  
+  // result
+  [Person(name=Alice), Person(name=Bob)]
+  ```
+
+### 4.4.2. 동반객체(companion object)
+  - 코틀린은 클래스 안에는 정적인 멤버가 없다.(자바의 static을 지원하지 않음)
+  - 그대신 코틀린에서는 패키지 수준의 최상위 함수와 객체선언을 활용하며, 대부분의 경우 최상이 함수를 활용하는 편을 더 권장한다.
+  - 다만, 최상위 함수는 private 로 표시된 클래스 비공개 멤버에 접근할 수 없다. 그래서 클래스의 인스턴스와 관계없이 호출해야 하지만, 클래스 내부 정보에 접근해야 하는 함수가 필요할 때는 클래스에 중첩된 객체선언의 멤버변수로 정의해야한다.
+  - 대표적인 예로 팩토리 메소드를 들 수 있다.
+  - example
+  ```
+  // define
+  class A{
+      companion object{
+          fun bar(){
+              println("Companion object called")
+          }
+      }
+  }
+  
+  
+  // used
+  A.bar()
+  
+  
+  // result
+  Companion object called
+  ```
+
+### 4.4.3. 동반객체(companion object)를 일반 객체처럼 사용
+  - 동반 객체는 클래스 안에 정의된 일반 객체다.
+  - 따라서 동반 객체에 이름을 붙이거나, 동반 객체가 인터페이스를 상속하거나, 동반 객체 안에 확장 함수와 프로퍼티를 정의할 수 있다.
+
+  - 동반객체확장
+    - Person 클래스의 관심사를 더 명확히 분리하고 싶다고 하자.
+    - Person 클래스는 핵심 비즈니스 로직 모듈의 일부다.
+    - 하지만, 그 비즈니스 모듈이 특정 데이터 타입에 의존하기를 원치않는다.
+    - 특히, 역직렬화의 경우 통신모듈을 따로 두어 그쪽에 넣기를 원한다.
+    - example
+    ```
+    // 비즈니스 모듈
+    class Person(val firstName: String, val lastName: String) {
+        companion object{        // 비어있는 동반객체 선언
+        }
+    }
+    
+    
+    // 클라이언트/서버 통신 모듈
+    fun Person.Companion.fromJSON(json: String): Person{        // 확장 함수를 선언.
+        ...
+    }
+    
+    
+    // used
+    val person = Person.fromJSON(json)
+    ```
+
+### 4.4.4. 객체 식: 무명 내부 클래스를 다른 방식으로 작성
+  - example
+  ```
+  val listener = object: MouseAdapter(){
+      override fun mouseClicked(e: MouseEvent){...}
+      override fun mouseEntered(e: MouseEvent){...}
+  }
+  ```
+  - 단, SAM(Single Abstract Method)일 경우, 람다를 사용하는 것이 코드 관리 차원에서 더 유용하다.
+
 ## Annotation
   - @file: JvmName
   ```
