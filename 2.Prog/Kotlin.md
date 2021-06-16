@@ -1,4 +1,5 @@
 # Kotlin
+# Kotlin-coroutines
 
 ---
 
@@ -334,7 +335,16 @@
       .map(Person::name)
       .filter{it.startsWith("A")}
       .toList()
-  ```
+  ```  
+
+  -> 후에 inline을 배우겠지만... 이 글은 inline학습이 끝난 후 다시 돌아와서 기재하는 글이다.  
+  -> 읽는이도 inline을 공부한 후에 다시 읽기를 추천한다.  
+  -> filter와 map을 동시에 사용할 때, 시퀀스를 사용하면 중간 리스트로 인한 부가 비용은 줄어든다.  
+  -> 이때 각 중간 시퀀스는 람다를 필드에 저장하는 객체로 표현되며, 최종 연산은 중간 시퀀스에 있는 여러 람다를 연쇄 호출한다.  
+  -> (본래는 filter나 map은 inline함수라 인라이닝된다.)   
+  -> 따라서 지연 계산을 통해 성능을 향상시키려는 이유로 모든 컬렉션 연산에 asSequence를 붙여서는 안 된다.  
+  -> 시퀀스 연산에서는 람다가 인라이닝되지 않기 때문에 크기가 작은 컬렉션은 오히려 일반 컬렉션 연산이 더 성능이 나을 수 있다.  
+  -> 즉, 결론은 큰 컬렉션에만 asSequence를 사용해야 한다.
 
 ### 5.3.1 시퀀스 연산 실행: 중간 연산과 최종연산
   - 자바의 람다와 동일한 개념으로 특별히 기재하지 않는다. 다른 언어를 사용해도 개념은 같을 것이라 판단된다.
@@ -496,6 +506,201 @@
 #### 7.5.6 프레임워크에서 위임 프로퍼티 사용
   - 사용빈도가 낮다고 한다. 사용할 때 다시 기재하겠다.
 
+## 8장. 고차 함수: 파라미터와 반환 값으로 람다 사용
+### 8.1 고차 함수 정의
+  - 고차 함수란 람다나 함수 참조를 인자로 넘길 수 있거나 람다나 함수 참조를 반환하는 함수.
+  - 예를 들어 'filter' 함수는 술어 함수를 인자로 받으므로 고차 함수다.
+
+#### 8.1.1 함수타입
+  - Grammer
+  ```
+  val func = 파라미터타입 -> 반환타입 = {몸체}
+  ```
+  - example
+  ```
+  val sum: (Int, Int) -> Int = {x, y -> x + y}
+  val action: () -> Unit = {println(42)}
+  
+  val sum = {x: Int, y: Int -> x + y}
+  val action: {println(42)}
+  ```
+
+#### 8.1.2 인자로 받은 함수 호출
+  - Grammer
+  ```
+  fun 수신객체타입.메소드명(파라미터이름: 파라미터함수타입): 반환형
+  ```
+  - example
+  ```
+  fun String.filter(predicate: (Char) -> Boolean): String
+  ```
+  - example 2
+  ```
+  fun String.filter(predicate: (Char) -> Boolean): String{
+      val sb = StringBuilder()
+      for( index in 0 until length ){
+          val element = get(index)
+          if( predicate(element) ) sb.append(element)        # predicate 파라미터로 전달받은 함수를 호출한다.
+      }
+      
+      return sb.toString()
+  }
+  
+  
+  >>> println("ab1c".filter{it in 'a'..'z'})                 # 람다를 predicate 파라미터로 전달한다. 
+  abc
+  ```
+
+#### 8.1.3 자바에서 코틀린 함수 타입 사용
+  - 필요할 때 사용한다.
+
+#### 8.1.4 디폴트 값을 지정한 함수 타입 파라미터나 널이 될 수 있는 함수 타입 파라미터
+  - 별 특별한거 없다.. 그냥 ? 하나로 된다..
+
+#### 8.1.5 함수를 함수에서 반환
+  - 함수가 함수를 인자로 받는경우가 더 많치만, 함수를 반환해야하는 경우도 있다고 하네..
+  ```
+  enum class Delivery { STANDARD, EXPEDITED {
+  
+  class Order(val itemCount: Int)
+  
+  fun getShippingCostCalCulator( delivery: Delivery ): (Order) -> Double {        # 함수를 반화하는 함수를 선언
+      if( delivery == Delivery.EXPEDITED ) {
+          return { order -> 6+2.1*order.itemCount }                               # 함수에서 람다를 반환
+      }
+      
+      return { order -> 1.2*order.itemCount}                                      # 함수에서 람다를 반환
+  }
+  
+  
+  >>> val calculator = getShippingCostCalculator(Delivery.EXPEDITED)              # 반환받은 함수를 변수에 저장
+  >>> println("Shipping costs ${calculator(Order(3))}")                           # 반환받은 함수를 호출
+  Shipping costs 12.3
+  ```
+
+#### 8.1.6 람다를 활용한 중복 제거
+  - 그냥.. 람다를 좀더 다양하게 쓰는 방법 정도로.. 필요할 때 다시 참고하면 될거 같다..
+
+### 8.2 인라인 함수: 람다의 부가 비용 없애기
+  - 코틀린이 보통 람다를 무명 클래스로 컴파일 하지만, 그렇다고 람다 식을 사용할 때마다 새로운 클래스가 만들어지지는 않는다.
+  - 또한, 람다가 변수를 포획하면 람다가 생성되는 시점마다 새로운 무명 클래스 객체가 생긴다.
+  - 이런 경우 실행 시점에 무명 클래스 생성에 따른 부가 비용이 든다.
+  - 즉, 일반 함수를 사용한 구현보다 덜 효율적이라는 뜻이다.
+  - 반복되는 코드를 별도의 라이브러리 함수로 빼내되 컴파일러가 자바의 일반 명령문만큼 효율적인 코드를 생성하게 함으로 문제를 해결한다.
+  - 그때 사용하는 것이 바로 'inline' 변경자이다.
+  - 'inline'변경자를 어떤 함수에 붙이면 컴파일러는 그 함수를 호출하는 모든 문장을 함수 본문에 해당하는 바이트코드로 바꿔치기 해준다.
+
+#### 8.2.1 인라이닝이 작동하는 방식
+  - 어떤 함수를 inline으로 선언하면 그 함수의 본문이 인라인된다.
+  - 다른 말로 하면 함수를 호출하는 코드를 함수를 호출하는 바이트코드 대신에 함수 본문을 번역한 바이트 코드로 컴파일 한다는 뜻이다.
+  - 즉, JavaScript의 include처럼 된다는 것과 같은 느낌임.. 이게 어떻게 가능하지..
+  - example
+  ```
+  // synchronized inline function
+  inline fun <T> synchronized(lock: Lock, action: () -> T): T{
+      lock.lock()
+      try{
+          return action()
+      }finally{
+          lock.unlock()
+      }
+  }
+  
+  
+  // used
+  fun foo(l: Lock){
+      println("Before sync")
+      
+      synchronized(l){
+          println("Action")
+      }
+      
+      println("After sync")
+  }
+  
+  
+  // converted
+  fun __foo__(l: Lock){
+      println("Before sync")
+      
+      l.lock()
+      try{
+          println("Action")
+      } finally {
+          l.unlock()
+      }
+      
+      println("After sync")
+  }
+  ```
+  - synchronized 함수의 본문뿐 아니라, synchronized에 전달된 람다의 본문도 함께 인라인된다는 점에 유의.
+  - 람다의 본문에 의해 만들어지는 바이트코드는 그 람다를 호출하는 코드(synchronized) 정의의 일부분으로 간주되기 때문에 코틀린 컴파일러는 그 람다를 함수 인터페이스를 구현하는 무명 클래스로 감싸지 않음.
+
+#### 8.2.2 인라인 함수의 한계
+  - 인라이닝을 하는 방식으로 인해 람다를 사용하는 모든 함수를 인라이닝할 수는 없다.
+  - 함수가 인라이닝될 때 그 함수에 인자로 전달된 람다 식의 본문은 결과 코드에 직접 들어갈 수 있다.
+  - 단, 이렇게 람다가 본문에 직접 펼쳐지기 때문에 함수가 파라미터로 전달받은 람다를 본문에 사용하는 방식이 한정될 수 밖에 없다.
+  - 즉, 함수 본문에서 파라미터로 받은 람다를 호출한다면 그 호출을 쉽게 람다 본문으로 바꿀 수 있지만(8.2.1처럼), 파라미터로 받은 람다를 다른 변수에 저장하고 나중에 그 변수를 사용한다면 람다를 표현하는 객체가 어딘가는 존재해야 하기 때무네 람다를 인라이닝할 수 없다.
+
+#### 8.2.5 자원 관리를 위해 인라인된 람다 사용
+  - 일반적인 패턴으로 자바 1.7의 try-with-resource와 같은 코틀린의 use 함수가 있다.
+    
+### 8.3 고차 함수 안에서 흐름 제어
+#### non-local
+  - return이 바깥쪽 함수를 반환시킬 수 있는 메커니즘
+  - non-local을 사용할 수 있는 경우는 람다를 인자로 받는 함수가 인라인 함수인 경우뿐.
+  - inlince함수를 include되었다고 생각하면 충분히 가능하다.
+  ```
+  fun lookForAlice(people: List<Person>){
+      poople.forEach{
+          if( it.name == "Alice" ){
+              println("Found!")
+              return                        # 이 부분을 유심히 봐봐.. forEach가 인라인 함수인데,
+                                            # forEach문의 return이 아니라, lookForAlice함수의 리턴으로 작동하잖아 ?
+                                            # 이걸 가능하게 해주는 메커니즘이 non-local이라는 것이지..
+          }
+      }
+      println("Alice is not found")
+  }
+  ```
+
+#### 8.3.2 람다로부터 반환: 레이블을 사용한 return
+  - label을 사용해서 break문처럼 동작 할 수 있도록 할수 있다. 다만, 람다 안에 여러 위치에 return 식이 ㄷ르어가는 경우 사용하기 불편하다.
+  - 이때는 무명 함수로 해결법을 찾을 수 있다.
+  - example
+  ```
+  fun lookForAlice(people: List<Person>){
+      people.forEach{
+          if(it.name=="Alice") return@forEach        # lookForAlice 함수를 종료하는게 아닌, forEach를 종료시킨다.
+      }
+      println("Alice might be somewhere")            # 무조건 실행이 된다.
+  }
+  ```
+  - example 2, 이름을 명시한경우(label)
+  ```
+  fun lookForAlice(people: List<Person>){
+      people.forEach 레이블명@{
+          if(it.name=="Alice") return@레이블명
+      }
+      println("Alice might be somewhere")            # 무조건 실행이 된다.
+  }
+  ```
+
+#### 8.3.3 무명 함수: 기본적으로 로컬 return
+  - example
+  ```
+  fun lookForAlice(people: List<Person>){
+      people.forEach( fun(person){                                   # 람다 식 대신 무명함수를 사용한다.
+                          if( person.name == "Alice" ) return        # return은 가장 가까운 함수를 가리키는데 이 위치에서 가장 가까운 함수는 무명 함수이다.
+                          println("${person.name} is not Alice")
+                      })
+  }
+  
+  
+  >>> lookForAlice(people)
+  Bob is not Alice
+  ```
+
 ## Annotation
   - @file: JvmName
   ```
@@ -538,3 +743,7 @@
   String joinToString(Collection<T> collection, String separator){...}
   String joinToString(Collection<T> collection){...}
   ```
+---
+
+# Kotlin - coroutines
+  - 참고사이트: [https://speakerdeck.com/taehwandev/kotlin-coroutines](https://speakerdeck.com/taehwandev/kotlin-coroutines)
