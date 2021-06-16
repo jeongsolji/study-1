@@ -408,6 +408,68 @@
   - with, apply의 예제를 DSL언어인 buildString을 사용하여 간소화 할 수 있다.
   - 이는 차후 설명할 예정이다.
 
+## 7장. 연산자 오버로딩과 기타 관례
+### 7.5. 프로퍼티 접근자 로직 재활용: 위임 프로퍼티
+#### 7.5.1. 위임 프로퍼티 소개
+  - 값을 뒷받침하는 필드에 단순히 저장하는 것보다 더 복잡한 방식으로 작동하는 프로퍼티를 쉽게 구현할 수 있다.
+  - 또한 그 과정에서 접근자 로직을 매번 재구현할 필요도 없다.
+  - 예를 들어 프로퍼티는 위임을 사용해 자신의 값을 필드가 아니라 데이터베이스 테이블이나 브라우저 세션, 맵 등에 저장할 수 있다.
+  - 이런 기반에는 위임(Delegation)이 있다. 이때 작업을 처리하는 객체를 위임객체(Delegate)라고 부른다.
+  - Grammar
+  - by 예약어를 이용하여 프로퍼티와 위임 객체를 연결 할 수 있다.
+  ```
+  // 1
+  class Foo {
+      private val delegate = Delegate()
+      var p: Type
+      set(value: Type) = delegate.setValue(..., value)
+      get() = delegate.getValue(...)
+  }
+  
+  
+  // 2
+  class Foo {
+      var p: Type by Delegate()        // by 예약어를 이용하여 프로퍼티와 위임 객체를 연결 할 수 있다.
+  }
+  ```
+
+#### 7.5.2. 위임 프로퍼티 사용: by lazy()를 사용한 프로퍼티 초기화 지연
+  - 상황: Person, Email, Person의 Email을 조회하는 func. 이렇게 3개의 코드를 작성해야 할 때, 이메일을 불러오기 위해서는 Person의 email 필드를 null로 초기화 시켜놨다가 호출 시 꺼내오게 해야한다.
+  - 전통적인 방법의 example
+    - thread unsafety
+    - unclean
+  ```
+  class Person(val name: String) {
+      private var _emails: List<Email>? = null
+      val emails: List<Email>
+        get() {
+            if( _emails == null ) {
+                _emails = loadEmails(this)
+            }
+            
+            return _emails!!
+        }
+  }
+  
+  >>> val p = Person("Alice")
+  >>> p.emails
+  Load emails for Alice
+  >>> p.emails
+  ```
+
+  - 위임 프로퍼티를 통한 구현
+    - thread safety
+  ```
+  class Person(val name: String){
+      val emails by lazy { loadEmails(this) }
+  }
+  ```
+
+#### 7.5.3 위임 프로퍼티 구현
+#### 7.5.4 위임 프로퍼티 컴파일 규칙
+#### 7.5.5 프로퍼티 값을 맵에 저장
+#### 7.5.6 프레임워크에서 위임 프로퍼티 사용
+
 ## Annotation
   - @file: JvmName
   ```
