@@ -467,8 +467,34 @@
 
 #### 7.5.3 위임 프로퍼티 구현
 #### 7.5.4 위임 프로퍼티 컴파일 규칙
+  - 위임 프로퍼티가 어떤 방식으로 동작하는가 ?
+  - 컴파일러는 아래 예제의 MyDelegate 클래스의 인스턴스를 감춰진 프로퍼티에 저장하며, 그 감춰진 프로퍼티를 <dlegate>라는 이름으로 사용한다.
+  - 또한 컴파일러는 프로퍼티를 표현하기 위해 KProperty 타입의 객체를 사용하고, 그 객체를 <property>라고 사용한다.  
+    -> 실제로 '<delegate>', '<property>'와 같이 꺽쇠를 사용하여 사용한다고 한다.
+  ```
+  // origin
+  class C {
+      var prop: Type by MyDelegate()
+  }
+  
+  
+  // convert
+  class C {
+      private val <delegate> = MyDelegate()
+      var prop: Type
+      get() = <delegate>.getValue(this, <property>)
+      set(value: Type) = <delegate>.setValue(this, <property>, value)
+  }
+  ```
+  - 이 메커니즘은 상당히 단순하지만 흥미로운 활용법이 많다.
+  - 프로퍼티 값이 저장될 장소를 바꿀 수도 있고(맵, 데이터베이스 테이블, 사용자 세션의 쿠키 등) 프로퍼티를 읽거나 쓸 때 벌어질 일을 변경할 수도 있다(값 검증, 변경 통지 등)
+  - 이 모두를 간결한 코드로 달성할 수 있다.
+
 #### 7.5.5 프로퍼티 값을 맵에 저장
+  - 사용빈도가 낮다고 한다. 사용할 때 다시 기재하겠다.
+
 #### 7.5.6 프레임워크에서 위임 프로퍼티 사용
+  - 사용빈도가 낮다고 한다. 사용할 때 다시 기재하겠다.
 
 ## Annotation
   - @file: JvmName
