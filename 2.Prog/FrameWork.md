@@ -1,6 +1,7 @@
 # FrameWork
   - Spring MVC
   - Spring Boot(Core, Security, JPA)
+    - Spring Boot 2.4.x, Properties
   
 ---
 
@@ -460,3 +461,61 @@
       - columnDefinition : @Column의 속성과 동일
       - table : @Column의 속성과 동일
     ~~~
+
+## Spring Boot 2.4.x
+  - 참고싸이트: [https://spring.io/blog/2020/11/12/spring-boot-2-4-0-available-now](https://spring.io/blog/2020/11/12/spring-boot-2-4-0-available-now)
+
+### Properties
+  - The Problem with ConfigFileApplicationListener
+    - include는 특정 profile이 적용된 곳에서 사용할 수 없다. 즉, on-profile 과 include 가 공존할 수 없다는 뜻.
+    - 이유는.. 아래 싸이트의 링크를 접속 후, "The Problem with ConfigFileApplicationListener" 으로 검색하면 알 수 있다.
+    - 참고싸이트: [https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4](https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4)
+  - 사용방법
+  ```
+  mvn clean compile spring-boot:run -Dspring-boot.run.profile={spring.profiles.group의 key값}
+  
+  # application.yml
+  spring:
+    config:
+      import: classpath:/example-config.yml
+    profiles:
+      include: example		# example-config.yml의 'spring.config.activate.on-profile' 값
+      group:
+        default: local, logback, example
+        local: local, logback
+        dev: dev, logback
+        prd: prd
+	
+	
+  # application-local.yml
+  
+  
+  # application-dev.yml
+  
+  
+  # application-prd.yml
+  
+  
+  # application-logback.yml
+  spring:
+    output:
+      ansi:
+        enabled: always
+
+  logging:
+    pattern:
+      console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-36logger{36} %clr([%-5level]) : %msg%n"
+    level:
+      root: info
+      org.springframework: info
+      com.example.demo: debug
+      
+      
+  # example-config.yml
+  # 더이상 반드시, application-{profile}.yml의 형태로 기입하지 않아도 된다.
+  # 단, 'spring.config.activate.on-profile'으로 profile명을 기재해야 한다.
+  spring:
+    config:
+      activate:
+        on-profile: example
+  ```
