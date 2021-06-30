@@ -466,11 +466,14 @@
   - 참고싸이트: [https://spring.io/blog/2020/11/12/spring-boot-2-4-0-available-now](https://spring.io/blog/2020/11/12/spring-boot-2-4-0-available-now)
 
 ### Properties
+  - Kubernetes의 volume mounts를 지원하기 워해, Properties 설정하는 법이 변경되었다.(사실 무슨 뜻인지 모르겠다..)
+  - 많은 특징들이 있는데, 실수할 수 있을만한 내용만 기재하며, 이하 공식문서를 참고하자.
+  - yml문서 내에서 "---"으로 profile을 나눌 수 있었는데, properties문서 내에서도 "#---"으로 profile을 나누는게 가능해졌다.
   - The Problem with ConfigFileApplicationListener
     - include는 특정 profile이 적용된 곳에서 사용할 수 없다. 즉, on-profile 과 include 가 공존할 수 없다는 뜻.
     - 이유는.. 아래 싸이트의 링크를 접속 후, "The Problem with ConfigFileApplicationListener" 으로 검색하면 알 수 있다.
     - 참고싸이트: [https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4](https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4)
-  - 사용방법
+  - How to use ?
   ```
   mvn clean compile spring-boot:run -Dspring-boot.run.profile={spring.profiles.group의 key값}
   
