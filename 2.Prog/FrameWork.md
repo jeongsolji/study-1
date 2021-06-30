@@ -485,12 +485,14 @@
     config:
       import: classpath:/example-config.yml
     profiles:
-      include: example		# example-config.yml의 'spring.config.activate.on-profile' 값
       group:
-        default: local, logback, example
+        default: local, logback, example		# 여기서 "example"은 example-config.yml의 'spring.config.activate.on-profile' 값
         local: local, logback
         dev: dev, logback
         prd: prd
+      # include: example				# 여기서 "example"은 example-config.yml의 'spring.config.activate.on-profile' 값
+      							# include는 사용하는 문서(여기서는 'application.yml')내에 바로 포함할 때 사용한다.
+							# 즉, 해당 문서에서 사용할 경우 default, local, dev, prd모든 proilfe에 example이 포함된다.
 	
 	
   # application-local.yml
