@@ -1,7 +1,10 @@
 # FrameWork
   - Spring MVC
-  - Spring Boot(Core, Security, JPA)
-    - Spring Boot 2.4.x, Properties
+  - Spring Boot
+    - Core
+    - Security
+    - JPA
+    - Spring Boot 2.4.x ↑
   
 ---
 
