@@ -465,6 +465,10 @@
       - table : @Column의 속성과 동일
     ~~~
 
+## Spring Validator
+  - 참고싸이트: [https://kapentaz.github.io/spring/Spring-Boo-Bean-Validation-%EC%A0%9C%EB%8C%80%EB%A1%9C-%EC%95%8C%EA%B3%A0-%EC%93%B0%EC%9E%90/#](https://kapentaz.github.io/spring/Spring-Boo-Bean-Validation-%EC%A0%9C%EB%8C%80%EB%A1%9C-%EC%95%8C%EA%B3%A0-%EC%93%B0%EC%9E%90/#)
+  - 참고싸이트: [https://meetup.toast.com/posts/223](https://meetup.toast.com/posts/223)
+
 ## Spring Boot 2.4.x
   - 참고싸이트: [https://spring.io/blog/2020/11/12/spring-boot-2-4-0-available-now](https://spring.io/blog/2020/11/12/spring-boot-2-4-0-available-now)
 
