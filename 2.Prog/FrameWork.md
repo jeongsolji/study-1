@@ -788,6 +788,80 @@
 
 ## 5장, 서비스 추상화 (TransactionManager에 대한 내용)
   - 
+  ```console
+  # Level.java
+  class enum Level{
+	BASIC(1), SILVER(2), GOLD(3);
+	
+	private final int value;
+	
+	Level(int Value){
+		return value;
+	}
+	
+	public static Level valueOf(int value){
+		switch(value) {
+			case 1: return BASIC;
+			case 2: return SILVER;
+			case 3: return GOLD;
+			default: throw new AssertionError("Unknown value: "+value);
+		}
+	}
+  }
+	
+  # User.java
+  @Getter
+  @Setter
+  public class User{
+  	String id;
+	String name;
+	String password;
+	
+	Level level;
+	
+	int login;
+	int recommend;
+  }
+	
+  # UserDao.java
+  public interface UserDao{
+	...
+	
+	public void update(User user1);
+  }
+	
+  # UserDaoJdbc.java
+  public class UserDaoJdbc implements USerDao{
+	...
+	
+	private RowMapper<User> userMapper = new RowMapper<User>(){
+		public User mapRow(ResultSet rs, int rowNum) throws SQLException{
+			User user = new USer();
+			user.setId(rs.getString("id"));
+			user.setName(rs.getString("name"));
+			user.setPassword(rs.getString("password"));
+			user.setLevel(Level.valueOf(rs.getInt("level")));
+			user.setLogin(rs.getInt("login"));
+			user.setRecommend(rs.getInt("recommend"));
+			return user;
+		}
+	}
+	
+	public void add(User user){
+		this.jdbcTemplate.update(
+			"insert into users(id, name, password, level, login, recommend)" + "values(?, ?, ?, ?, ?, ?)", +
+			user.getId(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend()
+		);
+	}
+	
+	public void update(User user){
+		this.jdbcTemplate.update(
+			"update users set name = ?, password = ?, level = ?, login = ?, recommend = ?, where id = ? ",
+			user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId()
+		);
+	}
+  }
+  ```
 	
 ---
 
