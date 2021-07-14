@@ -786,7 +786,8 @@
 #### 4.2.4 기술에 독립적인 UserDao 만들기
   - 인터페이스 적용
 
-## 5장, 서비스 추상화 (TransactionManager에 대한내용)
+## 5장, 서비스 추상화 (TransactionManager에 대한 내용)
+  - 
 	
 ---
 
