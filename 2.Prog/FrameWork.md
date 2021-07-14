@@ -13,7 +13,7 @@
   - 이일민, 『토비의 스프링 3.1』, AcornPub(2012)
 
 ## 1장, 오브젝트와 의존관계 (DataSource에 대한 내용)
-  - 1Lv
+  - 1 Phase
   ```console
   # User.java
   @Getter
@@ -64,7 +64,7 @@
   }
   ```
   
-  - 2Lv, 중복 코드의 메소드 추출
+  - 2 Phase, 중복 코드의 메소드 추출
     - 중복코드를 제거한다.
   ```console
   # UserDao.java
@@ -111,7 +111,7 @@
   }
   ```
   
-  - 3Lv, 상속을 통한 확장
+  - 3 Phase, 상속을 통한 확장
     - 배포할 고객사(또는 서버)별 DataBase가 상이할 경우를 대비한다.
   ```console
   # UserDao.java
@@ -150,7 +150,7 @@
   }
   ```
   
-  - 4Lv, 클래스 분리(=관심사 분리)
+  - 4 Phase, 클래스 분리(=관심사 분리)
   ```console
   # UserDao.java
   public class UserDao{
@@ -182,7 +182,7 @@
   }
   ```
   
-  - 5Lv, 인터페이스 도입(=관심사 분리)
+  - 5 Phase, 인터페이스 도입(=관심사 분리)
   ```console
   # ConnectionMaker.java
   public interface ConnectionMaker{
@@ -216,7 +216,7 @@
   }
   ```
   
-  - 6Lv, 관계설정 책임의 분리
+  - 6 Phase, 관계설정 책임의 분리
   ```console
   # UserDao.java
   public UserDao(ConnectionMaker connectionMaker){
@@ -233,7 +233,7 @@
   }
   ```
   
-  - 7Lv, IOC
+  - 7 Phase, IOC
   ```
   # DaoFactory.java
   public class DaoFactory{
@@ -279,7 +279,7 @@
   }
   ```
   
-  - 8Lv, 제어권의 이전을 통한 제어관계 역전(Spring의 활용)
+  - 8 Phase, 제어권의 이전을 통한 제어관계 역전(Spring의 활용)
     - 현 예제에서는 ApplicationContext 인터페이스를 사용하였지만, 서재에서는 Setter 또는 XML방식을 추가 설명하였다.
     - 다만, 본질은 스프링에서 Singleton Registry를 이용하여, Bean을 관리하고, 관리된 Bean을 DI한다는데 의의를 두면 된다.
   ```console
@@ -307,7 +307,7 @@
   }
   ```
   
-  - 9Lv, DataSource 인터페이스로 변환
+  - 9 Phase, DataSource 인터페이스로 변환
     - ConnectionMaker는 DB컨넥션을 생성해주는 기능 하나만을 정의한 매우 단순한 인터페이스다.
     - Java진영에서는 DB컨넥션을 가져오는 오브젝트의 기능을 추상화하여, 다양하게 사용할 수 있게 만들어진 DataSource라는 클래스가 이미 존재한다.
   ```console
@@ -334,7 +334,7 @@
 ## 2장, 테스트 (JUnit에 대한 내용)
 
 ## 3장, 템플릿 (JDBC에 대한 내용)
-  - 1Lv
+  - 1 Phase
   ```console
   # UserDao.java
   public class UserDao{
@@ -354,7 +354,7 @@
   }
   ```
   
-  - 2Lv, 예외처리
+  - 2 Phase, 예외처리
   ```console
   # UserDao.java
   public class UserDao{
@@ -384,7 +384,7 @@
   }
   ```
   
-  - 3Lv, 메소드 추출
+  - 3 Phase, 메소드 추출
   ```console
   # UserDao.java
   public class UserDao{
@@ -413,7 +413,7 @@
   }
   ```
   
-  - 4Lv, 템플릿 메소드 패턴의 적용
+  - 4 Phase, 템플릿 메소드 패턴의 적용
   ```console
   # StatementStrategy.java
   public interface StatementStrategy{
@@ -453,7 +453,7 @@
   }
   ```
   
-  -5Lv, 메소드 추출
+  - 5 Phase, 메소드 추출
   ```console
   # StatementStrategy.java
   public interface StatementStrategy{
@@ -464,6 +464,18 @@
   public class DeleteAllStatement implements StatementStrategy{
   	public PreparedStatement makePreparedStatement(Connection c) throws SQLException{
 		PreparedStatement ps = c.prepareStatement("delete from users");
+		return ps;
+	}
+  }
+  
+  # AddStatement.java
+  public class AddStatement implements StatementStrategy{
+  	public PreparedStatement makePreparedStatement(Connection c) throws SQLException{
+		PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
+		ps.setString(1, user.getId());
+		ps.setString(2, user.getName());
+		ps.setString(3, user.getPassword());
+		
 		return ps;
 	}
   }
@@ -493,6 +505,202 @@
 			if(ps!=null){ try{ps.close();}catch(SQLException e){} }
 			if( c!=null){ try{ c.close();}catch(SQLException e){} }
 		}
+	}
+	
+	...
+  }
+  ```
+  
+  - 6 Phase, 로컬 클래스
+  ```console
+  public class UserDao{
+  	...
+  
+  	public void add(final User user) throws SQLException{			# User 파라미터를 final로 선언할 경우, 내부 클래스에서 외부의 변수를 사용할 수 있다.
+		class AddStatement implements StatementStrategy{
+			User user;
+			
+			public AddStatement(USer user){
+				this.user = user;
+			}
+			
+			public PreparedStatement makePreparedStatement(Connection c) throws SQLException{
+				PreparedStatement ps = c.preparedStatement("insert into users(id, name, password) values(?, ?, ?);
+				ps.setString(1, user.getId());
+				ps.setString(2, user.getName());
+				ps.setString(3, user.getPassword());
+				
+				return ps;
+			}
+		}
+		
+		StatementStrategy st = new AddStatement();			# User 파라미터를 final로 선언하였기 때문에, AddStatement 생성자에 user를 파라미터로 전달하지 않아도된다.
+		//StatementStrategy st = new AddStatement(user);		# USer 파라미터를 final로 선언하지 않았을 경우.
+		jdbcContextWithStatementStrategy(st);
+	}
+	
+	public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
+		Connection c = null;
+		PreparedStatement ps = null;
+		
+		try{
+			c = dataSource.getConnection();
+			
+			ps = stmt.makePreparedStatement(c);
+			
+			ps.executeUpdate();
+		}catch(SQLException e){
+			throw e;
+		}finally{
+			if(ps!=null){ try{ps.close();}catch(SQLException e){} }
+			if( c!=null){ try{ c.close();}catch(SQLException e){} }
+		}
+	}
+	
+	...
+  }
+  ```
+  
+  - 7 Phase, 익명 내부 클래스
+  ```console
+  public class UserDao{
+  	...
+  
+  	public void add(final User user) throws SQLException{
+		jdbcContextWithStatementStrategy(
+			new StatementStrategy(){
+				public PreparedStatement makePreparedStatement(Connection c) throws SQLException{
+					PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
+					ps.setString(1, user.getId());
+					ps.setString(2, user.getName());
+					ps.setString(3, user.getPassword());
+					
+					return ps;
+				}
+			}
+		)
+	}
+	
+  	public void deleteAll() throws SQLException{
+		jdbcContextWithStatementStrategy(
+			new StatementStrategy(){
+				public PreparedStatement makePreparedStatement(Connection c) throws SQLException{
+					PreparedStatement ps = c.prepareStatement("delete from users");
+				}
+			}
+		)
+	}
+	
+	...
+  }
+  ```
+  
+  - 8 Phase, 클래스 분리
+  ```console
+  # JdbcContext.java
+  public class JdbcContext{
+  	private DataSource dataSource;
+	
+	public void setDataSource(DataSource dataSource){
+		this.dataSource = dataSource;
+	}
+	
+	public void workWithStatementStrategy(StatementStrategy stmt) throws SQLException{
+		Connection c = null;
+		PreparedStatement ps = null;
+		
+		try{
+			c.this.dataSource.getConnection();
+			ps = stmt.makePreparedStatement(c);
+			ps.executeUpdate();
+		}catch(SQLException se){
+			throw se;
+		}finally{
+			if(ps!=null){ try{ps.close();}catch(SQLException e){} }
+			if( c!=null){ try{ c.close();}catch(SQLException e){} }
+		}
+	}
+  }
+  
+  # UserDao.java
+  public class UserDao{
+  	...
+	
+	private JdbcContext jdbcContext;
+	
+	public void setJdbcContext(JdbcContext jdbcContext){
+		this.jdbcContext = jdbcContext;
+	}
+	
+	public void add(final User user) throws SQLException{
+		this.jdbcContext.workWithStatementStrategy(
+			new StatementStrategy(){
+				...
+			}
+		)
+	}
+	
+	public void deleteAll() throws SQLException{
+		this.jdbcContext.workWithStatementStrategy(
+			new StatementStrategy(){
+				...
+			}
+		)
+	}
+	
+	...
+  }
+  ```
+  
+  - 9 Phase, 콜백의 분리와 재활용
+  ```console
+  # UserDao.java
+  public class UserDao{
+  	...
+	
+	public void deleteAll() throws SQLException{
+		executeSql("delete from users");
+	}
+	
+	private void executeSql(final String query) throws SQLException{
+		this.jdbcContext.workWithStatementStrategy(
+			new StatementStrategy(){
+				public PreparedStatement makePreparedStatement(Connection c) throws SQLException{
+					return c.prepareStatement(query);
+				}
+			}
+		)
+	}
+	
+	...
+  }
+  ```
+  
+  - 10 Phase, 콜백과 템플릿의 결합
+  ```console
+  # UserDao.java
+  public class UserDao{
+  	...
+	
+	public void deleteAll() throws SQLException{
+		this.jdbcContext.executeSql("delete from users");
+	}
+	
+	...
+  }
+  
+  # JdbcContext.java
+  public class JdbcContext{
+  	...
+	
+	public void executeSql(final String query) throws SQLException{
+		workWithStatementStrategy(
+			new StatementStrategy(){
+				public PreparedStatement makePreparedStatement(Connection c) throws SQLException{
+					return c.prepareStatement(query);
+				}
+			}
+		)
 	}
 	
 	...
