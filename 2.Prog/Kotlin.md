@@ -5,7 +5,7 @@
 
 
 # Kotlin
-  - Dmitry Jemerov. and Svetlana Isakova., 2017, 『Kotlin In Action』, 오현석 옮김, AcornPub
+  - Dmitry Jemerov. and Svetlana Isakova., 『Kotlin In Action』, 오현석 옮김, AcornPub(2017)
 
 ## 1장. 코틀린이란 무엇이며, 왜 필요한가?
   - Kotlin이란, Java PlatForm에서 돌아가는 새로운 프로그래밍 언어.
