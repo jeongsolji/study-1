@@ -67,7 +67,7 @@
   - 2Lv, 중복 코드의 메소드 추출
     - 중복코드를 제거한다.
   ```console
-    # UserDao.java
+  # UserDao.java
   public class UserDao{
   	public void add(User user) throws ClassNotFoundException, SQLException{
 		Connection c = getConnection();										# [Solution] 중복코드 제거
