@@ -12,6 +12,305 @@
 # Spring MVC
   - 이일민, 『토비의 스프링 3.1』, AcornPub(2012)
 
+## JDBC
+  - 1Lv
+  ```console
+  # User.java
+  @Getter
+  @Setter
+  public class User{
+  	String id;
+	String name;
+	String password;
+  }
+  
+  # UserDao.java
+  public class UserDao{
+  	public void add(User user) throws ClassNotFoundException, SQLException{
+		Class.forName("com.mysql.jdbc.Driver");									# [Problem] 중복코드
+		Connection c = DriverManager.getConnection("jdbc:mysql://localhost/springbook", "spring", "book");	# [Problem] 중복코드
+		
+		PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
+		ps.setString(1, user.getId());
+		ps.setString(2, user.getName());
+		ps.setString(3, user.getPassword());
+		
+		ps.executeUpdate();
+		
+		ps.close();
+		c.close();
+	}
+	
+	public void get(String id) throws ClassNotFoundException, SQLException{
+		Class.forName("com.mysql.jdbc.Driver");									# [Problem] 중복코드
+		Connection c = DriverManager.getConnection("jdbc:mysql://localhost/springbook", "spring", "book");	# [Problem] 중복코드
+		
+		PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
+		ps.setString(1, id);
+		
+		ResultSet rs = ps.executeQuery();
+		re.next();
+		User user = new User();
+		user.setId(rs.getString("id"));
+		user.setName(rs.getString("name"));
+		user.setPassword(rs.getString("password"));
+		
+		rs.close();
+		ps.close();
+		c.close();
+		
+		return user;
+	}
+  }
+  ```
+  
+  - 2Lv, 중복 코드의 메소드 추출
+    - 중복코드를 제거한다.
+  ```console
+    # UserDao.java
+  public class UserDao{
+  	public void add(User user) throws ClassNotFoundException, SQLException{
+		Connection c = getConnection();										# [Solution] 중복코드 제거
+		
+		PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
+		ps.setString(1, user.getId());
+		ps.setString(2, user.getName());
+		ps.setString(3, user.getPassword());
+		
+		ps.executeUpdate();
+		
+		ps.close();
+		c.close();
+	}
+	
+	public void get(String id) throws ClassNotFoundException, SQLException{
+		Connection c = getConnection();										# [Solution] 중복코드 제거
+		
+		PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
+		ps.setString(1, id);
+		
+		ResultSet rs = ps.executeQuery();
+		re.next();
+		User user = new User();
+		user.setId(rs.getString("id"));
+		user.setName(rs.getString("name"));
+		user.setPassword(rs.getString("password"));
+		
+		rs.close();
+		ps.close();
+		c.close();
+		
+		return user;
+	}
+	
+	private Connection getConnection() throws ClassNotFoundException, SQLException{					# [Solution] 중복코드 제거
+		Class.forName("com.mysql.jdbc.Driver");									# [Problem] DataBase의 다형성 필요
+		Connection c = DriverManager.getConnection("jdbc:mysql://localhost/springbook", "spring", "book");
+		return c;
+	}
+  }
+  ```
+  
+  - 3Lv, 상속을 통한 확장
+    - 배포할 고객사(또는 서버)별 DataBase가 상이할 경우를 대비한다.
+  ```console
+  # UserDao.java
+  public abstract class UserDao{
+  	public void add(User user) throws ClassNotFoundException, SQLException{
+		Connection c = getConnection();
+		...
+	}
+	
+  	public void get(String id) throws ClassNotFoundException, SQLException{
+		Connection c = getConnection();
+		...
+	}
+	
+	public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
+  }
+  
+  # NUserDao.java
+  public class NUserDao extends UserDao{
+  	@Override
+  	public Connection getConnection() throws ClassNotFoundException, SQLException{
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection c = DriverManager.getConnection("jdbc:mysql://localhost/springbook", "spring", "book");
+		return c;
+	}
+  }
+  
+  # DUserDao.java
+  public class DUserDao extends UserDao{
+  	@Override
+  	public Connection getConnection() throws ClassNotFoundException, SQLException{
+		Class.forName("com.oracle.jdbc.Driver");
+		Connection c = DriverManager.getConnection("jdbc:mysql://localhost/springbook", "spring", "book");
+		return c;
+	}
+  }
+  ```
+  
+  - 4Lv, 클래스 분리(=관심사 분리)
+  ```console
+  # UserDao.java
+  public class UserDao{
+  	public UserDao(){
+		simpleConnectionMaker = new SimpleConnectionMaker();
+	}
+	
+  	private SimpleConnectionMaker simpleConnectionMaker;
+	
+	public void add(User user) throws ClassNotFoundException, SQLException{
+		Connection c = simpleConnectionMaker.makeNewConnection();
+		...
+	}
+	
+	public void get(String id) throws ClassNotFoundException, SQLException{
+		Connection c = simpleConnectionMaker.makeNewConnection();
+		...
+	}
+  }
+  
+  # SimpleConnectionMaker.java
+  public class SimpleConnectionMaker{
+  	public Connection makeNewConnection() throws ClassNotFoundException, SQLException{
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection c = DriverManager.getConnection("jdbc:mysql://localhost/springbook", "spring", "book");
+		
+		return c;
+	}
+  }
+  ```
+  
+  - 5Lv, 인터페이스 도입(=관심사 분리)
+  ```console
+  # ConnectionMaker.java
+  public interface ConnectionMaker{
+  	public Connection makeConnection() throws ClassNotFoundException, SQLException;
+  }
+  
+  public class DConnectionMaker implements ConnectionMaker{
+  	...
+  	public Connection makeConnection() throws ClassNotFoundException, SQLException{
+		// to do
+	}
+  }
+  
+  # UserDao.java
+  public class UserDao{
+  	public userDao(){
+		connectionMaker = new DConnectionMaker();				# [Problem] 구현체가 여기서 정의되면 안된다.
+	}
+	
+  	private ConnectionMaker connectionMaker;					# 인터페이스를 통해 오브젝트에 접근하므로 구체적인 클래스 정보를 알 필요가 없다.
+	
+	public void add(User user) throws ClassNotFoundException, SQLException{
+		Connection c = connectionMaker.makeConnection();			# 인터페이스에 정의된 메소드를 사용하므로, 클래스가 바뀌어도 수정할 내역이 없다.
+		...
+	}
+	
+	public User get(String id) throws ClassNotFoundException, SQLException{
+		Connection c = connectionMaker.makeConnection();			# 인터페이스에 정의된 메소드를 사용하므로, 클래스가 바뀌어도 수정할 내역이 없다.
+		...
+	}
+  }
+  ```
+  
+  - 6Lv, 관계설정 책임의 분리
+  ```console
+  # UserDao.java
+  public UserDao(ConnectionMaker connectionMaker){
+  	this.connectionMaker = connectionMaker;
+  }
+  
+  # Client.java
+  public class Client{
+  	public static void client(...) throws ClassNotFoundException, SQLException{
+		ConnectionMaker connectionMaker = new DConnectionMaker();
+		UserDao userDao = new UserDao(connectionMaker);
+		...
+	}
+  }
+  ```
+  
+  - 7Lv, IOC
+  ```
+  # DaoFactory.java
+  public class DaoFactory{
+  	public UserDao userDao(){
+		ConnectionMaker connectionMaker = new DConnectionMaker();
+		UserDao userDao = new UserDao(connectionMaker);
+		return userDao;
+	}
+  }
+  
+  # Client.java
+  public class Client{
+  	public static void client(...) throws ClassNotFoundException, SQLException{
+		UserDao userDao = DaoFactory().userDao();
+		...
+	}
+  }
+  ```
+  
+  ```
+  ### Factory의 활용
+  # DaoFactory.java
+  public class DaoFactory{
+  	public UserDao userDao(){
+		return new UserDao(connectionMaker());
+	}
+
+	public AccountDao accountDao(){
+		return new AccountDao(connectionMaker());
+	}
+	
+	public ConnectionMaker connectionMaker(){
+		return new DConnectionMaker();
+	}
+  }
+  
+  # Client.java
+  public class Client{
+  	public static void client(...) throws ClassNotFoundException, SQLException{
+		UserDao userDao = DaoFactory().userDao();
+		...
+	}
+  }
+  ```
+  
+  - 8Lv, 제어권의 이전을 통한 제어관계 역전(Spring의 활용)
+    - 현 예제에서는 ApplicationContext 인터페이스를 사용하였지만, 서재에서는 Setter 또는 XML방식을 추가 설명하였다.
+    - 다만, 본질은 스프링에서 Singleton Registry를 이용하여, Bean을 관리하고, 관리된 Bean을 DI한다는데 의의를 두면 된다.
+  ```console
+  # DaoFactory.java
+  @Configuration
+  public class DaoFactory{
+  	@Bean
+	public UserDao userDao(){
+		return new UserDao(connectionMaker());
+	}
+	
+  	@Bean
+	public ConnectionMaker connectionMaker(){
+		return new DConnectionMaker();
+	}
+  }
+  
+  # Client.java
+  public class Client{
+  	public static void client(...) throws ClassNotFoundException, SQLException{
+		ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+		UserDao userDao = context.getBean("userDao", UserDao.class);
+		...
+	}
+  }
+  ```
+  
+  - 9Lv, DataSource 인터페이스로 변환
+
+---
+
 
 # Spring Boot
 
