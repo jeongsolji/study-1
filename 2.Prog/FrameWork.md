@@ -12,7 +12,7 @@
 # Spring MVC
   - 이일민, 『토비의 스프링 3.1』, AcornPub(2012)
 
-## JDBC
+## 1장, 오브젝트와 의존관계 (DataSource에 대한 내용)
   - 1Lv
   ```console
   # User.java
@@ -308,6 +308,196 @@
   ```
   
   - 9Lv, DataSource 인터페이스로 변환
+    - ConnectionMaker는 DB컨넥션을 생성해주는 기능 하나만을 정의한 매우 단순한 인터페이스다.
+    - Java진영에서는 DB컨넥션을 가져오는 오브젝트의 기능을 추상화하여, 다양하게 사용할 수 있게 만들어진 DataSource라는 클래스가 이미 존재한다.
+  ```console
+  # javax.sql.DataSource.java
+  public interface DataSource extends CommonDataSource, Wrapper{
+  	Connection getConnection() throws SQLException;
+  }
+  
+  # UserDao.java
+  UserDao{
+  	private DataSource dataSource;
+	
+	public void setDataSource(DataSource dataSource){
+		this.dataSource = dataSource;
+	}
+	
+	public void add(User user) throws SQLException{
+		Connection c = dataSource.getConnection();
+		...
+	}
+  }
+  ```
+  
+## 2장, 테스트 (JUnit에 대한 내용)
+
+## 3장, 템플릿 (JDBC에 대한 내용)
+  - 1Lv
+  ```console
+  # UserDao.java
+  public class UserDao{
+  	...
+	
+  	public void deleteAll() throws SQLException{
+		Connection c = dataSource.getConnection();
+		
+		PreparedStatement ps = c.prepareStatement("delete from users");
+		ps.executeUpdate();
+		
+		ps.close();
+		c.close();
+	}
+	
+	...
+  }
+  ```
+  
+  - 2Lv, 예외처리
+  ```console
+  # UserDao.java
+  public class UserDao{
+  	...
+	
+  	public void deleteAll() throws SQLException{
+		Connection c = null;
+		PreparedStatement ps = null;
+		
+		try{
+			c = dataSource.getConnection();
+			ps = c.prepareStatement("delete from users");
+			ps.executeUpdate();
+		}catch(SQLException se){
+			throw e;
+		}finally{
+			if(ps!=null){
+				try{ ps.close(); } catch(SQLException se){}
+			}
+			if(c!=null){
+				try{ c.close(); } catch(SQLException se){}
+			}
+		}
+	}
+	
+	...
+  }
+  ```
+  
+  - 3Lv, 메소드 추출
+  ```console
+  # UserDao.java
+  public class UserDao{
+  	...
+	
+	public void deleteAll() throws SQLException{
+		...
+		
+		try{
+			c = dataSource.getConnection();
+			ps = makeStatement(c);
+			ps. executeUpdate();
+		}catch(SQLException e){
+		}
+		
+		...
+	}
+	
+	private PreparedStatement makeStatement(Connection c) throws SQLException{
+		PreparedStatement ps;
+		ps = c.prepareStatement("delete from users");
+		return ps;
+	}
+	
+	...
+  }
+  ```
+  
+  - 4Lv, 템플릿 메소드 패턴의 적용
+  ```console
+  # StatementStrategy.java
+  public interface StatementStrategy{
+  	PreparedStatement makePreparedStatement(Connection c) throws SQLException;
+  }
+  
+  # DeleteAllStatement.java
+  public class DeleteAllStatement implements StatementStrategy{
+  	public PreparedStatement makePreparedStatement(Connection c) throws SQLException{
+		PreparedStatement ps = c.prepareStatement("delete from users");
+		return ps;
+	}
+  }
+  
+  # UserDao.java
+  public class UserDao{
+  	...
+	
+	public void deleteAll() throws SQLException{
+		...
+		
+		try{
+			c = dataSource.getConnection();
+
+			StatementStrategy strategy = new DeleteAllStatement();
+			ps = strategy.makePreparedStatement(c);
+
+			ps.executeUpdate();
+		}catch(SQLException e){
+			...
+		}
+		
+		...
+	}
+	
+	...
+  }
+  ```
+  
+  -5Lv, 메소드 추출
+  ```console
+  # StatementStrategy.java
+  public interface StatementStrategy{
+  	PreparedStatement makePreparedStatement(Connection c) throws SQLException;
+  }
+  
+  # DeleteAllStatement.java
+  public class DeleteAllStatement implements StatementStrategy{
+  	public PreparedStatement makePreparedStatement(Connection c) throws SQLException{
+		PreparedStatement ps = c.prepareStatement("delete from users");
+		return ps;
+	}
+  }
+  
+  # UserDao.java
+  public class UserDao{
+  	...
+	
+	public void deleteAll() throws SQLException{
+		StatementStrategy st = new DeleteAllStatement();
+		jdbcContextWithStatementStrategy(st);
+	}
+	
+	public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
+		Connection c = null;
+		PreparedStatement ps = null;
+		
+		try{
+			c = dataSource.getConnection();
+			
+			ps = stmt.makePreparedStatement(c);
+			
+			ps.executeUpdate();
+		}catch(SQLException e){
+			throw e;
+		}finally{
+			if(ps!=null){ try{ps.close();}catch(SQLException e){} }
+			if( c!=null){ try{ c.close();}catch(SQLException e){} }
+		}
+	}
+	
+	...
+  }
+  ```
 
 ---
 
