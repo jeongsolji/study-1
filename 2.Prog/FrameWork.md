@@ -11,6 +11,10 @@
 
 # Spring MVC
   - 이일민, 『토비의 스프링 3.1』, AcornPub(2012)
+  
+  - 1장, 3장, 4장, 5장 -> DataSource, JDBC, Transaction에 관한 이야기
+    - 4장에서 예외(체크 예외, 언체크 예외)에 대한 얘기가 나온다.
+  - 2장 -> JUnit에 대한 이야기
 
 ## 1장, 오브젝트와 의존관계 (DataSource에 대한 내용)
   - 1 Phase
@@ -709,7 +713,12 @@
   
   - 11 Phase, 재사용 가능한 콜백의 분리(javax.sql.JdbcTemplate)
     - 위 예제에서 만든 jdbcContext는 더이상 사용하지 않는다. 다만, 이를 더 java진영에서 우아하게 구현해 놓은 JdbcTemplate클래스를 사용한다.
-    - 단, JdbcTemplate의 query() 메소드는 제네릭 메소드로 타입은 파라미터로 넘기는 RowMapper<T>이기 때문에, RowMapper클래스의 구현을 인지한다.
+    - JdbcTemplate 클래스의 주요 메소드들
+      - update()
+      - query()
+      - queryForInt()
+      - queryForObject()
+    - 단, JdbcTemplate의 몇 메소드는 제네릭 메소드로 타입은 파라미터로 넘기는 RowMapper<T>이기 때문에, RowMapper클래스의 구현을 인지하여야 한다.
   ```console
   # UserDao.java
   public class UserDao{
