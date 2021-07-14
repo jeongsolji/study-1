@@ -774,10 +774,19 @@
   - 예외처리방법
       - 예외 복구: catch문 내, while등을 이용하여 예외 발생 시 N차례 재시도하도록 구현
       - 예외 회피: catch문 내, 로그 등을 출력하도록 한 뒤, 다시 throws하여 예외를 직접 처리치 않고, 호출한 곳에서 처리 할 수 있도록 한다.
-      - 예외 전환: catch문 내, 예외를 catch하였을 때, 해당 예외를 잡아 조금 더 구체적인 예외로 변경하거나, 무의미한 Exception에서 해방될 수 있도록 RuntimeException을 새로 throws한다.
+      - 예외 전환: catch문 내, 예외를 catch하였을 때, 해당 예외를 잡아 조금 더 구체적인 예외로 변경(Checked Exception)하거나, 무의미한 Exception에서 해방될 수 있도록 새로운 예외(Unchecked Exception)를 throws한다.
 	
 ### 4.2 예외 전환
-  - 
+  - JdbcTemplate으로 구현한 부분을 보면 throws SQLException구문이 모두 빠져있는걸 확인할 수 있다.
+  - JdbcTemplate이 SQLException을 DataAccessException(RuntimeException)으로 예외 전환을 하였기 때문이다.
+  - 뿐만 아니라, DB메타정보를 참고해서 DB종류를 확인하고 DB별로 미리 준비된 매핑정보를 참고해서 적절한 예외 클래스를 선택(DataAccessException의 child class)하여 예외를 발생한다.
+	
+#### 4.2.3 DAO인터페이스와 DataAccessException 계층구조
+
+#### 4.2.4 기술에 독립적인 UserDao 만들기
+  - 인터페이스 적용
+
+## 5장, 서비스 추상화 (TransactionManager에 대한내용)
 	
 ---
 
