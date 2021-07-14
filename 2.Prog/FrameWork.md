@@ -706,7 +706,53 @@
 	...
   }
   ```
+  
+  - 11 Phase, 재사용 가능한 콜백의 분리(javax.sql.JdbcTemplate)
+    - 위 예제에서 만든 jdbcContext는 더이상 사용하지 않는다. 다만, 이를 더 java진영에서 우아하게 구현해 놓은 JdbcTemplate클래스를 사용한다.
+    - 단, JdbcTemplate의 query() 메소드는 제네릭 메소드로 타입은 파라미터로 넘기는 RowMapper<T>이기 때문에, RowMapper클래스의 구현을 인지한다.
+  ```console
+  # UserDao.java
+  public class UserDao{
+	public void setDataSource(DataSource dataSource){
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+	
+	private JdbcTemplate jdbcTemplate;
+	
+	private RowMapper<User> userMapper = new RowMapper<User>(){
+		public User mapRow(ResultSet rs, int rowNum) throws SQLException{
+			User user = new USer();
+			user.setId(rs.getString("id"));
+			user.setName(rs.getString("name"));
+			user.setPassword(rs.getString("password"));
+			return user;
+		}
+	}
+	
+	public List<User> add(final User user){
+		return this.jdbcTemplate.update( "insert into users(id, name, password) values(?, ?, ?), user.getId(), user.getName(), user.getPassword() );
+	}
+	
+	public List<User> get(String id){
+		return this.jdbcTemplate.update( "select * from users where id = ?", new Object[] {id}, this.userMapper );
+	}
+	
+	public List<User> deleteAll(){
+		return this.jdbcTemplate.update( "delete from users" );
+	}
+	
+	public List<User> getCount(){
+		return this.jdbcTemplate.update( "select count(*) from users" );
+	}
+	
+	public List<User> getAll(){
+		return this.jdbcTemplate.update( "select * from users order by id", this.userMapper );
+	}
+  }
+  ```
 
+## 4장, 예외
+	
 ---
 
 
