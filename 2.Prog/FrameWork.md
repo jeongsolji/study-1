@@ -787,7 +787,7 @@
   - 인터페이스 적용
 
 ## 5장, 서비스 추상화 (TransactionManager에 대한 내용)
-  - 
+  - 1 Phase
   ```console
   # Level.java
   class enum Level{
