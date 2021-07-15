@@ -896,7 +896,7 @@
   }
   ```
 	
-  - [★★★★★ full source] 2 Phase
+  - 2 Phase
   ```console
   # UserService.java
   public class UserService{
@@ -935,6 +935,7 @@
   }
   ```
 
+  [★★★★★ full source ★★★★★]
   - 3 Phase, Level enum에 순서를 담도록 수정하여, '2 Phase'의 'upgradeLevel()'기능을 User에서 처리토록 수정
   ```console
   # UserDao.java
@@ -1102,7 +1103,53 @@
   }
   ```
 
-### 5.2 트랜잭션 서비스 
+  - 4 Phase
+    - TransactionManager에 대해 설명하고, JDBC, Hibernate, JTA등을 고려하여 Spring에선 PlatformTransactionManager라는 인터페이스로 서비스 추상화를 진행한 내용을 포함한다.
+  ```console
+  # UserService.java
+  public class UserService{
+	UserDao userDao;
+	
+	public void setUserDao(UserDao userDao){
+		this.userDao = userDao;
+	}
+	
+	public void upgradeLevels(){
+		TransactionSynchronizationManager.initSynchronization();		# 아래, Connection 오브젝트를 멀티 쓰레드 환경에서 thread-safety하도록 사용할 수 있게 해준다.
+		Connection c = DataSourceUtils.getConnection(dataSource);		# upgradeLevels() 메소드에 transaction의 경계를 설정하기위해,
+											# Connection 오브젝트를 사용하는 모든 곳에 동일한 Connection 오브젝트를 사용해야 한다.
+											# 이는, upgradeLevels() 메소드 뿐만 아니라, upgradeLevels() 메소드에서 호출하는 하위 메소드, UserDao 등 모든곳에 파라미터로 받도록 중복하여 코드를 작성해야 하고, 호출하는 쪽에서 파라미터로 전달까지 해야한다는 것.
+											# 이를 배제하기 위해 Connection을 싱글톤으로 관리한다.
+											# 다만, 멀티 쓰레드 환경에서 안전하게 사용할 수 있도록, TransactionSynchronizationManager도 같이 설정해주어야 한다.
+		c.setAutoCommit(false);
+	
+		try{
+			List<User> users = userDao.getAll();
+			for(User user: users){
+				if(canUpgradeLevel(user)){
+					upgradeLevel(user);
+				}
+			}
+	
+			c.commit();
+		}catch(Exception e){
+			c.rollback();
+			throw e;
+		}finally{
+			DataSourceUtils.releaseConnection(c, dataSource);
+			TransactionSynchronizationManager.unbindResource(this.dataSource);
+			TransactionSynchronizationManager.clearSynchronization();
+		}
+	}
+	
+	...
+  }
+  ```
+	
+### 5.4 메일 서비스 추상화
+  - 5.1~5.3까지 TransactionManager를 통하여 서비스 추상화를 진행했다고 한다면, 서비스 추상화에 대해 Service interface를 가지고 메일 서비스를 추상화한 내용을 포함한다.
+	
+## 6장, AOP
 	
 ---
 
