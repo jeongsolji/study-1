@@ -896,7 +896,7 @@
   }
   ```
 	
-  - 2 Phase
+  - [★★★★★ full source] 2 Phase
   ```console
   # UserService.java
   public class UserService{
@@ -947,7 +947,6 @@
 	void update(User user);
   }
 	
-  # UserDaoJdbc.java
   # UserDaoJdbc.java
   public class UserDaoJdbc implements USerDao{
 	private JdbcTemplate jdbcTemplate;
@@ -1102,6 +1101,8 @@
 	}
   }
   ```
+
+### 5.2 트랜잭션 서비스 
 	
 ---
 
