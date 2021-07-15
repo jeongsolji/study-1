@@ -788,6 +788,7 @@
 
 ## 5장, 서비스 추상화 (TransactionManager에 대한 내용)
   - 1 Phase
+    - upgradeLevels() re-factoring, because it's too complicated
   ```console
   # Level.java
   class enum Level{
@@ -859,6 +860,245 @@
 			"update users set name = ?, password = ?, level = ?, login = ?, recommend = ?, where id = ? ",
 			user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId()
 		);
+	}
+  }
+	
+  # UserService.java
+  public class UserService{
+	UserDao userDao;
+	
+	public void setUserDao(UserDao userDao){
+		this.userDao = userDao;
+	}
+	
+	public void upgradeLevels(){
+		List<User> users = userDao.getAll();
+		for(User user: users){
+			Boolean changed = null;
+			if(user.getLevel()==Level.BASIC && user.getLogin() >= 50){			# [Problem] 가독성이 떨어진다.
+				user.setLevel(Level.SILVER);
+				changed = true;
+			}else if(user.getLevel()==Level.SILVER && user.getRecommend() >= 50){		# [Problem] 가독성이 떨어진다.
+				user.setLevel(Level.GOLD);
+				changed = true;
+			}else if(user.getLevel()==Level.GOLD){						# [Problem] 가독성이 떨어진다.
+				changed = false;
+			}else {										# [Problem] 가독성이 떨어진다.
+				changed = false;
+			}
+	
+			if(changed)
+				userDao.update(user);
+		}
+	}
+	
+	...
+  }
+  ```
+	
+  - 2 Phase
+  ```console
+  # UserService.java
+  public class UserService{
+	UserDao userDao;
+	
+	public void setUserDao(UserDao userDao){
+		this.userDao = userDao;
+	}
+	
+	public void upgradeLevels(){
+		List<User> users = userDao.getAll();
+		for(User user: users){
+			if(canUpgradeLevel(user)){							# [Solution] 
+				upgradeLevel(user);							# [Solution] 
+			}
+		}
+	}
+	
+	private boolean canUpgradeLevel(User user){
+		Level currentLevel = user.getLevel();
+		switch(currentLevel){
+			case BASIC: return (user.getLogin() >= 50);
+			case SILVER: return (user.getRecommend() >= 30);
+			case GOLD: return false;
+			default: throw new IllegalArgumentException("Unknown Level: " + currentLevel);
+		}
+	}
+	
+	private void upgradeLevel(User user){
+		if( user.getLevel() == Level.BASIC ) user.setLevel(Level.SILVER);
+		else if( user.getLevel() == Level.SILVER ) user.setLevel(Level.GOLD);
+		userDao.update(user);
+	}
+	
+	...
+  }
+  ```
+
+  - 3 Phase, Level enum에 순서를 담도록 수정하여, '2 Phase'의 'upgradeLevel()'기능을 User에서 처리토록 수정
+  ```console
+  # UserDao.java
+  public interface UserDao{
+	void add(User user);
+	User get(String id);
+	List<User> getAll();
+	void deleteAll();
+	void getCount();
+	void update(User user);
+  }
+	
+  # UserDaoJdbc.java
+  # UserDaoJdbc.java
+  public class UserDaoJdbc implements USerDao{
+	private JdbcTemplate jdbcTemplate;
+	
+	public void setDataSource(DataSource dataSource){
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+	
+	private RowMapper<User> userMapper = new RowMapper<User>(){
+		public User mapRow(ResultSet rs, int rowNum) throws SQLException{
+			User user = new USer();
+			user.setId(rs.getString("id"));
+			user.setName(rs.getString("name"));
+			user.setPassword(rs.getString("password"));
+			user.setLevel(Level.valueOf(rs.getInt("level")));
+			user.setLogin(rs.getInt("login"));
+			user.setRecommend(rs.getInt("recommend"));
+			return user;
+		}
+	}
+	
+	public void add(User user){
+		this.jdbcTemplate.update(
+			"insert into users(id, name, password, level, login, recommend)" + "values(?, ?, ?, ?, ?, ?)", +
+			user.getId(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend()
+		);
+	}
+	
+	public User get(String id){
+		return this.jdbcTemplate.queryForObject("select * from users where id = ?", new Object[]{id}, this.userMapper);
+	}
+	
+	public void deleteAll(){
+		this.jdbcTemplate.update("delete from users");
+	}
+	
+	public int getCount(){
+		return this.jdbcTemplate.queryForInt("select count(*) from users");
+	}
+	
+	public List<User> getAll(){
+		return this.jdbcTemplate.query("select * from users order by id", this.userMapper);
+	}
+	
+	public void update(User user){
+		this.jdbcTemplate.update(
+			"update users set name = ?, password = ?, level = ?, login = ?, recommend = ?, where id = ? ",
+			user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId()
+		);
+	}
+  }
+	
+  # Level.java
+  public enum Level{
+	GOLD(3, null), SILVER(2, GOLD), BASIC(1, SILVER);
+	
+	private final int value;
+	private final Level next;
+	
+	Level(int value, Level next){
+		this.value = value;
+		this.next = next;
+	}
+	
+	public int intValue(){
+		return value;
+	}
+	
+	public Level nextLevel(){
+		return this.next;
+	}
+	
+	public static Level valueOf(int value){
+		switch(value){
+			case 1: return BASIC;
+			case 2: return SILVER;
+			case 3: return GOLD;
+			default: throw new AssertionError("Unknown value: " + value);
+		}
+	}
+  }
+	
+  # User.java
+  @Getter
+  @Setter
+  public class User{
+	String id;
+	String name;
+	String password;
+	Level level;
+	int login;
+	int recommend;
+	
+	public User(){}
+	
+	public User(String id, String name, String password, Level level, int login, int recommend){
+		this.id = id;
+		this.name = name;
+		this.password = password;
+		this.level = level;
+		this.login = login;
+		this.recommend = recommend;
+	}
+	
+	public void upgradeLevel(){
+		Level nextLevel = this.level.nextLevel();
+	
+		if( nextLevel == null ){
+			throw new Illega15tateException(this.level + "은 업그레이드가 불가능합니다");
+		} else {
+			this.level = nextLevel;
+		}
+	}
+  }
+	
+  # UserService.java
+  public class UserService{
+	UserDao userDao;
+	
+	public void setUserDao(UserDao userDao){
+		this.userDao = userDao;
+	}
+	
+	public void upgradeLevels(){
+		List<User> users = userDao.getAll();
+		for(User user: users){
+			if(canUpgradeLevel(user)){							# [Solution] 
+				upgradeLevel(user);							# [Solution] 
+			}
+		}
+	}
+	
+	private boolean canUpgradeLevel(User user){
+		Level currentLevel = user.getLevel();
+		switch(currentLevel){
+			case BASIC: return (user.getLogin() >= 50);
+			case SILVER: return (user.getRecommend() >= 30);
+			case GOLD: return false;
+			default: throw new IllegalArgumentException("Unknown Level: " + currentLevel);
+		}
+	}
+	
+	private void upgradeLevel(User user){
+		user.upgradeLevel();
+		userDao.update(user);
+	}
+	
+	public void add(User user){
+		if( user.getLevel() == null)
+			user.setLevel(Level.BASIC);
+		userDao.add(user)
 	}
   }
   ```
