@@ -12,8 +12,10 @@
 # Spring MVC
   - 이일민, 『토비의 스프링 3.1』, AcornPub(2012)
   
-  - 1장, 3장, 4장, 5장 -> DataSource, JDBC, Transaction에 관한 이야기
-    - 4장에서 예외(체크 예외, 언체크 예외)에 대한 얘기가 나온다.
+  - 1장, 3장, 4장, 5장, 6장에서 각각 DataSource, JDBC, Exception, TransactionManager, Transcation경계설정에 관한 이야기를 다룬다.
+    - 각각의 장에서 예제(DataSource, JDBC, Exception, Transaction 등)를 날코딩을 기점으로 framework답도록 Source Code를 직접 re-factoring해나가며,
+      결과적으로는 spring의 구현방법을 설명하는 구조이다. 즉, spring framework의 내부구조의 history를 설명한다는 느낌이 들었음.
+    - 설명하는 내용중 상당수의 Java Design pattern내용을 포함하기도 한다.
   - 2장 -> JUnit에 대한 이야기
 
 ## 1장, 오브젝트와 의존관계 (DataSource에 대한 내용)
@@ -336,6 +338,7 @@
   ```
   
 ## 2장, 테스트 (JUnit에 대한 내용)
+  - 이건 그냥 건너뛰겠다.. 직접하면서 폭을 넓히자.
 
 ## 3장, 템플릿 (JDBC에 대한 내용)
   - 1 Phase
@@ -1146,10 +1149,41 @@
   }
   ```
 	
+  - 5 Phase, TransactionManager를 추상화한다.
+  ```console
+  # UserService.java
+  public class UserService{
+	UserDao userDao;
+	private PlatformTransactionManager transactionManager;
+	
+	public void upgradeLevels(){
+		TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
+		try{
+			List<User> users = userDao.getAll();
+			for(User user: users){
+				if(canUpgradeLevel(user)){
+					upgradeLevel(user);
+				}
+			}
+	
+			this.transactionManager.commit(status);
+		}catch(Exception e){
+			this.transactionManager.rollback(status);
+			throw e;
+		}
+	}
+	
+	...
+  }
+  ```
+	
 ### 5.4 메일 서비스 추상화
   - 5.1~5.3까지 TransactionManager를 통하여 서비스 추상화를 진행했다고 한다면, 서비스 추상화에 대해 Service interface를 가지고 메일 서비스를 추상화한 내용을 포함한다.
 	
 ## 6장, AOP
+  - 모든 Service 클래스 내에, PlatformTransactionManager를 멤버변수로 정의하고, 모든 메소드에 적용하기란 유지보수측면에서 비효율적이다.
+  - 이를 AOP를 통해서 Service전역에 설정해주겠다는 얘기다.
+  - 크게 설명을 적지는 않는다.
 	
 ---
 
