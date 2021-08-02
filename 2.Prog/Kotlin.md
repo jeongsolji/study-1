@@ -1,4 +1,6 @@
 # Kotlin
+  - Dmitry Jemerov. and Svetlana Isakova., 『Kotlin In Action』, 오현석 옮김, AcornPub(2017)
+  - Blog..
 # Kotlin-coroutines
 
 ---
@@ -743,7 +745,25 @@
   String joinToString(Collection<T> collection, String separator){...}
   String joinToString(Collection<T> collection){...}
   ```
+  
 ---
+
+
+# Kotlin
+  - Blog..
+
+## 유용한 함수
+  - apply
+    수신객체의 프로퍼티를 수정 후 수신객체를 반환할 때
+
+  - also
+    수신객체의 프로퍼트 수정 없이 수신객체를 반환할 때
+
+  - let
+    지정된 값이 null이 아닌 경우에 코드를 실행하는 경우
+
+---
+
 
 # Kotlin - coroutines
   - 참고사이트: [https://speakerdeck.com/taehwandev/kotlin-coroutines](https://speakerdeck.com/taehwandev/kotlin-coroutines)
