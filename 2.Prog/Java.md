@@ -1,13 +1,16 @@
 # Java
+  - Scott Oaks., 『자바 성능 튜닝』, 최가인 옮김, O'REILLY(2014)
+  - 라울-게이브리얼 우르마, 마리오 푸스코, 앨런 마이크로프트., 『JAVA 8 in Action』, 우정은 옮김, 한빛미디어(2017)
+  - JUnit 5
 
 ---
 
 
-# 1. Java
-## 1. GC
-### 1. Memory
-### 2. Tuning
-#### 1. jinfo
+# Java
+## GC
+### Memory
+### Tuning
+#### jinfo
   - JVM option(java command option)을 확인
   - java command option
     - -X는 표준이 아닌 설정으로 Macro한 측면에서 JVM제어 기능을 제공 (모든 JVM에서 지원한다는 보장이 없음)
@@ -23,7 +26,7 @@
     // jinfo -flag PermSize{또는-XX:PermSize=134217728} 5555
     ~~~
 
-#### 2. jstat
+#### jstat
   - JVM 측정을 위한 성능 통계를 표시한다.
   - 항목 설명
     - Timestamp : JVM의 시작 시간 이후의 시간
@@ -65,7 +68,7 @@
   // 2행과 3행을 보면 Minor gc가 발생하여 Eden 영역이 감소하고 YGC와 YGCT가 증가함을 볼 수 있다.
   ~~~
 
-#### 3. jstack
+#### jstack
   - java Thread dump 생성해주는 명령어로 java stack 확인할 때 사용.
   - Unix/Linux 는 Java 5 부터 Windows 는 Java 6 부터 지원
   - Unix/Linux 에서는 kill -3 명령어로도 Thread dump 생성 가능
@@ -76,7 +79,7 @@
     jstack -l 4740 > td_4740.txt    // 4740이라는 pid에 대한 Thread dump를 td_4740.txt 라는 파일로 생성하라
   ~~~
 
-#### 4. jmap
+#### jmap
   - java Heap dump 생성해주는 명령어로 java Heap을 확인할 때 사용.
   - Options
     -histo : 클래스별 객체 수와 메모리 사용량 확인
@@ -103,3 +106,11 @@
    9:         46349        3980768  [Ljava.util.HashMap$Entry;
   10:          8970        3606368  <constantPoolCacheKlass>
   ~~~
+
+
+---
+
+# JUnit 5
+  - JUnit Platform: Test를 실행해주는 런처, TestEngine API를 제공한다.
+  - Jupiter: JUnit 5를 지원하는 TestEngine API의 구현체
+  - Vintage: JUnit 4, 3을 지원하는 TestEngine API의 구현체
