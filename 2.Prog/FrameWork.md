@@ -5,6 +5,7 @@
     - Security
     - JPA
     - Spring Boot 2.4.x ↑
+    - JUnit
   
 ---
 
@@ -1732,4 +1733,55 @@
     config:
       activate:
         on-profile: example
+  ```
+
+
+---
+
+# JUnit 5
+## Annotation
+  ```console
+  @Disabled
+      -> 테스트를 하고 싶지 않은 클래스나 메서드에 붙이는 어노테이션
+
+  @DisplayName("IDE나 빌드툴에서 알아 볼 수 있도록")
+      -> 어떤 테스트인지 쉽게 표현할 수 있도록 해주는 어노테이션
+
+  @RepeatedTest( value = 10, name = " {displayName} 중 {currentRepetition} of {totalRepetitions}")
+      -> 반복적으로 사용할 때 사용
+
+  @ParameterizedTest
+  @CsvSource(value = {"ACE,ACE:12", "ACE,ACE,ACE:13"}, delimiter = ':' )
+      -> 테스트에 여러 다른 매개변수를 대입해가며 반복실행할 때 사용하는 어노테이션
+  void calculateCardSumWhenAceIsTwo( final String input, final int expected ){
+    final String[] inputs = input.split(",");
+    for( final String number : inputs ) {
+        final CardNumber cardNumber = CardNumber.valueOf(number);
+	dealer.receiveOneCard( new Card(cardNumber, CardType.CLOVER) );
+    }
+
+    assertThat( dealer.calculateScore()).isEqualTo( expected );
+  }
+
+  @Nested
+      -> 테스트 클래스 안에서 내부 클래스를 정의해 테스트를 계층화 할 때 사용
+
+  * Assertions
+    * example
+      @Test
+      void exceptionThrow(){
+          Exception e = assertThrows(Exception.class, ()-> new Test(-10));
+          assertDoesNotThrow( ()-> System.out.println("Do Something"));
+      }
+
+  * assertTimeout
+    * Assumption
+      * example
+        void some_test(){
+            assumingThat("DEV".equals(System.getenv("ENV")), () -> {
+                assertEquals("A", "B");		// 단정문이 실행되지 않음
+            });
+            assertEquals("A", "A");			// 단정문이 실행됨
+        }
+
   ```
