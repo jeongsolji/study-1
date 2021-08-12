@@ -6,9 +6,9 @@
     - JPA
     - Spring Boot 2.4.x ↑
     - JUnit 5
-  
----
 
+
+---
 
 # Spring MVC
   - 이일민, 『토비의 스프링 3.1』, AcornPub(2012)
@@ -1213,7 +1213,6 @@
 	
 ---
 
-
 # Spring Boot
 
 ## core
@@ -1787,5 +1786,9 @@
             });
             assertEquals("A", "A");			// 단정문이 실행됨
         }
-
   ```
+
+
+---
+
+#
