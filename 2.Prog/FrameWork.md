@@ -5,7 +5,7 @@
     - Security
     - JPA
     - Spring Boot 2.4.x ↑
-    - JUnit
+    - JUnit 5
   
 ---
 
@@ -1739,6 +1739,10 @@
 ---
 
 # JUnit 5
+  - JUnit Platform: Test를 실행해주는 런처, TestEngine API를 제공한다.
+  - Jupiter: JUnit 5를 지원하는 TestEngine API의 구현체
+  - Vintage: JUnit 4, 3을 지원하는 TestEngine API의 구현체
+	
 ## Annotation
   ```console
   @Disabled
