@@ -1,7 +1,6 @@
 # Java
   - Scott Oaks., 『자바 성능 튜닝』, 최가인 옮김, O'REILLY(2014)
   - 라울-게이브리얼 우르마, 마리오 푸스코, 앨런 마이크로프트., 『JAVA 8 in Action』, 우정은 옮김, 한빛미디어(2017)
-  - JUnit 5
 
 ---
 
@@ -107,10 +106,3 @@
   10:          8970        3606368  <constantPoolCacheKlass>
   ~~~
 
-
----
-
-# JUnit 5
-  - JUnit Platform: Test를 실행해주는 런처, TestEngine API를 제공한다.
-  - Jupiter: JUnit 5를 지원하는 TestEngine API의 구현체
-  - Vintage: JUnit 4, 3을 지원하는 TestEngine API의 구현체
