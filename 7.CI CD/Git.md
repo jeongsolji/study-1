@@ -25,7 +25,7 @@
     ```console
     # location on Windows: C:\ProgramData\Git\config
     # location on unix: $(prefix)/etc/gitconfig
-    user> git config --system
+    user> git config --system [OPTIONS]
     ```
     
   cf> [https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-config](https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-config)
