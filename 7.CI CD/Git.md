@@ -1,25 +1,53 @@
 # Git
+  - Git
   - GitHub
   - Git LAB
 
+
 ---
 
-
-# 1. GitHub
-
-## 99. Tip
-### 1. 대용량 파일 upload(100MB 이상)
-#### 1. git-lfs 설치
-  - https://git-lfs.github.com/
+# Git
+## config
+  - local
+    ```console
+    # location: .git/config
+    user> git config --local [OPTIONS]
+    ```
   
-#### 2. git-lfs 적용
+  - global
+    ```console
+    # location on Windows: C:\Users\\.gitconfig
+    # location on unix: ~/.gitconfig
+    user> git config --global [OPTIONS]
+    ```
+  
+  - system
+    ```console
+    # location on Windows: C:\ProgramData\Git\config
+    # location on unix: $(prefix)/etc/gitconfig
+    user> git config --system
+    ```
+    
+  cf> [https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-config](https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-config)
+
+
+---
+
+# GitHub
+
+## Tip
+### 대용량 파일 upload(100MB 이상)
+#### git-lfs 설치
+  - [https://git-lfs.github.com/](https://git-lfs.github.com/)
+  
+#### git-lfs 적용
   ```console
   [root@repository ~]# git lfs install
   [root@repository ~]# git lfs track "올릴파일.확장자"
   [root@repository ~]# git commit -m "comment"
   ```
 
-#### 3. BFG Repo-Cleaner
+#### BFG Repo-Cleaner
   - 기존에 100MB 보다 큰 파일의 로그를 강제로 삭제
   - jar download
     -https://rtyley.github.io/bfg-repo-cleaner/
@@ -34,7 +62,7 @@
   [root@repository ~]# java -jar bfg-x.x.x.jar --strip-blobs-bigger-than 100M
   ```
 
-### 2. Git Branch OverRide
+### Git Branch OverRide
   ```console
   [root@repository ~]# git checkout develop
   [root@repository ~]# git pull
@@ -43,3 +71,8 @@
   [root@repository ~]# git checkout develop
   [root@repository ~]# git merge --no-ff master
   ```
+
+
+---
+
+# GitLab
