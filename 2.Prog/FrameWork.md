@@ -371,6 +371,9 @@
     ```
 
 #### 2.4절 스프링 테스트 적용
+  - @RunWith
+    - JUnit 프레임워크의 테스트 실행 방법을 확장할 때 사용
+    - SpringJUnit4ClassRunner라는 JUnit용 테스트 컨텍스트 프레임워크 확장 클래스를 지정해주면, JUnit이 테스트를 진행하는 도중에 테스트가 사용할 어플리케이션 컨텍스트를 만들고 관리하는 작업을 진행해준다.
   - @ContextConfiguration( locations="" )
     - 어플리케이션 컨텍스트(application context)의 설정파일 위치를 지정
     - @ContextConfiguration 어노테이션으로 만들어진 어플리케이션 컨텍스트는 싱글턴으로 관리된다.
