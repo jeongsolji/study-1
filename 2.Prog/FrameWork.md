@@ -29,7 +29,7 @@
     - 어플리케이션 전반에 걸쳐 모든 구성요소의 제어 작업을 담당하는 IoC 엔진
   - 어플리케이션 컨텍스트는 IoC 방식을 따라 만들어진 일종의 빈 팩토리라고 생각하면 된다.
 
-### Only SOurce
+### Only Source
   - 1 Phase
   ```console
   # User.java
