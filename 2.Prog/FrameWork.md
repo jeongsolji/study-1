@@ -20,6 +20,16 @@
   - 2장 -> JUnit에 대한 이야기
 
 ## 1장 오브젝트와 의존관계 (DataSource에 대한 내용)
+### 1.5 스프링의 IoC
+  - 빈 팩토리(Bean Factory)
+    - Spring에서 빈의 생성과 관계설정 같은 제어를 담당하는 IoC오브젝트
+    - 빈을 생성하고 관계를 설정하는 IoC의 기본 기능에 초점을 둔 IoC 오브젝트
+  - 어플리케이션 컨텍스트(Application Context)
+    - 빈 팩토리(Bean Factory)를 확장한 IoC오브젝트
+    - 어플리케이션 전반에 걸쳐 모든 구성요소의 제어 작업을 담당하는 IoC 엔진
+  - 어플리케이션 컨텍스트는 IoC 방식을 따라 만들어진 일종의 빈 팩토리라고 생각하면 된다.
+
+### Only SOurce
   - 1 Phase
   ```console
   # User.java
@@ -339,7 +349,71 @@
   ```
   
 ## 2장 테스트 (JUnit에 대한 내용)
-  - 이건 그냥 건너뛰겠다.. 직접하면서 폭을 넓히자.
+### 2.3절 개발자를 위한 테스팅 프레임워크 JUnit
+  - 픽스처(fixture)
+    - 테스트를 수행하는데 필요한 정보나 오브젝트를 뜻함.
+    - 일반적으로 픽스처는 여러 테스트에서 반복적으로 사용되기 때문에 @Before 메소드를 이용해 생성하여 사용.
+    ```
+    public class UserDaoTest{
+        private UserDao dao;
+	private User user1;		// fixture
+	private User user2;		// fixture
+	private User user3;		// fixture
+	
+	@Before
+	public void setUp(){
+	    ...
+	    this.user1 = new User("gyumee", "박성철", "springno1");
+    	    this.user2 = new User("leegw700", "이길원", "springno2");
+    	    this.user3 = new User("bumjin", "박범진", "springno3");
+	}
+    }
+    ```
+
+#### 2.4절 스프링 테스트 적용
+  - @ContextConfiguration( locations="" )
+    - 어플리케이션 컨텍스트(application context)의 설정파일 위치를 지정
+    - @ContextConfiguration 어노테이션으로 만들어진 어플리케이션 컨텍스트는 싱글턴으로 관리된다.
+  ```
+  # applicationContext.xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <beans xmlns=""
+         xmlns:xsi=""
+	 
+	 <bean id="connectionMaker" class="springbook.user.dao.DConnectionMaker" />
+	 
+	 <bean id="userDao" class="springbook.user.dao.UserDao">
+	 	<property name="connectionMaker" ref="connectionMaker" />
+	 </bean>
+  </beans>
+  
+  # AS-IS
+  ...
+  public class UserDaoTest{
+  	private UserDao dao;
+	
+	@Before
+	public void setUp(){
+		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+		
+		this.dao = context.getBean("userDao", UserDao.class);
+	}
+  }
+  
+  
+  # TO-BE
+  @RunWith(SpringJUnit4ClassRunner.class)
+  @ConextConfiguration(locations="/applicationContext.xml")	// 테스트 컨텍스트가 자동으로 만들어줄 어플리케이션 컨텍스트의 위치 지정
+  public class UserDaoTest{
+  	@Autowired
+	private ApplicationContext context;			// 테스트 오브젝트가 만들어지고 나면 스프링 테스트 컨텍스으에 의해 자동으로 값이 주입된다
+	
+	@Before
+	public void setUp(){
+		this.dao = this.context.getBean("userDao", UserDao.class);
+	}
+  }
+  ```
 
 ## 3장 템플릿 (JDBC에 대한 내용)
   - 1 Phase
