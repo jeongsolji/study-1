@@ -760,8 +760,32 @@
     수신객체의 프로퍼트 수정 없이 수신객체를 반환할 때
 
   - let
-    지정된 값이 null이 아닌 경우에 코드를 실행하는 경우
+    지정된 값이 null이 아닌 경우에 코드를 실행하는 경우이며, 결과가 필요한 경우.
+    단, 결과는 수신객체가 아닌 다른 객체
+    ```
+    val driversLicence: Licence? = getNullablePerson()?.let {
+        // nullable personal객체를 nullable driversLicence 객체로 변경합니다.
+        licenceService.getDriversLicence(it) 
+    }
+    ```
+  
+  - with
+    지정된 값이 null이 아닌 경우에 코드를 실행하는 경우이며, 결과가 필요치 않은경우
 
+  - run
+    수신객체를 통해 다른 수신객체로 변환할 때 사용.
+    지역변수의 범위를 제한할 수 있다.
+    ```
+    val inserted: Boolean = run {
+        // person 과 personDao 의 범위를 제한 합니다.
+        val person: Person = getPerson()
+        val personDao: PersonDao = getPersonDao()
+  
+        // 수행 결과를 반환 합니다.
+        personDao.insert(person)
+    }
+    ```
+  
 ---
 
 
