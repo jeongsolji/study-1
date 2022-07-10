@@ -8,6 +8,8 @@
     - JUnit 5
     - Validation
     - ExceptionHandler
+  - Spring Cloud
+    - resillience4j
 
 
 ---
@@ -1877,5 +1879,7 @@
 
 ---
 	
-# ExceptionHandler
-  - 
+# Spring Cloud
+# Resilience4j
+  - 참고싸이트: [https://resilience4j.readme.io/docs/getting-started](https://resilience4j.readme.io/docs/getting-started)
+  - 참고싸이트: [https://godekdls.github.io/Resilience4j/contents/](https://godekdls.github.io/Resilience4j/contents/)
