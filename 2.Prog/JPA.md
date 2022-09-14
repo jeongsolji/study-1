@@ -165,3 +165,51 @@ em.remove();                      // 삭제
 
 # 엔티티 매핑
 // 일단 코드로 좀 보자.. 적을게 없다.. 코드로코드로!
+
+# 프록시와 연관관계 관리
+## 프록시
+- 즉시로딩(Eager): Entity를 조회할 때 연관된 Entity도 함께 조회한다.
+- 지연로딩(Lazy): 연관된 Entity를 실제 사용할 때 조회한다.
+
+## 프록시
+### 프록시의 기초
+- JPA가 데이터베이스를 접근하지 않고, 실제 엔티티 객체도 생성하지 않도록 한다. 대신에 데이테베이스 접근을 위임한 프록시 객체를 반환하게 한다.
+```
+Member member = em.getReference(Member.class, "member1");         // Member Entity를 접근할 수 있는 프록시 객체를 반환한다.
+
+###
+```
+
+### 프록시와 식별자
+
+## 즉시로딩과 지연로딩
+- 즉시로딩(Eager): Entity를 조회할 때 연관된 Entity도 함께 조회한다.
+- 지연로딩(Lazy): 연관된 Entity를 실제 사용할 때 조회한다.
+
+### 즉시로딩
+- XXXToOne 연관관계에서의 Default
+- JOIN을 이용하여 성능을 최적화한다.
+
+### 지연로딩
+- XXXToMany 연관관계에서의 Default
+
+## 연속성 전이: CASCADE
+- 특정 Entity를 영속 상태로 만들 때 연관된 Entity도 함께 영속 상태로 만들고 싶으면, 영속성 전이 기능을 사용한다.
+- JPA는 CASCADE옵션으로 영속성 전이를 제공한다.
+- 쉽게 말해서 영속성 전이를 사용하면 부모 Entity를 저장할 때 자식 Entity도 함께 저장할 수 있다.
+```
+# CASCADE Option
+ALL       // 모두 적용
+PERSIST   // 영속할 때 전이
+MERGE     // 병합할 때 전이
+REMOVE    // 삭제할 때 전이
+REFRESH   // refresh할 때 전이
+DETACH    // 준영속할 때 전이
+```
+
+## 고아 객체
+- 부모 Entity와
+
+
+
+
