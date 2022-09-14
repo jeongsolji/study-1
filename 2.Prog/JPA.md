@@ -56,7 +56,7 @@ EntityTransaction tx = em.getTransaction();
 try{
   tx.begin();
   // TODO
-  tx.commit();
+  tx.commit();        // em.flush()가 호출된다.
 }catch(Exception e){
   tx.rollback();
 }
@@ -64,9 +64,11 @@ try{
 - QnA: Service의 트랜잭션과 EntityManager의 트랜잭션의 관계는 무언가가 있을까 ? 이게 궁금하다.
 
 ### 비즈니스 로직
+- 별거 없음으로 패애쓰!
 
 ### JPQL
 - SQL을 추상화한 객체지향 쿼리 언어로, JPQL에서는 데이터베이스의 정보를 전혀 알지 못한다(Table, Column 등)
+- JPQL은 SQL로 변환하여 데이터베이스로 질의를 하는 역활을 한다.(JPA의 영속성 컨테스트등과 관계가 없다)
 - JPQL은 SQL과 문법의 거의 유사하지만 분명한 차이가 존재한다.
   - SQL: 데이터베이스의 테이블을 대상으로 쿼리한다.
   - JPQL: 엔티티객체를 대상으로 쿼리한다. 쉽게 이야기해서 클래스와 필드를 대상으로 쿼리한다.
@@ -90,11 +92,76 @@ persistence.xml -Persistence.createEntityManagerFactory()-> EntityManagerFactory
   - No Thread Safety
   
 ## 영속성 컨텍스트란?
+- 직역: 엔티티를 영구 저장하는 환경
+- 논리적 개념이다. 뭐.. spring boot의 request context, javascript의 excution context와 같은.. 뭐 좀 다르지만 비슷한 그런 느낌이다.
+- 엔티티 매니저를 이용하여 생성, 접근할 수 있다.
 
 ## 엔티티의 생명주기
+- 비영속: 영속성 컨텍스트와 전혀 관계가 없는 상태
+- 영속: 영속성 컨텍스트에 저장된 상태
+- 준영속: 영속성 컨텍스트에 저장되었다가 분리된 상태
+- 삭제: 삭제된 상태
+- 비영속과 준영속에 차이
+  - 별거 없다. 똑같은데 비영속은 그냥 식별자 아이디(@Id가 없거나 있을 수 있고), 준영속은 영속성 컨텍스트에 존재하다가 안한거니 무조건 식별자 아이디(@Id)가 있다고 가정할 수 있는 차이 뿐.
+!!!!!그림을 참조하면 이해가 쉽긴한데..패애쓰!!!!!
+```
+...
+
+Member member = new Member();
+member.setName("kim")             // 비영속
+
+em.persist(member)                // 영속
+em.detach(member);                // 준영속: 영속성 컨텍스트에 member가 빠진상태
+// em.clear();                    // 이렇게 해도 준영속: 영속성 컨텍스트에 관리하는 모든게 없는 상태
+// em.close();                    // 이렇게 해도 준영속: 아예 영속성 컨텍스트가 없는 상태
+
+// em.merge(member);              // 준영속을 다시 영속으로 만든다.
+
+em.remove();                      // 삭제
+```
 
 ## 영속성 컨텍스트의 특징
+- 영속성 컨텍스트는 엔티티를 식별자 값(@Id)으로 구분함으로, 반드시 식별자 값이 있어야 한다.
+- 아직 JPA영역에 머문 상태로, 실제 DB를 call한건 아니다. 데이터베이스에 강제로 적용할 수 있는데 이걸 플러시(flush)라고 한다.
+  - flush는 commit()할 때 호출이 된다.
+  - 영속성 컨텍스트는 식별자 값(@Id), 엔티티(@Entity)와 더불어 스탭샷을 관리하는데, flush할 때 스냅샷과 데이터를 비교하여 다를 시 update문을 날려준다. 이걸 dirty checking이라 한다.
+- 아래의 매커니즘을 가능토록 한다.
+  - 1차 캐시
+  - 동일성 보장
+  - 트랙잭션을 지원하는 쓰기 지연
+  ```
+  # member1, member2, member3이 같이 저장되며, rollback시 모두 롤백된다.
+  begin();
+  
+  save(member1);
+  save(member2);
+  save(member3);
+  
+  commit();                         // em.flush()가 호출된다.
+  ```
+  - 변경 감지(=dirty checking)
+    - 변경감지는 영속성 컨텍스트가 관리하는 영속 상태의 엔티티에만 적용된다.
+    - @DynamicInsert, @DynamicUpdate
+      - Member class에 3개의 field(name, age, email)이 있다고 가정하자. 이때 email만 변경해도 쿼리는 update member  set name=?, age=?, email? where id=? 로 질의된다.
+      - 변경된 column에 대해서만 insert, update가 나가도록 동적쿼리를 만들게 한다. 컬럼이 30개 이상일 때는 이게 더 빠르다고 한다.
+  - 지연 로딩
 
 ## 플러시
+- 영속성 컨텍스트의 변경 내용을 데이터베이스에 반영한다.
+- 순서
+  - em.flush() 직접호출 또는 commit() 시 자동호출 또는 JPQL 쿼리 실행 시 flush된 후 JPQL이 실행된다.
+    ```
+    # JPQL 실행전 flush 되는 이유
+    em.persist(member1)     // 영속성 상태이지만 데이터베이스에 저장하지 않은 상태
+    
+    JPQL 사용!                // member1은 영속성 상태이지만 데이터베이스에는 저장되지 않았기에 없다. 하지만 JPQL은 바로 SQL로 변환하여 데이터베이스로 조회를 질의한다 했다. 이때 데이터가 없음으로 안된다.
+    ```
+  - 변경 감지가 동작해서 영속성 컨텍스트에 있는 모든 엔티티를 스냅샷과 비교해서 수정된 엔티티를 찾는다. 수정된 엔티티는 수정 쿼리를 만들어 쓰기 지연 SQL저장소에 등록한다.
+  - 쓰기 지연 SQL 저장소의 쿼리를 데이터베이스에 전송한다.
 
 ## 준영속
+- 비영속과 준영속에 차이
+  - 별거 없다. 똑같은데 비영속은 그냥 식별자 아이디(@Id가 없거나 있을 수 있고), 준영속은 영속성 컨텍스트에 존재하다가 안한거니 무조건 식별자 아이디(@Id)가 있다고 가정할 수 있는 차이 뿐.
+
+# 엔티티 매핑
+// 일단 코드로 좀 보자.. 적을게 없다.. 코드로코드로!
