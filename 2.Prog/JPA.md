@@ -202,14 +202,35 @@ Member member = em.getReference(Member.class, "member1");         // Member Enti
 ALL       // 모두 적용
 PERSIST   // 영속할 때 전이
 MERGE     // 병합할 때 전이
-REMOVE    // 삭제할 때 전이
+REMOVE    // 삭제할 때 전이: 부모 Entity가 삭제되면 자식 Entity도 모두 삭제된다.
 REFRESH   // refresh할 때 전이
 DETACH    // 준영속할 때 전이
 ```
 
-## 고아 객체
-- 부모 Entity와
+## 고아 객체: opphanRemoval
+- 부모 Entity와 연관관계가 끊어진 자식 Entity를 자동으로 삭제하는 기능을 제공하는데 이것을 고아객체 제거라 한다.
+- 부모 Entity의 컬렉션에서 자식 Entity의 참조만 제거하면 자식 Entity가 자동으로 삭제된다.
+```
+# Entity
+@Entity
+public class Parent{
+  @Id
+  @GeneratedValue
+  private Long id;
+  
+  @OneToMany(mappedBy = "parent", orphanRemoval=true)
+  private List<Child> children = new ArrayList<Child>();
+  
+  ...
+}
 
+# Client
+Parent parent1 = em.find(Parent.class, id);
+parent1.getChildren().remove(0);    // 자식 Entity의 삭제를 진행할 수 있다.
+
+# SQL
+delete  from child  where id=?      // 자식 Entity의 삭제가 진행된다.
+```
 
 
 
