@@ -43,7 +43,7 @@ class Book extends Item{
 ### 엔티티 매니저 설정(with 엔티티 매니저 팩토리)
 ```
 persistence.xml -Persistence.createEntityManagerFactory()-> EntityManagerFactory -this.createEntityManager()-> EntityManager
-
+```
 - EntityManagerFactory
   - Thread Safety
 - EntityManager
