@@ -232,5 +232,45 @@ parent1.getChildren().remove(0);    // 자식 Entity의 삭제를 진행할 수 
 delete  from child  where id=?      // 자식 Entity의 삭제가 진행된다.
 ```
 
+# 객체지향 쿼리 언어
+## 객체지향 쿼리 소개
+- JPQL
+- Criteria
+- QueryDSL
+- Native SQL
+- JDBC 직접사용.(MyBatis같은 SQL 매퍼 프레임워크)
+  - JDBC나 MyBatis를 JPA와 함께 사용하면 영속성 컨텍스트를 적절한 시점에 강제로 flush해야 한다. 이런 이슈를 해결하는 방법은 JPA를 위회해서 SQL을 실행하기 직전에 영속성 컨텍스트를 수동으로 flush한 뒤 데이터베이스와 영속성 컨텍스트를 동기화하고 사용하면 된다.
+
+## JPQL(Java Persistence Query Language)
+- JVM이 Java Language를 OS에 의존하지 않게 한것과 같은 맥락.
+- Entity객체를 조회하는 객체지향 쿼리다. 데이터베이스에 의존적이지 않다.
+- 난!!!!! QueryDSL만 사용해서.. 이번에는 패애쓰!!!!!
+
+## Criteria
+- JPQL을 편하게 작성하도록 도와주는 API, Builder Class 모음
+- 난!!!!! QueryDSL만 사용해서.. 이번에는 패애쓰!!!!!
+
+## QueryDSL
+- JPQL을 편하게 작성하도록 도와주는 Builder Class모음. 비표준 오픈소스 프레임워크
+
+## Native SQL
+- JPA에서 JPQL대신 직접 SQL을 사용할 수 있다.
+- 아래의 경우만 사용한다.
+  - 특정 데이터베이스만 지원하는 함수, 문법, SQL Query Hint(단, QueryDSL이 주 개발 프레임워크 일 때, 함수는 뺀다.)
+  - 인라인 뷰(from 절의 Sub Query), Union, Intersect를 사용하는 경우
+  - Store Procedure를 사용하는 경우
+
+## 객체지향 쿼리 심화
+### 벌크연산(Bulk)
+- em.executeInsert(), em.executeUpdate() 메소드를 사용한다.(단, executeInsert는 비표준이다.)
+
+---
+
+
+# Annotation
+@PersistenceUnit: Entity Manager Factory를 주입받는다.
+
+@PersistenceContext: Entity Manager를 주입받는다.
+
 
 
