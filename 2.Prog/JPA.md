@@ -78,8 +78,8 @@ try{
   
 # 영속성 관리
 ## 엔티티 매너지 팩토리와 엔티티 매니저
-- persistence.xml -Persistence.createEntityManagerFactory()-> EntityManagerFactory -this.createEntityManager()-> EntityManager -used conn-> DB접근
-                  
+- persistence.xml -Persistence.createEntityManagerFactory()-> EntityManagerFactory -this.createEntityManager()-> EntityManager -use Connection-> DB접근
+                                                           └> Connection Pool ------------------------------------> Connection ┘
 - EntityManagerFactory
   - Thread Safety
 - EntityManager
