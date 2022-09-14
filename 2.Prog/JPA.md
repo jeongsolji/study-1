@@ -268,6 +268,84 @@ delete  from child  where id=?      // 자식 Entity의 삭제가 진행된다.
 ### 벌크연산(Bulk)
 - em.executeInsert(), em.executeUpdate() 메소드를 사용한다.(단, executeInsert는 비표준이다.)
 
+# 웹 어플리케이션과 영속성 관리
+## 트랜잭션 범위의 영속성 컨텍스트
+- Spring Container는 트랜잭션 범위의 영속성 컨텍스트 전략을 기본으로 사용.
+- 즉, 트랜잭션을 시작할 때 영속성 컨텍스트를 생성하고 트랜잭션이 끝날 때 영속성 컨텍스트를 종료한다는 뜻.
+- 만약 예외가 발생하면 트랙잭션을 롤백하고 종료하는데 이때는 flush를 호출하지 않는다.
+- 같은 Entity Manager를 사용해도 트랜잭션에 따라 접근하는 영속성 컨텍스는 다르다. 즉, Thread Safety하다는 뜻이다.
+
+## 준영속 상태와 지연로딩
+- 뭐 별내용이 없네..!!!!!
+
+## OSIV(Open Session In View)
+- JPA의 영속성 영역은 Spring의 Transaction에 융합?! 된다. 보통 Spring은 Service Layer에 Transaction을 사용하는데, 문제는 View(JSP등)에서 지연로딩을 사용하는 경우다.
+- Service Layer의 Transaction가 끝남에 따라 JPA의 영속성도 끝나기 때문에, 지연로딩을 사용할 수 없는 문제인데, OSIV를 활성화하면 View에서 렌더링하는 시점까지 영속성을 유지할 수 있다.
+- 단, 성능이 구려서 나는 사용하지 않는다. 꼭 비활성화하고 사용하도록 하자.
+
+## 너무 엄격한 계층
+
+# 트랜잭션과 락, 2차 캐시
+## 트랜잭션과 락
+- 사전지식
+  - 트랜잭션의 ACID
+    - 원자성(Atomicity): 트랜잭션 내에서 실행하는 작업들은 마치 하나의 작업인 것처럼 모두 성공하든가 모두 실패해야 한다.
+    - 일관성(Consistency): 모든 트랜잭션은 일관성 있는 데이터베이스 상태를 유지해야 한다. 예를 들어 데이터베이스에서 정한 무결성 제약 조건을 항상 만족해야 한다.
+    - 격리성(Isolation): 동시에 실행되는 트랜잭션들이 서로에게 영향을 미치지 않도록 격리한다. 예를 들어 동시에 같은 데이터를 수정하지 못하도록 해야 한다. 격리성은 동시성과 관련된 성능 이슈로 인해 격리 수준을 선택할 수 있다.
+      - READ UNCOMMITED(커밋되지 않은 읽기)
+      - READ COMMITED(커밋된 읽기)
+      - REPEATABLE READ(반복 가능한 읽기)
+      - SERIALIZABLE(직렬화 가능)
+    - 지속성(Durability): 트랜잭션을 성공적으로 끝내면 그 결과가 항상 기록되어야 한다. 중간에 시스템에 문제가 발생해도 데이터베이스 로그 등을 이용해서 성공한 트랜잭션을 복구해야 한다.
+- 낙관적 락
+  - 트랜잭션 대부분은 충돌이 발생하지 않는다고 낙관적으로 가정하는 방법
+- 비관적 락
+  - 트랜잭션의 충돌이 발생한다고 가정하고 우선 락을 걸고 보는 방법
+- JPA의 락
+  - 'READ COMMITTED 트랜잭션 격리 수준 + 낙관적 버전'으로 관리한다.
+
+## 2차 캐싱
+- 그냥 application에서 관리하는 cache.. ehcache같은거..
+- echcache를 먼저 확인 한 뒤에 데이터가 없으면 데이터베이스로 조회한다는 뭐 그런거지..
+```
+# Config(XML 또는 YML)
+<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+  <property name="sharedCacheMode" value="ENABLE_SELECTIVE"/>
+  // ALL: 
+  // NONE: cache를 사용하지 않음
+  // ENABLE_SELECTIVE: Cacheable(true)로 설정된 Entity만 Cache사용
+  // DISABLE_SELECTIVE: 모든 Entity를 cache하는데 Cacheable(false)로 명시된 Entity는 Cache하지 않음
+  // UNSPECIFIED: JPA 구현체가 정의한 설정을 따른다.
+</bean>
+
+# Settings(캐시 조회, 저장 방식 설정)
+em.setProperty("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS);
+// javax.persistence.cache.retrieveMode: 캐시 조회 모드 프로퍼티 이름
+// javax.persistence.cache.storeMode: 캐시 보관 모드 프로퍼티 이름
+// javax.persistence.cache.CacheRetrieveMode: 캐시 조회 모드 설정 옵션
+// javax.persistence.cache.CacheStoreMode: 캐시 보관 모드 설정 옵션
+
+// 조회모드 일 시
+// CacheRetrieveMode.USE: 캐시에서 조회한다.
+// CacheRetrieveMode.BYPASS: 캐시를 무시하고 데이터베이스에 직접 접근한다.
+
+// 보관모드 일 시
+// CacheRetrieveMode.USE: 조회한 데이터를 Cache에 저장한다. 조회한 데이터가 이미 Cache에 있으면 Cache데이터를 최신 상태로 갱신하지는 않는다. 트랜잭션을 커밋하면 등록 수정한 Entity도 Cache에 저장한다.
+// CacheRetrieveMode.BYPASS: Cache를 무시하고 데이터베이스에 직접 저장한다.
+// CacheRetrieveMode.REFRESH: USE 전략에 추가로 데이터베이스에서 조회한 Entity를 최신 상태로 다시 caching한다.
+
+# Entity
+@Cacheable
+@Entity
+public class Member{
+  @Id
+  @GeneratedValue
+  private Long id;
+  
+  ...
+}
+```
+
 ---
 
 
@@ -275,6 +353,8 @@ delete  from child  where id=?      // 자식 Entity의 삭제가 진행된다.
 @PersistenceUnit: Entity Manager Factory를 주입받는다.
 
 @PersistenceContext: Entity Manager를 주입받는다.
+
+@Version: Entity의 version을 관리하다(Transaction내에서 이중 저장의 문제를 커버)
 
 
 
