@@ -48,6 +48,27 @@
 ### settings object(초기화 설정 스크립트(Initialization Setting Script): settings.gradle)
 - settings.gradle 파일은 파일 자체가 settings object이며, settings object를 이용하여 project object의 계층구조를 생성한다.
 
+#### 속성
+- gradle
+- plugins
+- rootDir
+- rootProject
+- settings
+- settingsDir
+- startParameter
+
+#### 기타 
+- Script: Gradle의 특정 method를 추가하기 위해 사용. Gradle의 스크립트에서 script object의 인터페이스를 구현하여 method와 속성을 사용
+- SourceSet: Java Source 및 Resource에 대하여 그룹을 형성하여 사용
+- ExtensionAware: Runtime에 다른 객체와 함께 확장하여 사용. extensions이라는 확장 속성을 저장하는 컨테이너 이용
+- ExtraPropertiesExtension: ext로 정의된 확장 속성
+
+#### API
+- findProject()
+- Project()
+- Include()
+- IncludeFlat()
+
 ### project object(빌드 구성 스크립트(Build Congifuration Script): gradle.build{.kts}))
 - gradle.build 파일은 파일 자체가 project object로, Project 인터페이스를 구현한 구현체이며, Project 단위에서 필요한 작업을 수행하기 위해 모든 메서드와 프로퍼티를 모아놓은 'Super object'이다.
 ```
@@ -55,6 +76,13 @@ poublic interface Project extends Comparable<Project>, ExtensionAware, PluginAwa
     ...
 }
 ```
+- project object 구조
+  - TaskContainer
+  - DependencyHandler
+  - ArtifactHandler
+  - RepositoryHandler
+  - Gradle
+  - ConfigurationContrainer
 
 #### 속성
 - version
@@ -73,22 +101,22 @@ poublic interface Project extends Comparable<Project>, ExtensionAware, PluginAwa
 - allProjects
 - subprojects
 
-#### 기타속성
+#### 기타 
 - defaultTasks
 - repositories
 - tasks
 - ant
 
 #### API
-- project(path)
-- project(path, congifureClosure)
-- absoluteProjectPath(path)
-- apply(closure)
-- congifure(object, configureClosure)
-- subproject(action)
+- project(path): 지정된 경로의 Project에 대하여 설정(상대 경로로 지정가능)
+- project(path, congifureClosure): 지정된 경로의 Project에 대하여 Closure를 사용하여 Project 구성(상대 경로로 지정가능)
+- absoluteProjectPath(path): 절대 경로로 변환하여 Project확인
+- apply(closure): Plugin이나 Script를 적용
+- congifure(object, configureClosure): Closure를 통하여 설정된 상태를 이용하여 객체를 구성
+- subproject(action): Sub Project를 구성
 - task(name)
-- afterEvaluate(action)
-- beforeEvaluate(action)
+- beforeEvaluate(action): Project가 평가되기 직전 추가
+- afterEvaluate(action): Project가 평가된 직후 추가
 
 ## How to use ?
 ### initialization(ref file: settings.gradle)
