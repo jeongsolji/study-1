@@ -26,7 +26,7 @@
   - congifuration(ref file: build.gradle{.kts})
     - buildScript의 라이브러리를 가져오거나(plugin 메소드), 프로젝트를 configure하는 작업(congiruations 메소드), 프로젝트에서 사용할 라이브러리를 가져오는 작업(dependencies 메소드) 등 을 수행한다.
     - 이후 Gradle Task를 순차적으로 수행한다. 단, Gradle Task의 기본 블록은 Configuration단계에서 수행되지만, doFirst{}, doLast{} 메소드를 이용하여 Execution 단계에서 수행되도록 할 수도 있다.
-  - execution(ref file: build.gradle{.kts})
+  - execution
     - build를 진행한다.(code gen(=annotation processing), compile, test, packaging 등)
 
 ## 구성요소
