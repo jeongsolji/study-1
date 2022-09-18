@@ -20,39 +20,86 @@
   ```
   initialization -> Configuration -> Execution
   ```
-  - initialization(ref file: settings.gradle)
-    - project name, 사용하는 모듈 등을 확인한다.
-    - 멀티 모듈 프로젝트 일 때는 각 모듈 별로 build.gradle{.kts}가 있는지 확인한다.
-  - congifuration(ref file: build.gradle{.kts})
-    - buildScript의 라이브러리를 가져오거나(plugin 메소드), 프로젝트를 configure하는 작업(congiruations 메소드), 프로젝트에서 사용할 라이브러리를 가져오는 작업(dependencies 메소드) 등 을 수행한다.
-    - 이후 Gradle Task를 순차적으로 수행한다. 단, Gradle Task의 기본 블록은 Configuration단계에서 수행되지만, doFirst{}, doLast{} 메소드를 이용하여 Execution 단계에서 수행되도록 할 수도 있다.
-  - execution
-    - build를 진행한다.(code gen(=annotation processing), compile, test, packaging 등)
+- [https://docs.gradle.org/current/userguide/build_lifecycle.html](https://docs.gradle.org/current/userguide/build_lifecycle.html)
+
+### initialization(ref file: settings.gradle)
+- Script File 확인 및 읽기
+- Multi/Single Module Project 판단.
+  - Multi Module Project일 경우, 각 Module 별로 build.gradle{.kts}가 있는지 확인한다.
+- 명령어 옵션 및 인수 설정
+
+### congifuration(ref file: build.gradle{.kts})
+- buildScript의 library를 가져오거나(plugin 메소드), Project를 configure하는 작업(congiruations 메소드), Project에서 사용할 library를 가져오는 작업(dependencies 메소드) 등 을 수행한다.
+- 이후 Gradle Task를 순차적으로 수행한다. 단, Gradle Task의 기본 블록은 Configuration단계에서 수행되지만, doFirst{}, doLast{} method를 이용하여 Execution 단계에서 수행되도록 할 수도 있다.
+
+### execution
+- build를 진행한다.(code gen(=annotation processing), compile, test, packaging 등)
 
 ## 구성요소
 - 초기화 설정 스크립트(Initialization Setting Script): settings.gradle
 - 빌드 구성 스크립트(Build Congifuration Script): gradle.build{.kts})
-  - gradle.build 파일은 파일 자체가 project 객체로, Project 인터페이스를 구현한 구현체이며, Project 단위에서 필요한 작업을 수행하기 위해 모든 메서드와 프로퍼티를 모아놓은 'Super object'이다.
-  ```
-  poublic interface Project extends Comparable<Project>, ExtensionAware, PluginAware{
-      ...
-  }
-  ```
 - 속성 파일(gradle.properteis)
 - 환경변수/명령어 옵션
   - example> gradle clean compile
-- 프로젝트 디렉터리(buildSrc): 빌드 수행 시, 클래스 파일이나 플러그인을 저장하여 참조하는 디렉터리
+- 프로젝트 디렉토리(Project Directory): buildSrc
+  - 빌드 수행 시, 클래스 파일이나 플러그인을 저장하여 참조하는 디렉터리
+
+## 구성요소와 객체
+### settings object(초기화 설정 스크립트(Initialization Setting Script): settings.gradle)
+- settings.gradle 파일은 파일 자체가 settings object이며, settings object를 이용하여 project object의 계층구조를 생성한다.
+
+### project object(빌드 구성 스크립트(Build Congifuration Script): gradle.build{.kts}))
+- gradle.build 파일은 파일 자체가 project object로, Project 인터페이스를 구현한 구현체이며, Project 단위에서 필요한 작업을 수행하기 위해 모든 메서드와 프로퍼티를 모아놓은 'Super object'이다.
+```
+poublic interface Project extends Comparable<Project>, ExtensionAware, PluginAware{
+    ...
+}
+```
+
+#### 속성
+- version
+- description
+- name
+- state
+- status
+- path
+- group
+- buildDir
+- plugins
+- projectDir
+- rootProject
+- parent
+- childParents
+- allProjects
+- subprojects
+
+#### 기타속성
+- defaultTasks
+- repositories
+- tasks
+- ant
+
+#### API
+- project(path)
+- project(path, congifureClosure)
+- absoluteProjectPath(path)
+- apply(closure)
+- congifure(object, configureClosure)
+- subproject(action)
+- task(name)
+- afterEvaluate(action)
+- beforeEvaluate(action)
 
 ## How to use ?
 ### initialization(ref file: settings.gradle)
-#### rootPoject 객체
-- project의 이름을 지정한다.
+#### rootPoject object
+- Project의 이름을 지정한다.
 ```
 rootProject.name = "app"
 ```
 
 #### include 메소드
-- 멀티 모듈을 구성할 때, 하위 모듈을 인식하도록 한다.
+- Multi Module Project를 구성할 때, 하위 모듈을 인식하도록 한다.
 ```
 rootProject.name = "app"
 
@@ -60,16 +107,16 @@ include("sub app")
 ```
 
 ### congurations(ref file: build.gradle)
-- build.gradle 파일은 파일 자체가 project 객체이며, 아래의 메소드들을 갖는다.
-- Project Object의 plugins method, ext method, plugins method, congifurations method, dependencies method, application method 등
+- build.gradle 파일은 파일 자체가 project object이며, 아래의 method들을 갖는다.
+- project Object의 plugins method, ext method, plugins method, congifurations method, dependencies method, application method 등
 ```
 # build.gradle
-// build.gradle이 project object로 plugin의 메소드를 사용하는 방법은 다음과 같다.
+// build.gradle이 project object로 plugins method를 사용하는 방법은 다음과 같다.
 project.plugins ({
     // TODO
 })
 
-// project를 생략하여 사용할 수 있다.
+// "project"를 생략하여 사용할 수 있다.
 plugins ({
     // TODO
 })
