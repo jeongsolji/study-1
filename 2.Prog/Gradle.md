@@ -5,8 +5,7 @@
 
 # Gradle
 ## 사전지식
-- build?
-  - build = (compile + test + deploy)->jar
+- build: ex> jar(compile + test + deploy + etc)
   - source code file을 컴퓨터에서 실행할 수 있는 독립 소프트웨어 가공물로 변환하는 과정을 말하거나 그에 대한 결과물을 얻는 과정
 
 ## DSL(Domain Sepecific Language)
