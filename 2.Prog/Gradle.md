@@ -95,6 +95,6 @@
   - runtieOnly: run time에만 의존성이 필요할 시, run 시점에 참조하는 runtimeClassPath에 의존성을 주입
   ```
                      compileClassPath                              runtimeClassPath
-                            <>                                            
+                            <>                                            <>
   compileOnly                                implementation                                runtimeOnly                 
   ```
