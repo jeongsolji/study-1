@@ -30,17 +30,17 @@
     - build를 진행한다.(code gen(=annotation processing), compile, test, packaging 등)
 
 ## 구성요소
-- 설정 스크립트(settings.gradle)
-- 빌드 스크립트(gradle.build{.kts})
+- 초기화 설정 스크립트(Initialization Setting Script): settings.gradle
+- 빌드 구성 스크립트(Build Congifuration Script): gradle.build{.kts})
 - 속성 파일(gradle.properteis)
 - 환경변수/명령어 옵션
   - example> gradle clean compile
 - 프로젝트 디렉터리(buildSrc): 빌드 수행 시, 클래스 파일이나 플러그인을 저장하여 참조하는 디렉터리
 
 ## How to use ?
-### (ref file: settings.gradle)
+### initialization(ref file: settings.gradle)
 
-### Build Congifuration Script(ref file: build.gradle)
+### congurations(ref file: build.gradle)
 #### repositories 메소드
 - 저장소를 설정을 담당.
 - RepositoryHandler를 통해 실행.
