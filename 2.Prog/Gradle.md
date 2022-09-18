@@ -66,7 +66,7 @@
 
 
 # Build Script
-## 종속성 구성 이용
+## Dependency Configuration
 - api(@Deprecate compile)
   - Parent Hierarchy 구조 일 때, 모든 Parent의 의존성을 노출한다.
   - [https://developer.android.com/studio/build/dependencies?utm_source=android-studio#dependency_configurations](https://developer.android.com/studio/build/dependencies?utm_source=android-studio#dependency_configurations)
@@ -89,7 +89,9 @@
   예를 들어 implementation 종속 항목이 API를 변경하면 Gradle은 이 종속 항목과 이에 직접적으로 종속된 모듈만 다시 컴파일합니다.
   대부분의 앱과 테스트 모듈은 이 구성을 사용해야 합니다.
   ```
-## Configuartions(=Scopt of maven)
+- testImplementation
+  - Test 시에 의존성을 노출한다.
+## Configuartion(=Scopt of maven)
   - compileOnley: compile time에만 의존성이 필요할 시, compile 시점에 참조하는 compileClassPath에 의존성을 주입
   - implementation: compile time과 run time 둘 다 의존성이 필요할 시, compile 시점에 참조하는 compileClassPath와 run 시점에 참조하는 runtimeClassPath에 의존성을 주입
   - runtieOnly: run time에만 의존성이 필요할 시, run 시점에 참조하는 runtimeClassPath에 의존성을 주입
