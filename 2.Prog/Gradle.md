@@ -39,6 +39,19 @@
 
 ## How to use ?
 ### initialization(ref file: settings.gradle)
+#### rootPoject 객체
+- project의 이름을 지정한다.
+```
+rootProject.name = "app"
+```
+
+#### include 메소드
+- 멀티 모듈을 구성할 때, 하위 모듈을 인식하도록 한다.
+```
+rootProject.name = "app"
+
+include("sub app")
+```
 
 ### congurations(ref file: build.gradle)
 #### repositories 메소드
@@ -94,9 +107,7 @@ plugins {
       annotationProcessor 'org.projectlombok:lombok'
   }
   ```
-  
 
-  
 #### Task 메소드
 - Gardle의 실행 작업 단위
 ```
@@ -111,6 +122,7 @@ task 테스크이름2(dependsOn:['테스크이름3', '테스트이름4' ... ]) {
     - Task들 사이의 의존성을 지정
 
 ---
+
 
 # Ref
 - [https://www.youtube.com/watch?v=hbZJPhceVg4&list=PL7mmuO705dG2pdxCYCCJeAgOeuQN1seZz&index=13](https://www.youtube.com/watch?v=hbZJPhceVg4&list=PL7mmuO705dG2pdxCYCCJeAgOeuQN1seZz&index=13)
