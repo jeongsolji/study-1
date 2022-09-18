@@ -196,6 +196,12 @@ task 테스크이름2(dependsOn:['테스크이름3', '테스트이름4' ... ]) {
 
 ---
 
+# Multi Module Project(=cross project congiruation)
+- [https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:cross_project_configuration](https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:cross_project_configuration)
+
+
+---
+
 
 # Ref
 - [https://www.youtube.com/watch?v=hbZJPhceVg4&list=PL7mmuO705dG2pdxCYCCJeAgOeuQN1seZz&index=13](https://www.youtube.com/watch?v=hbZJPhceVg4&list=PL7mmuO705dG2pdxCYCCJeAgOeuQN1seZz&index=13)
