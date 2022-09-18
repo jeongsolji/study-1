@@ -63,3 +63,12 @@
 - [https://www.youtube.com/watch?v=hbZJPhceVg4&list=PL7mmuO705dG2pdxCYCCJeAgOeuQN1seZz&index=13](https://www.youtube.com/watch?v=hbZJPhceVg4&list=PL7mmuO705dG2pdxCYCCJeAgOeuQN1seZz&index=13)
 
 ---
+
+
+# Build Script
+## 
+- api(구 compile)
+  - Parent Hierarchy 구조 일 때, 모든 Parent의 의존성을 노출한다.
+  - 위의 사유로 
+- implementation
+  - Parent Hierarchy 구조 일 때, 직계 Parent의 의존성을 노출한다.
