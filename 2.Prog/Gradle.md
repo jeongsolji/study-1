@@ -32,6 +32,12 @@
 ## 구성요소
 - 초기화 설정 스크립트(Initialization Setting Script): settings.gradle
 - 빌드 구성 스크립트(Build Congifuration Script): gradle.build{.kts})
+  - gradle.build 파일은 파일 자체가 project 객체로, Project 인터페이스를 구현한 구현체이며, Project 단위에서 필요한 작업을 수행하기 위해 모든 메서드와 프로퍼티를 모아놓은 'Super object'이다.
+  ```
+  poublic interface Project extends Comparable<Project>, ExtensionAware, PluginAware{
+      ...
+  }
+  ```
 - 속성 파일(gradle.properteis)
 - 환경변수/명령어 옵션
   - example> gradle clean compile
@@ -54,6 +60,26 @@ include("sub app")
 ```
 
 ### congurations(ref file: build.gradle)
+- build.gradle 파일은 파일 자체가 project 객체이며, 아래의 메소드들을 갖는다.
+- Project Object의 plugins method, ext method, plugins method, congifurations method, dependencies method, application method 등
+```
+# build.gradle
+// build.gradle이 project object로 plugin의 메소드를 사용하는 방법은 다음과 같다.
+project.plugins ({
+    // TODO
+})
+
+// project를 생략하여 사용할 수 있다.
+plugins ({
+    // TODO
+})
+
+// 최상단 예제에서, {}로 감싸져 있는 부분은 메서드의 인자로 받아들여지는 Groovy의 Closure인데, Groovy의 클로저는 Java나 Kotlin의 Lambda와 같으며, 아래와 같이 변경하여 사용할 수 있다.
+plugins {
+    // TODO
+}
+```
+
 #### repositories 메소드
 - 저장소를 설정을 담당.
 - RepositoryHandler를 통해 실행.
