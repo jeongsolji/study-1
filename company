@@ -1,0 +1,128 @@
+< billyo 서버 기동>
+
+1. 서버 기동 시킬 때
+        1. Billy-api 서버 기동시킬 때 : Workspace -> Billyo-api -> bin 에서 . Activate로 활성화 시켜서 billy -> billyo-api->app 에 있는 run.py 실행 즉, python3 run.py 해서 서버 기동시키기
+        2. Mysql 서버 기동시키기 : brew services start mysql 또는 mysql.server start
+        3. 서버 기동 확인 방법은 localhost:5000/swagger 로 확인
+
+2. 프론트 기동 시킬 때
+    1. Workspace -> Billyo -> fe-dev-proxy-server 에 들어가서 npm start (또는 PORT=8000 HOST=http://localhost:5000 npm run start)하면 프론트 서버 기동 됨
+    2. 서버 기동 확인 방법은 localhost:8080 으로 확인
+*  fe-dev-proxy-server > src > index.ts 에 https : false 로 변경하면 https://billyo-staging.yogiyo.co.kr로 접속 가능.
+3. Redis 기동
+    1. redis-server
+
+
+
+/etc/hosts 설정 변경 후 재부팅 하지 않고 바로 반영하기 위한 명령어
+dscacheutil -flushcache
+
+* property_api_ext.yml 은 /etc 폴더 아래에 있음….
+
+    * Billy-api -> config -> property.yml 에 db 접속 정보 변경
+    * Db 비밀번호 : cuJPd8owcW3R4KBEqF2K
+    * 
+
+————————————————————————
+Mysql 접속방법
+>>> cd usr/local/opt/mysql/bin/
+>>> ./mysql -u root -p
+———————————————————————————
+ssh -p 22 -i ~/.ssh/id_ed25519 -l solji.jeong billyo-staging.yogiyo.co.kr
+
+Vdi : ssh -i id_ed25519 -l solji.jeong 10.40.17.175 -p 7722
+———————————————————
+1. Vdi 에서 putty 로 billyo 접속 
+-만약 접속 안될 시 ssh-auth 에서 id_ed25519.py 폴더 추가
+2.  Solji.jeong => 삐밀이야1!! 
+    3. ssh -i id_ed25519 -l solji.jeong 10.40.17.175 -p 7722
+    4.  mysql -ubilling_service -hbillyo-staging.cluster-ro-csyd9z5xeqsn.ap-northeast-2.rds.amazonaws.com -pcuJPd8owcW3R4KBEqF2K
+    5.  를 통해서 mysql 접속
+
+
+** sudo su - yogiyo => 삐밀번호1!!
+
+==========================
+Staging  반영
+sudo su - yogiyo 로 접속해서 merge 해야 함!!!!
+=>  vdi 에서 접속 후 cd /home/yogiyo/deploy/billyo/live/ 에서 
+Git merge origin/BIL-xxx 로 올리면 됨.
+
+
+=============
+스테이징 서버 로그 보는 방법
+cd /var/log/nginx 로 가서 cat access.log         로 보면 로그 볼 수 있음.
+=============
+
+  <거래관리시스템 be 쪽 서버 기동시키기 위한 작업>
+
+1. python3.8 -m venv “billing” “” 에는 가상환경 만들 디렉토리 명칭
+2. 해당 가상환경 만든 “” 안에 bin 디렉토리에 가서 활성화  . Activate 
+3. 그 후 billing-int-api 디렉토리로 이동해 poetry install --no-root 실행
+4. 설치가 완료되면. python manage.py runserver 실행
+5. 이 때 실행이 제대로 안되면 .env 파일에 DJANGO_SECRET_KEY='billing-int-api-secret' 라고 django 키 값을 임의로 저장해서 다시 돌리면 서버 돌아감.
+=============
+docker ps -a
+
+
+daemon : background에서 돌린 process 를 말함.
+
+
+[with image]
+docker run
+	- docker image가 없으면, image를 다운받아서 실행
+docker create
+	- 이미 있는 image를 실행
+
+[with container]
+docker start
+	- docker container를 실행
+docker restart
+	- docker 재실행
+docker attach 
+	- docker 실행되고 있는 container에 진입
+docker exec
+	- docker 외부에서 container를 진입할 때  
+
+
+
+nohup airflow db init > ./logs/airflow_db.log
+
+nohup airflow webserver --port 4845 > ./logs/airflow_webserver.log
+
+nohup airflow scheduler > ./logs/airflow_scheduler.log
+
+=============
+  
+1. local proposed-release 지우고 다시 origin 에 있는 branch checkout 하기.
+2. proposed-release 에 해당 티켓 머지 git merge origin/pay-xxx…. git push origin proposed-release
+3. proposed-release 브랜치 master 에 pr 올려 확인 후 merge  ====== 여기까지 완료 상태
+4. 배포메일 작성.
+5. maintenece 에 배포 공지 
+6. vdi 에 들어가 아래 command 들 실행(https://rgpkorea.atlassian.net/wiki/spaces/BIL/pages/1193640312/Payo) ★ cronjob 등록이 안될 수도 있으니 ssh payo-fe1 에도 들어가 있도록!
+* Production
+    * VDI 접속=> putty 열어서 bastion open 
+    * login : solji.jeong
+    * ssh deployment(pwd: 삐밀이야1!!)
+    * sudo su - payo(비밀번호 : 삐밀번호1!!)
+    * goto_deploy
+    * fab update-vault -p production  - 이거 추가함!
+        * key : AWS_BUCKET_BILLYO
+        * value : billyo.yogiyo.co.kr
+    * git fetch -p
+    * git pull
+    * fab production update-env
+    * fab production update
+    * fab production cutover ★ cutover 후 payo-fe1 에 들어가 crontab 이 잘 등록되었는지 확인 필요.
+7.  code-reivew 브랜치로 이동 및 히스토리 최신화 후 원격 master 브랜치를 머지한뒤 push 한다.
+    * git fetch -p
+    * git checkout code-review
+    * git pull
+    * git merge origin/master --no-edit
+    * git push
+  8. 배포 후 payo noti 나 grafana 대쉬보드 보면서 모니터링 하기!
+=============
+  
+
+
+
